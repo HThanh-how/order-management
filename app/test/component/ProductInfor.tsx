@@ -53,12 +53,11 @@ export default function AddressSelect() {
               <Input mt={4} placeholder={"Số lượng "} />
               <Input m={4} placeholder={"Khối lượng"} />
               <InputGroup m={4}>
-            <InputLeftElement
+              <InputLeftElement
               pointerEvents="none"
               color="teal.400"
               fontSize="1.2em"
-              children="$ "
-            />
+            >$</InputLeftElement>
             <Input  placeholder="Tiền thu hộ" />
           </InputGroup>
             </Flex>
@@ -102,8 +101,7 @@ export default function AddressSelect() {
               pointerEvents="none"
               color="teal.400"
               fontSize="1.2em"
-              children="$ "
-            />
+            >$</InputLeftElement>
             <Input placeholder="Tiền thu hộ" />
           </InputGroup>
           

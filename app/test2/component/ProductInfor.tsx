@@ -15,7 +15,7 @@ import {
   InputLeftElement,
   RadioGroup,
   Radio,
-  Textarea
+  Textarea,
 } from "@chakra-ui/react";
 import { ChangeEvent, useState } from "react";
 
@@ -53,14 +53,15 @@ export default function AddressSelect() {
               <Input mt={4} placeholder={"Số lượng "} />
               <Input m={4} placeholder={"Khối lượng"} />
               <InputGroup m={4}>
-            <InputLeftElement
-              pointerEvents="none"
-              color="teal.400"
-              fontSize="1.2em"
-              children="$ "
-            />
-            <Input  placeholder="Tiền thu hộ" />
-          </InputGroup>
+                <InputLeftElement
+                  pointerEvents="none"
+                  color="teal.400"
+                  fontSize="1.2em"
+                >
+                  $
+                </InputLeftElement>
+                <Input placeholder="Tiền thu hộ" />
+              </InputGroup>
             </Flex>
           </Box>
         ))}
@@ -96,21 +97,20 @@ export default function AddressSelect() {
         <Text fontWeight={"800"}>Thành tiền</Text>
         <Checkbox m={4}>Thu hộ bằng tiền hàng</Checkbox>
         <Flex p={4}>
-
           <InputGroup>
             <InputLeftElement
               pointerEvents="none"
               color="teal.400"
               fontSize="1.2em"
-              children="$ "
-            />
+            >
+              $
+            </InputLeftElement>
             <Input placeholder="Tiền thu hộ" />
           </InputGroup>
-          
         </Flex>
         <RadioGroup defaultValue="1" m={4}>
           <Stack spacing={5} direction="row">
-          <Text fontWeight={"500"}>Người trả cước: </Text>
+            <Text fontWeight={"500"}>Người trả cước: </Text>
             <Radio colorScheme="teal" value="1">
               Người gửi
             </Radio>
@@ -120,8 +120,7 @@ export default function AddressSelect() {
           </Stack>
         </RadioGroup>
         <Text fontWeight={"500"}>Ghi chú: </Text>
-        <Textarea m={4}placeholder='Ghi chú' w={"95%"}/>
-      
+        <Textarea m={4} placeholder="Ghi chú" w={"95%"} />
       </Box>
     </Box>
   );
