@@ -19,7 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+
       <head>
+
       <link
         rel="stylesheet"
         type="text/css"
@@ -33,9 +35,10 @@ export default function RootLayout({
       />
       </head>
       <body className={inter.className}>
+
         <ChakraProvider>
           <NavBar/>
-      
+          {/* <script src="https://www.google.com/recaptcha/api.js?render=reCAPTCHA_site_key"></script> */}
           {children} 
         </ChakraProvider>
       </body>

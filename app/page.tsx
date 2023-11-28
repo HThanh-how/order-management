@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Container, Flex, Icon } from "@chakra-ui/react";
+import { Box, Container, Flex, Icon, Text } from "@chakra-ui/react";
 import HeroSection from "@/component/HeroSection/HeroSection";
 
 import { useRouter } from "next/navigation";

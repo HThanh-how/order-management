@@ -6,16 +6,35 @@ import {
   TabList,
   Tabs,
   Flex,
+  Input,
+  Button,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import Place from "./Estimate";
 
 const MyBox = () => {
   const [selectedTab, setSelectedTab] = useState(0);
+  const [captchaVerified, setCaptchaVerified] = useState(false);
 
   const handleTabsChange = (index: number) => {
     setSelectedTab(index);
   };
+
+  const handleCaptchaVerify = () => {
+    if (captchaVerified) {
+      // Xử lý khi reCAPTCHA được xác minh thành công
+      // Gửi biểu mẫu hoặc thực hiện hành động mong muốn
+      console.log('reCAPTCHA verified');
+    } else {
+      // Xử lý khi reCAPTCHA không được xác minh thành công
+      console.log('reCAPTCHA verification failed');
+    }
+  };
+
+  const handleCaptchaChange = (value: string) => {
+    setCaptchaVerified(!!value);
+  };
+
 
   return (
     <Flex
@@ -65,7 +84,9 @@ const MyBox = () => {
           <TabPanels>
             <TabPanel>
               {/* Content of the first tab */}
-              <input type="text" placeholder="Nhập mã vận đơn" />
+              <Input m={4} w={"40%"} variant='filled' type="text" placeholder="Nhập mã vận đơn" />
+              <Box m={4}> <div className="g-recaptcha" data-sitekey="YOUR_SITE_KEY" data-callback={handleCaptchaChange}></div></Box>
+              <Button m={4} colorScheme='green' onClick={handleCaptchaVerify}>Green</Button>
             </TabPanel>
             <TabPanel>
               <Place />
