@@ -28,27 +28,37 @@ import {
 } from "@chakra-ui/react";
 import { ChangeEvent, useState } from "react";
 import Dialog from "./Dialog";
+import CustomerList from "./Table";
 
 export default function CustomerTable() {
   return (
     <TableContainer bgColor={"white"} rounded={"2xl"}>
-      <Flex alignItems="center" justify="space-between" direction={{base: "column", md: "row"}}>
-        <VStack m={8} alignItems={"flex-start"}>
-          <Text fontSize="3xl" fontWeight={700}>
+      <Flex
+        alignItems="center"
+        justify="space-between"
+        direction={{ base: "column", md: "row" }}
+      >
+        <VStack      m={{base:2, md:8}} alignItems={"flex-start"} maxW={{base:"80vw", md:"full"}}>
+          <Text fontSize={{ base: "xl", md: "3xl" }} fontWeight={700}>
             Khách hàng
           </Text>
           <Text color={"gray"}>Tuần này bạn có thêm 20 khách hàng mới</Text>
-          
         </VStack>
-
-        <Input m={8} variant="filled" placeholder="Tìm mã vận đơn" maxW={"600px"}/>
-        <Dialog/>
+        <Flex>
+          <Input
+            m={{base:2, md:8}}
+            variant="filled"
+            placeholder="Tìm mã vận đơn"
+            w={{ base: "70vw", md: "30vw" }}
+          />
+        </Flex>
+        <Dialog />
       </Flex>
-      <Table variant="simple">
-        <TableCaption>Imperial to metric conversion factors</TableCaption>
+      {/* <Table variant="simple">
+
         <Thead>
           <Tr>
-            <Th>To convert</Th>
+            <Th>Khách hàng</Th>
             <Th>into</Th>
             <Th isNumeric>multiply by</Th>
           </Tr>
@@ -77,7 +87,9 @@ export default function CustomerTable() {
             <Th isNumeric>multiply by</Th>
           </Tr>
         </Tfoot>
-      </Table>
+      </Table> */}
+
+      <CustomerList/>
     </TableContainer>
   );
 }

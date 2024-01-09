@@ -1,5 +1,3 @@
-
-
 "use client";
 import {
   Box,
@@ -19,7 +17,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 
-import data from "@/public/province.json";
+
 import { ChangeEvent, useState } from "react";
 
 interface Ward {
@@ -77,7 +75,7 @@ export default function AddressSelect() {
 
   return (
     <>
-      <Button m={8} colorScheme="teal" onClick={onOpen}>
+      <Button m={{ base: 2, md: 8 }} colorScheme="teal" onClick={onOpen}>
         Thêm người nhận
       </Button>
       {/* <AddressSelect/> */}
@@ -86,10 +84,9 @@ export default function AddressSelect() {
         isOpen={isOpen}
         onClose={onClose}
         isCentered
-       
       >
         <ModalOverlay />
-        <ModalContent >
+        <ModalContent>
           <ModalHeader>Thêm người nhận</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
@@ -153,20 +150,21 @@ export default function AddressSelect() {
                 ))}
               </Select>
 
-              <Checkbox m={4} colorScheme="green" defaultChecked>
+              <Checkbox colorScheme="green" defaultChecked>
                 Nhận tại bưu cục
               </Checkbox>
-              <Input placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} />
-              <Textarea placeholder={"Ghi chú"} />
+              <Input mt ={4} placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} />
+              <Textarea mt ={4} placeholder={"Ghi chú"} />
             </Box>
           </ModalBody>
 
           <ModalFooter>
-          <Button onClick={onClose}>Cancel</Button>
-            <Button colorScheme="blue" mr={3}  onClick={onClose}>
+            <Button onClick={onClose} mr={3}>
+              Cancel
+            </Button>
+            <Button colorScheme="teal" onClick={onClose}>
               Save
             </Button>
-       
           </ModalFooter>
         </ModalContent>
       </Modal>
