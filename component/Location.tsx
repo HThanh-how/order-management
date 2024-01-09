@@ -57,9 +57,7 @@ export default function AddressSelect() {
   // ...
 
   return (
-    <Box p={4} bg="gray.50" mt={4}>
-      <Text fontWeight={"700"}>Người nhận</Text>
-
+    <Box >
       <Input mt={4} placeholder={"Số điện thoại"} />
       <Input mt={4} placeholder={"Họ và tên"} />
       {/* Dropdown chọn thành phố */}
@@ -106,6 +104,7 @@ export default function AddressSelect() {
         my={4}
         variant="filled"
         placeholder="Chọn phường"
+        onChange={handleDistrictChange}
         isDisabled={selectedDistrict == "" ? true : false}
       >
         <option value="" disabled hidden>

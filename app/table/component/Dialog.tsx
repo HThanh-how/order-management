@@ -1,5 +1,23 @@
+
+
 "use client";
-import { Box, Select, Input, Text, Checkbox } from "@chakra-ui/react";
+import {
+  Box,
+  Select,
+  Input,
+  Text,
+  Checkbox,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  useDisclosure,
+  Textarea,
+} from "@chakra-ui/react";
 
 import data from "@/public/province.json";
 import { ChangeEvent, useState } from "react";
@@ -31,9 +49,10 @@ interface City {
 }
 
 export default function AddressSelect() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
-  const [selectedVillage , setSelectedVillage] = useState("");
+  const [selectedVillage, setSelectedVillage] = useState("");
   const handleCityChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedCity(event.target.value);
     setSelectedDistrict("");
@@ -57,72 +76,101 @@ export default function AddressSelect() {
   // ...
 
   return (
-    <Box p={4} bg="gray.50" mt={4}>
-      <Text fontWeight={"700"}>Người nhận</Text>
-
-      <Input mt={4} placeholder={"Số điện thoại"} />
-      <Input mt={4} placeholder={"Họ và tên"} />
-      {/* Dropdown chọn thành phố */}
-      <Select
-        my={4}
-        placeholder="Chọn tỉnh thành"
-        value={selectedCity}
-        onChange={handleCityChange}
-        variant="filled"
+    <>
+      <Button m={8} colorScheme="teal" onClick={onOpen}>
+        Thêm người nhận
+      </Button>
+      {/* <AddressSelect/> */}
+      <Modal
+        closeOnOverlayClick={false}
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
+       
       >
-        <option value="" disabled hidden>
-          Chọn tỉnh thành
-        </option>
-        {cityData.map((city) => (
-          <option key={city.code} value={city.codename}>
-            {city.name}
-          </option>
-        ))}
-      </Select>
+        <ModalOverlay />
+        <ModalContent >
+          <ModalHeader>Thêm người nhận</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <Box>
+              <Input mt={4} placeholder={"Số điện thoại"} />
+              <Input mt={4} placeholder={"Họ và tên"} />
+              {/* Dropdown chọn thành phố */}
+              <Select
+                my={4}
+                placeholder="Chọn tỉnh thành"
+                value={selectedCity}
+                onChange={handleCityChange}
+                variant="filled"
+              >
+                <option value="" disabled hidden>
+                  Chọn tỉnh thành
+                </option>
+                {cityData.map((city) => (
+                  <option key={city.code} value={city.codename}>
+                    {city.name}
+                  </option>
+                ))}
+              </Select>
 
-      {/* Dropdown chọn quận */}
+              {/* Dropdown chọn quận */}
 
-      <Select
-        my={4}
-        placeholder="Chọn quận"
-        isDisabled={selectedCity == "" ? true : false}
-        value={selectedDistrict}
-        onChange={handleDistrictChange}
-        variant="filled"
-      >
-        <option value="" disabled hidden>
-          Chọn quận
-        </option>
-        {selectedCityData?.districts.map((district) => (
-          <option key={district.code} value={district.codename}>
-            {district.name}
-          </option>
-        ))}
-      </Select>
+              <Select
+                my={4}
+                placeholder="Chọn quận"
+                isDisabled={selectedCity == "" ? true : false}
+                value={selectedDistrict}
+                onChange={handleDistrictChange}
+                variant="filled"
+              >
+                <option value="" disabled hidden>
+                  Chọn quận
+                </option>
+                {selectedCityData?.districts.map((district) => (
+                  <option key={district.code} value={district.codename}>
+                    {district.name}
+                  </option>
+                ))}
+              </Select>
 
-      {/* Dropdown chọn phường */}
+              {/* Dropdown chọn phường */}
 
-      <Select
-        my={4}
-        variant="filled"
-        placeholder="Chọn phường"
-        isDisabled={selectedDistrict == "" ? true : false}
-      >
-        <option value="" disabled hidden>
-          Chọn phường
-        </option>
-        {selectedDistrictData?.wards.map((ward) => (
-          <option key={ward.code} value={ward.codename}>
-            {ward.name}
-          </option>
-        ))}
-      </Select>
+              <Select
+                my={4}
+                variant="filled"
+                placeholder="Chọn phường"
+                onChange={handleDistrictChange}
+                isDisabled={selectedDistrict == "" ? true : false}
+              >
+                <option value="" disabled hidden>
+                  Chọn phường
+                </option>
+                {selectedDistrictData?.wards.map((ward) => (
+                  <option key={ward.code} value={ward.codename}>
+                    {ward.name}
+                  </option>
+                ))}
+              </Select>
 
-      <Checkbox m={4} colorScheme="green" defaultChecked>
-        Nhận tại bưu cục
-      </Checkbox>
-      <Input placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} />
-    </Box>
+              <Checkbox m={4} colorScheme="green" defaultChecked>
+                Nhận tại bưu cục
+              </Checkbox>
+              <Input placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} />
+              <Textarea placeholder={"Ghi chú"} />
+            </Box>
+          </ModalBody>
+
+          <ModalFooter>
+          <Button onClick={onClose}>Cancel</Button>
+            <Button colorScheme="blue" mr={3}  onClick={onClose}>
+              Save
+            </Button>
+       
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 }
 

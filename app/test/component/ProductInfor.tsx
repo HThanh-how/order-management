@@ -119,8 +119,12 @@ export default function AddressSelect() {
         </RadioGroup>
         <Text fontWeight={"500"}>Ghi chú: </Text>
         <Textarea m={4}placeholder='Ghi chú' w={"95%"}/>
-      
+        <Flex justifyContent={"right"} m={4}>
+        <Button colorScheme='gray' m={2} >Lưu nháp</Button>
+        <Button colorScheme="teal" m={2}>Gửi</Button>
+        </Flex>
       </Box>
+ 
     </Box>
   );
 }
