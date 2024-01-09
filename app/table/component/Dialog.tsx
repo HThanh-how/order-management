@@ -155,6 +155,7 @@ export default function AddressSelect() {
               </Checkbox>
               <Input mt ={4} placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} />
               <Textarea mt ={4} placeholder={"Ghi chú"} />
+              
             </Box>
           </ModalBody>
 
