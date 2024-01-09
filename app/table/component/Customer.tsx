@@ -26,7 +26,7 @@ import {
   TableCaption,
   TableContainer,
 } from "@chakra-ui/react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import Dialog from "./Dialog";
 import CustomerList from "./Table";
 
@@ -211,8 +211,10 @@ export default function CustomerTable() {
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
+
     const inputValue = event.target.value;
     setSearchInput(inputValue);
+
     // console.log(inputValue)
     const filteredResults = users.filter(
       (user) =>
@@ -221,6 +223,10 @@ export default function CustomerTable() {
     );
     setFilteredUsers(filteredResults);
   };
+
+  useEffect(() => {
+    handleSearchInputChange({ target: { value: '' } });
+  }, []);
   return (
     <TableContainer bgColor={"white"} rounded={"2xl"}>
       <Flex
