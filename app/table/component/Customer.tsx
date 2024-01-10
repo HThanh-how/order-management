@@ -210,6 +210,10 @@ export default function CustomerTable() {
   const [searchInput, setSearchInput] = useState("");
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
 
+  useEffect(() => {
+    handleSearchInputChange({ target: { value: '' } });
+  }, []);
+
   const handleSearchInputChange = (event: { target: { value: any } }) => {
 
     const inputValue = event.target.value;
