@@ -137,7 +137,7 @@ export default function AddressSelect() {
                 my={4}
                 variant="filled"
                 placeholder="Chọn phường"
-                onChange={handleDistrictChange}
+                onChange={handleVillageChange}
                 isDisabled={selectedDistrict == "" ? true : false}
               >
                 <option value="" disabled hidden>
