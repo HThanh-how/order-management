@@ -13,7 +13,17 @@ import {
   ButtonGroup,
   Button,
   Input,
+  Icon,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
 } from "@chakra-ui/react";
+import { SlOptionsVertical } from "react-icons/sl";
 import { useState } from "react";
 
 type User = {
@@ -193,10 +203,10 @@ type User = {
 // ];
 
 interface UserTableProps {
-    users: User[];
-  }
-  
-  const UserTable: React.FC<UserTableProps> = ({ users }) => {
+  users: User[];
+}
+
+const UserTable: React.FC<UserTableProps> = ({ users }) => {
   const [checkedAll, setCheckedAll] = useState(false);
   const [userSelections, setUserSelections] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -236,8 +246,7 @@ interface UserTableProps {
       setCheckedAll(false);
       setUserSelections([]);
     } else {
-      console.error('Invalid page number');
-      
+      console.error("Invalid page number");
     }
   };
 
@@ -267,6 +276,18 @@ interface UserTableProps {
             <Th>Số điện thoại</Th>
             <Th>Địa chỉ</Th>
             <Th>Ghi chú</Th>
+            <Th w={"1vw"}>
+              <Menu>
+                <MenuButton>
+                  <Icon as={SlOptionsVertical} />
+                </MenuButton>
+                <MenuList>
+                  <MenuItem>Sửa</MenuItem>
+                  {/* <MenuItem>Nhân đôi</MenuItem> */}
+                  <MenuItem>Xoá</MenuItem>
+                </MenuList>
+              </Menu>
+            </Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -295,6 +316,18 @@ interface UserTableProps {
               <Td>{user.phoneNumber}</Td>
               <Td>{user.address}</Td>
               <Td>{user.note}</Td>
+              <Td>
+                <Menu>
+                  <MenuButton>
+                    <Icon as={SlOptionsVertical} color={"gray"} />
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem>Sửa</MenuItem>
+                    {/* <MenuItem>Nhân đôi</MenuItem> */}
+                    <MenuItem>Xoá</MenuItem>
+                  </MenuList>
+                </Menu>
+              </Td>
             </Tr>
           ))}
         </Tbody>
@@ -336,7 +369,8 @@ interface UserTableProps {
 
         <Flex align="center">
           <Text>{`Page `}</Text>
-          <Input mx={2}
+          <Input
+            mx={2}
             type="number"
             min={1}
             max={totalPages}
