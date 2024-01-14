@@ -81,7 +81,7 @@ export default function Sidebar() {
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p={{base:2, md: 8}}>
          <Stats />
-       {/* <MainChart/> */}
+       <MainChart/>
       </Box>
     </Box>
   );
