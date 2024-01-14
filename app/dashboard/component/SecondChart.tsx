@@ -1,37 +1,39 @@
+
+import { Box } from '@chakra-ui/react';
 import React from 'react';
-import Chart from 'react-apexcharts';
-import { ApexOptions } from "apexcharts";
+// import Chart from 'react-apexcharts';
+// import { ApexOptions } from "apexcharts";
 
 const SecondChart = () => {
-    const options: ApexOptions = {
-        labels: [
-            'Đơn nháp',
-            'Đang lấy hàng',
-            'Đang vận chuyển',
-            'Đang giao hàng',
-            'Chờ phát lại',
-            'Giao thành công',
-            'Chờ xử lý'
-        ],
-        colors: [
-            '#A6A6A6',
-            '#36A2EB',
-            '#FFCE56',
-            '#4BC0C0',
-            '#FF9F40',
-            '#7ED957',
-            '#FF6384'
-        ],
-        legend: {
-            position: 'bottom'
-        }
-    };
+    // const options: ApexOptions = {
+    //     labels: [
+    //         'Đơn nháp',
+    //         'Đang lấy hàng',
+    //         'Đang vận chuyển',
+    //         'Đang giao hàng',
+    //         'Chờ phát lại',
+    //         'Giao thành công',
+    //         'Chờ xử lý'
+    //     ],
+    //     colors: [
+    //         '#A6A6A6',
+    //         '#36A2EB',
+    //         '#FFCE56',
+    //         '#4BC0C0',
+    //         '#FF9F40',
+    //         '#7ED957',
+    //         '#FF6384'
+    //     ],
+    //     legend: {
+    //         position: 'bottom'
+    //     }
+    // };
 
-    const series:number[] = [10, 20, 30, 15, 5, 25, 12];
+    // const series:number[] = [10, 20, 30, 15, 5, 25, 12];
 
     return (
-            <Chart options={options} series={series} type="donut" />
-       
+            // <Chart options={options} series={series} type="donut" />
+       <Box></Box>
     );
 };
 
