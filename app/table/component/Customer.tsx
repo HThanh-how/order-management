@@ -44,7 +44,7 @@ const users: User[] = [
   {
     id: 1,
     name: "John Doe",
-    status: "active",
+    status: "report",
     tags: ["developer", "designer"],
     phoneNumber: "+1234567890",
     address: "123 Main St",
@@ -53,7 +53,7 @@ const users: User[] = [
   {
     id: 2,
     name: "Jane Smith",
-    status: "inactive",
+    status: "warning",
     tags: ["designer"],
     phoneNumber: "+0987654321",
     address: "456 Elm St",
@@ -71,7 +71,7 @@ const users: User[] = [
   {
     id: 4,
     name: "Jane Smith",
-    status: "inactive",
+    status: "blacklist",
     tags: ["designer"],
     phoneNumber: "+0987654321",
     address: "456 Elm St",
