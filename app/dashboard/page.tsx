@@ -80,8 +80,8 @@ export default function Sidebar() {
       {/* mobilenav */}
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p={{base:2, md: 8}}>
-        <Stats />
-        <MainChart/>
+        {/* <Stats />
+        <MainChart/> */}
       </Box>
     </Box>
   );
