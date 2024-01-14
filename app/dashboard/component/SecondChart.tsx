@@ -30,10 +30,10 @@ const SecondChart = () => {
     const series = [10, 20, 30, 15, 5, 25, 12];
 
     return (
-        <div>
-            <h2>Tổng đơn đang hoạt động</h2>
+     
+      
             <Chart options={options} series={series} type="donut" />
-        </div>
+       
     );
 };
 
