@@ -5,7 +5,17 @@ import SecondChart from "./SecondChart";
 
 import Chart from "react-apexcharts";
 
-const series = [
+
+
+interface seri {
+    name: string;
+    type: string;
+    data: number[];
+  }
+  
+
+
+const series :Array<seri> = [
   {
     name: "Đơn hàng",
     type: "column",
