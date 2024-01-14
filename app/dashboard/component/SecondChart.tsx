@@ -30,8 +30,6 @@ const SecondChart = () => {
     const series = [10, 20, 30, 15, 5, 25, 12];
 
     return (
-     
-      
             <Chart options={options} series={series} type="donut" />
        
     );

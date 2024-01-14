@@ -85,13 +85,13 @@ const ActivityChart = () => {
           height={400}
           width={1400}
         /> */}
-        <Chart
+        {/* <Chart
           options={options}
           series={series}
           type="line"
           height={400}
           width={1400}
-        />
+        /> */}
         {/* <FirstChart/> */}
       </Box>
       <Box
@@ -105,7 +105,7 @@ const ActivityChart = () => {
         display="flex"
       >
         <Box w="40vh" h="40vh" mt={4}>
-          {/* <SecondChart /> */}
+          <SecondChart />
         </Box>
       </Box>
     </Flex>
