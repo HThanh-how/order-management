@@ -9,8 +9,8 @@ export default function WithSubnavigation() {
   const router=useRouter()
   return (
     <>
-    <title>Arcelity</title>
-    <meta name="description" content="Home"></meta>
+    <title>OrList</title>
+    <meta name="description" content="Tổng quan"></meta>
     
       <HeroSection />
 

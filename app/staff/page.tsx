@@ -54,17 +54,18 @@ interface LinkItemProps {
   link: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Home", icon: FiHome, link: "/dashboard" },
-  { name: "Staff", icon: FiUser, link: "/staff" },
-  { name: "Product", icon: FiShoppingBag, link: "/product" },
-  { name: "Customer", icon: FiStar, link: "/table" },
-  { name: "Settings", icon: FiSettings, link: "#" },
+  { name: "Tổng quan", icon: FiHome, link: "/dashboard" },
+  { name: "Nhân sự", icon: FiUser, link: "/staff" },
+  { name: "Sản phẩm", icon: FiShoppingBag, link: "/product" },
+  { name: "Khách hàng", icon: FiStar, link: "/table" },
+  { name: "Cài đặt", icon: FiSettings, link: "#" },
 ];
 
 export default function Sidebar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+          <title>Nhân viên</title>
       <SidebarContent
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}

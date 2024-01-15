@@ -175,6 +175,7 @@ export default function Login() {
 
   return (
     <Box position={"relative"} bg="black">
+          <title>Đăng ký</title>
       <Container
         as={SimpleGrid}
         maxW={"7xl"}

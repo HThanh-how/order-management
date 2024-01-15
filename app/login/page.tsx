@@ -52,7 +52,7 @@ const handleLogin = async () => {
     const createdAt = new Date().toISOString();
     localStorage.setItem('createdAt', createdAt);
     document.cookie = `access_token=${access_token}; expires=Thu, 01 Jan 2022 00:00:00 UTC; path=/`;
-    window.location.href = historyPathname?? '/'
+    window.location.href =  '/dashboard'
 
   } catch (error) {
     toast({
@@ -66,6 +66,7 @@ const handleLogin = async () => {
 
   return (
     <Box position={"relative"} bg="black">
+          <title>Đăng nhập</title>
       <Container
         as={SimpleGrid}
         maxW={"7xl"}
