@@ -110,7 +110,11 @@ export default function AddressSelect() {
                   <option value="2">Cửa hàng 2</option>
                   <option value="3">Cửa hàng 3</option>
                 
-              </Select>             
+              </Select>  
+              <div className="flex gap-4">  
+                <Checkbox>Tạo đơn</Checkbox>
+                <Checkbox>Sửa đơn</Checkbox>
+              </div>         
             </Box>
           </ModalBody>
 
