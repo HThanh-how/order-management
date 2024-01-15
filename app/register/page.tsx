@@ -187,6 +187,7 @@ export default function Login() {
           <Heading
             lineHeight={1.1}
             fontSize={{ base: "3xl", sm: "4xl", md: "5xl", lg: "6xl" }}
+            color={"gray.50"}
           >
             Hệ thống quản trị đơn hàng thông minh{" "}
             <Text

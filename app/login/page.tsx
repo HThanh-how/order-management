@@ -78,6 +78,7 @@ const handleLogin = async () => {
           <Heading
             lineHeight={1.1}
             fontSize={{ base: "3xl", sm: "4xl", md: "5xl", lg: "6xl" }}
+            color={"gray.50"}
           >
             Hệ thống quản trị đơn hàng Thông minh{" "}
             <Text
@@ -103,6 +104,7 @@ const handleLogin = async () => {
               color={"white"}
               lineHeight={1.1}
               fontSize={{ base: "2xl", sm: "3xl", md: "4xl" }}
+              
             >
               Đăng nhập ngay
               <Text
