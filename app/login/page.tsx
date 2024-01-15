@@ -103,7 +103,7 @@ const handleLogin = async () => {
               lineHeight={1.1}
               fontSize={{ base: "2xl", sm: "3xl", md: "4xl" }}
             >
-              Login now
+              Đăng nhập ngay
               <Text
                 as={"span"}
                 bgGradient="linear(to-r, red.400,pink.400)"
@@ -117,7 +117,7 @@ const handleLogin = async () => {
           <Box as={"form"} mt={10}>
             <Stack spacing={4}>
               <Input
-                placeholder="Username"
+                placeholder="Tên đăng nhập"
                 bg={"#0a0a0a"}
                 border={0}
                 color={"white"}
@@ -128,7 +128,7 @@ const handleLogin = async () => {
                 }}
               />
               <Input
-                placeholder="Password"
+                placeholder="Mật khẩu"
                 bg={"#0a0a0a"}
                 type="password"
                 border={0}
@@ -144,7 +144,7 @@ const handleLogin = async () => {
                 _hover={{ textDecoration: "underscore" }}
                 cursor={"pointer"}
               >
-                Forgot your Password
+                Quên mật khẩu?
               </Text>
             </Stack>
             <Button
@@ -159,7 +159,7 @@ const handleLogin = async () => {
               }}
               onClick={handleLogin}
             >
-              Log in
+              Đăng nhập
             </Button>
             <Button
               fontFamily={"heading"}
@@ -169,7 +169,7 @@ const handleLogin = async () => {
               w={"full"}
               onClick={() => router.push("/register")}
             >
-              First time? Register now!
+              Đăng ký
             </Button>
           </Box>
         </Stack>

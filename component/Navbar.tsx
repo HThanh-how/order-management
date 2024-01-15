@@ -143,9 +143,9 @@ export default function NavBar() {
         />
         <HStack spacing={8} alignItems={"center"}>
           <Box onClick={() => router.push("/")} cursor={"pointer"}>
-            Arcelity
+            Orlist
           </Box>
-          <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
+          {/* <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
             <Box
               px={2}
               py={1}
@@ -185,8 +185,8 @@ export default function NavBar() {
             >
               GAMES
             </Box>
-          </HStack>
-        </HStack>
+          </HStack> */}
+        </HStack> 
 
         <Flex alignItems={"center"} color="#171717">
           {isLogin ? (

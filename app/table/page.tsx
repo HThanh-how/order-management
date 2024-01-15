@@ -1,5 +1,6 @@
 "use client";
 import React, { ReactNode } from "react";
+import { useRouter } from "next/navigation"
 import {
   IconButton,
   Box,
@@ -34,10 +35,11 @@ import {
 import {
   FiHome,
   FiTrendingUp,
-  FiCompass,
+  FiShoppingBag,
   FiStar,
   FiSettings,
   FiMenu,
+  FiUser,
 } from "react-icons/fi";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
@@ -49,17 +51,19 @@ import CustomerTable from "./component/Customer";
 interface LinkItemProps {
   name: string;
   icon: IconType;
+  link: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Home", icon: FiHome },
-  { name: "Trending", icon: FiTrendingUp },
-  { name: "Explore", icon: FiCompass },
-  { name: "Favourites", icon: FiStar },
-  { name: "Settings", icon: FiSettings },
+  { name: "Home", icon: FiHome, link: "/dashboard" },
+  { name: "Staff", icon: FiUser, link: "/staff" },
+  { name: "Product", icon: FiShoppingBag, link: "/product" },
+  { name: "Customer", icon: FiStar, link: "/table" },
+  { name: "Settings", icon: FiSettings, link: "#" },
 ];
 
 export default function Sidebar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
       <SidebarContent
@@ -92,6 +96,7 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+  const router = useRouter();
   return (
     <Box
       bg={useColorModeValue("white", "gray.900")}
@@ -109,7 +114,11 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
+        <NavItem  
+          key={link.name} 
+          icon={link.icon}
+          onClick={() => router.push(`${link.link}`)}
+        >
           {link.name}
         </NavItem>
       ))}
