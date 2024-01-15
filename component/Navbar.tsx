@@ -220,14 +220,14 @@ export default function NavBar() {
               </MenuButton>
               <MenuList>
                 <MenuItem onClick={() => router.push("/user")}>
-                  Profile
+                  Cá nhân
                 </MenuItem>
                 <MenuItem onClick={() => router.push("/user")}>Order</MenuItem>
                 <MenuItem onClick={() => router.push("/user")}>
-                  Wishlist
+                  Thanh toán
                 </MenuItem>
                 <MenuItem onClick={() => router.push("/user")}>
-                  Payment
+                  Cài đặt
                 </MenuItem>
                 <MenuDivider />
                 <MenuItem onClick={() => handleLogout()}>Log out</MenuItem>
