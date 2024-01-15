@@ -91,7 +91,7 @@ export default function AddressSelect() {
           </Box>
         </HStack>
       </Box>
-      <Box mt={4} bg="gray.50" p={4}>
+      <Box mt={4} bg="gray.50" p={4} borderRadius={"2xl"}>
         <Text fontWeight={"800"}>Thành tiền</Text>
         <Checkbox m={4}>Thu hộ bằng tiền hàng</Checkbox>
         <Flex p={4}>
