@@ -156,7 +156,7 @@ export default function NavBar() {
               onClick={() => router.push("/dashboard")}
               cursor={"pointer"}
             >
-              DASHBOARD
+              QUẢN LÝ
             </Box>}
           {/* <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
             <Box
