@@ -45,6 +45,8 @@ import { IconType } from "react-icons";
 import { ReactText } from "react";
 import Stats from "./component/Stats";
 import MainChart from "./component/MainChart";
+import dynamic from 'next/dynamic';
+const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 interface LinkItemProps {
   name: string;
