@@ -212,7 +212,7 @@ export default function Login() {
               lineHeight={1.1}
               fontSize={{ base: "2xl", sm: "3xl", md: "4xl" }}
             >
-              Register now!
+              Đăng ký
               <Text
                 as={"span"}
                 bgGradient="linear(to-r, red.400,pink.400)"
@@ -228,7 +228,7 @@ export default function Login() {
             <Stack spacing={4}>
             <FormControl isInvalid={!!errors.fullName}>
                 <Input
-                  placeholder="Full Name"
+                  placeholder="Họ và tên"
                   bg={"#0a0a0a"}
                   border={0}
                   color={"white"}
@@ -244,7 +244,7 @@ export default function Login() {
               </FormControl>
               <FormControl isInvalid={!!errors.username}>
                 <Input
-                  placeholder="Username"
+                  placeholder="Tên đăng nhập"
                   bg={"#0a0a0a"}
                   border={0}
                   color={"white"}
@@ -278,7 +278,7 @@ export default function Login() {
 
               <FormControl isInvalid={!!errors.password}>
                 <Input
-                  placeholder="Password"
+                  placeholder="Mật khẩu"
                   bg={"#0a0a0a"}
                   border={0}
                   color={"white"}
@@ -295,7 +295,7 @@ export default function Login() {
 
               <FormControl isInvalid={!!errors.retypePassword}>
                 <Input
-                  placeholder="Re-write Password"
+                  placeholder="Xác nhận mật khẩu"
                   bg={"#0a0a0a"}
                   border={0}
                   color={"white"}
@@ -324,7 +324,7 @@ export default function Login() {
                 }}
                 onClick={handleRegister}
               >
-                Register
+                Đăng ký
               </Button>
               <Button
                 fontFamily={"heading"}
@@ -334,7 +334,7 @@ export default function Login() {
                 w={"full"}
                 onClick={() => router.push("/login")}
               >
-                Have an account? Log in now
+                Đã có tài khoản? Đăng nhập ngay
               </Button>
             </Stack>
           </Box>
