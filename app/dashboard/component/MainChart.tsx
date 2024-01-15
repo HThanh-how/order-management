@@ -3,9 +3,9 @@ import { Flex, Box, Container } from "@chakra-ui/react";
 import { ApexOptions } from "apexcharts";
 import SecondChart from "./SecondChart";
 
-import Chart  from "react-apexcharts";
+// import Chart  from "react-apexcharts";
 import dynamic from 'next/dynamic';
-const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 
 interface seri {
