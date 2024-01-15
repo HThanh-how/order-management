@@ -32,7 +32,8 @@ import {
   VStack,
   Button,
 } from "@chakra-ui/react";
-
+import Location from "./Location";
+import ProductInfor from "./ProductInfor";
 import {
   FiHome,
   FiTrendingUp,
@@ -44,8 +45,7 @@ import {
 } from "react-icons/fi";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
-import Stats from "./component/Stats";
-import MainChart from "./component/MainChart";
+
 
 
 interface LinkItemProps {
@@ -93,8 +93,25 @@ export default function Sidebar() {
       {/* mobilenav */}
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
       <Box ml={{ base: 0, md: 60 }} p={{base:2, md: 8}}>
-         <Stats />
-       <MainChart/>
+                <Stack direction={{ base: "column", lg: "row" }}>
+          <Box w={{ base: "80wv", lg: "50%" }} borderRadius={"xl"}>
+            <Box p={4} bg="gray.50">
+              <Text fontWeight={"700"}> Người gửi: </Text>
+              <Select mt={4} placeholder="Địa chi nơi gửi" variant="filled">
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+                <option value="option3">Option 3</option>
+              </Select>
+              <Checkbox m={4} colorScheme="green" defaultChecked>
+                Nhận tại bưu cục
+              </Checkbox>
+            </Box>
+            <Location />
+          </Box>
+          <Box w={{ base: "80wv", lg: "50%" }}>
+            <ProductInfor />
+          </Box>
+        </Stack>
       </Box>
     </Box>
   );
