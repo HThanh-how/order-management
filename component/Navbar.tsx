@@ -238,7 +238,7 @@ export default function NavBar() {
               color="blue"
               onClick={() => (window.location.href = "/login")}
             >
-              Login
+              Đăng nhập
             </Button>
           )}
         </Flex>

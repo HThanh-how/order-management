@@ -150,7 +150,7 @@ export default function JoinOurTeam() {
               color={'white'}
               lineHeight={1.1}
               fontSize={{ base: '2xl', sm: '3xl', md: '4xl' }}>
-              Login now
+              Đăng nhập ngay
               <Text as={'span'} bgGradient="linear(to-r, red.400,pink.400)" bgClip="text">
                 !
               </Text>
