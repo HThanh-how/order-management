@@ -174,7 +174,7 @@ export default function Login() {
   };
 
   return (
-    <Box position={"relative"} bg="black">
+    <Box position={"relative"} bg="black" h="100vh"> 
           <title>Đăng ký</title>
       <Container
         as={SimpleGrid}
@@ -188,7 +188,7 @@ export default function Login() {
             lineHeight={1.1}
             fontSize={{ base: "3xl", sm: "4xl", md: "5xl", lg: "6xl" }}
           >
-            Many game waiting you{" "}
+            Hệ thống quản trị đơn hàng thông minh{" "}
             <Text
               as={"span"}
               bgGradient="linear(to-r, red.400,pink.400)"
@@ -196,7 +196,7 @@ export default function Login() {
             >
               &
             </Text>{" "}
-            Join now
+            Hiện đại
           </Heading>
           <Stack direction={"row"} spacing={4} align={"center"}></Stack>
         </Stack>

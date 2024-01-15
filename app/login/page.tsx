@@ -65,7 +65,7 @@ const handleLogin = async () => {
 };
 
   return (
-    <Box position={"relative"} bg="black">
+<Box position={"relative"} bg="black" h="100vh"> 
           <title>Đăng nhập</title>
       <Container
         as={SimpleGrid}
@@ -79,7 +79,7 @@ const handleLogin = async () => {
             lineHeight={1.1}
             fontSize={{ base: "3xl", sm: "4xl", md: "5xl", lg: "6xl" }}
           >
-            Many game waiting you{" "}
+            Hệ thống quản trị đơn hàng Thông minh{" "}
             <Text
               as={"span"}
               bgGradient="linear(to-r, red.400,pink.400)"
@@ -87,7 +87,7 @@ const handleLogin = async () => {
             >
               &
             </Text>{" "}
-            Join now
+            Hiện đại
           </Heading>
           <Stack direction={"row"} spacing={4} align={"center"}></Stack>
         </Stack>
