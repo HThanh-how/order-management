@@ -97,61 +97,20 @@ export default function AddressSelect() {
               
               <Select
                 my={4}
-                placeholder="Chọn tỉnh thành"
-                value={selectedCity}
-                onChange={handleCityChange}
+                placeholder="Chọn cửa hàng"
+                // value={selectedCity}
+                // onChange={handleCityChange}
                 variant="filled"
               >
                 <option value="" disabled hidden>
-                  Chọn tỉnh thành
+                  Chọn cửa hàng
                 </option>
-                {cityData.map((city) => (
-                  <option key={city.code} value={city.codename}>
-                    {city.name}
-                  </option>
-                ))}
-              </Select>
-
-              {/* Dropdown chọn quận */}
-
-              <Select
-                my={4}
-                placeholder="Chọn quận"
-                isDisabled={selectedCity == "" ? true : false}
-                value={selectedDistrict}
-                onChange={handleDistrictChange}
-                variant="filled"
-              >
-                <option value="" disabled hidden>
-                  Chọn quận
-                </option>
-                {selectedCityData?.districts.map((district) => (
-                  <option key={district.code} value={district.codename}>
-                    {district.name}
-                  </option>
-                ))}
-              </Select>
-
-              {/* Dropdown chọn phường */}
-
-              <Select
-                my={4}
-                variant="filled"
-                placeholder="Chọn phường"
-                onChange={handleVillageChange}
-                isDisabled={selectedDistrict == "" ? true : false}
-              >
-                <option value="" disabled hidden>
-                  Chọn phường
-                </option>
-                {selectedDistrictData?.wards.map((ward) => (
-                  <option key={ward.code} value={ward.codename}>
-                    {ward.name}
-                  </option>
-                ))}
-              </Select>
-              <Input mt ={4} placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} />
-              
+                
+                  <option value="1">Cửa hàng 1</option>
+                  <option value="2">Cửa hàng 2</option>
+                  <option value="3">Cửa hàng 3</option>
+                
+              </Select>             
             </Box>
           </ModalBody>
 
