@@ -145,6 +145,19 @@ export default function NavBar() {
           <Box onClick={() => router.push("/")} cursor={"pointer"}>
             Orlist
           </Box>
+          {isLogin&&<Box
+              px={2}
+              py={1}
+              rounded={"md"}
+              _hover={{
+                textDecoration: "none",
+                bg: useColorModeValue("gray.800", "gray.700"),
+              }}
+              onClick={() => router.push("/dashboard")}
+              cursor={"pointer"}
+            >
+              DASHBOARD
+            </Box>}
           {/* <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
             <Box
               px={2}

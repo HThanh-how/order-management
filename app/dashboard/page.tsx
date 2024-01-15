@@ -45,8 +45,7 @@ import { IconType } from "react-icons";
 import { ReactText } from "react";
 import Stats from "./component/Stats";
 import MainChart from "./component/MainChart";
-import dynamic from 'next/dynamic';
-const ApexCharts = dynamic(() => import('react-apexcharts'), { ssr: false });
+
 
 interface LinkItemProps {
   name: string;
@@ -64,6 +63,13 @@ const LinkItems: Array<LinkItemProps> = [
 
 export default function Sidebar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  
+
+
+
+
+
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
       <SidebarContent
