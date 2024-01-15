@@ -8,9 +8,13 @@ import {
   Flex,
   Input,
   Button,
+  Text,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import Place from "./Estimate";
+import { useDisclosure } from '@chakra-ui/react'
+
+
 
 const MyBox = () => {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -19,21 +23,23 @@ const MyBox = () => {
   const handleTabsChange = (index: number) => {
     setSelectedTab(index);
   };
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const handleCaptchaVerify = () => {
-    if (captchaVerified) {
-      // Xử lý khi reCAPTCHA được xác minh thành công
-      // Gửi biểu mẫu hoặc thực hiện hành động mong muốn
-      console.log('reCAPTCHA verified');
-    } else {
-      // Xử lý khi reCAPTCHA không được xác minh thành công
-      console.log('reCAPTCHA verification failed');
-    }
-  };
 
-  const handleCaptchaChange = (value: string) => {
-    setCaptchaVerified(!!value);
-  };
+  // const handleCaptchaVerify: () => void = () => {
+  //   if (captchaVerified) {
+  //     // Xử lý khi reCAPTCHA được xác minh thành công
+  //     // Gửi biểu mẫu hoặc thực hiện hành động mong muốn
+  //     console.log('reCAPTCHA verified');
+  //   } else {
+  //     // Xử lý khi reCAPTCHA không được xác minh thành công
+  //     console.log('reCAPTCHA verification failed');
+  //   }
+  // };
+
+  // const handleCaptchaChange = (value: string) => {
+  //   setCaptchaVerified(!!value);
+  // };
 
 
   return (
@@ -85,15 +91,15 @@ const MyBox = () => {
             <TabPanel>
               {/* Content of the first tab */}
               <Input m={4} w={"40%"} variant='filled' type="text" placeholder="Nhập mã vận đơn" />
-              <Box m={4}> <div className="g-recaptcha" data-sitekey="YOUR_SITE_KEY" data-callback={handleCaptchaChange}></div></Box>
-              <Button m={4} colorScheme='green' onClick={handleCaptchaVerify}>Green</Button>
+              {/* <Box m={4}> <div className="g-recaptcha" data-sitekey="YOUR_SITE_KEY" data-callback={handleCaptchaChange}></div></Box> */}
+              <Button m={4} colorScheme='green' onClick={onOpen}>Tra cứu</Button>
+              {isOpen && <Box m={4}><Text>Test</Text></Box>}
             </TabPanel>
             <TabPanel>
               <Place />
             </TabPanel>
             <TabPanel>
-              {/* Content of the third tab */}
-              {/* Place your OpenStreetMap component here */}
+       
             </TabPanel>
           </TabPanels>
         </Tabs>

@@ -29,61 +29,61 @@ const series :Array<seri> = [
 ];
 
 const ActivityChart = () => {
-//   const options: ApexOptions = {
-//     chart: {
-//       id: "mixed-chart",
-//       stacked: false,
-//     },
-//     xaxis: {
-//       categories: ["Week 1", "Week 2", "Week 3", "Week 4"],
-//     },
-//     yaxis: [
-//       {
-//         seriesName: "Đơn hàng",
-//         axisTicks: {
-//           show: true,
-//         },
-//         axisBorder: {
-//           show: true,
-//         },
-//         labels: {
-//           style: {
-//             colors: "#008FFB",
-//           },
-//         },
-//         title: {
-//           text: "Quantity of Orders",
-//           style: {
-//             color: "#008FFB",
-//           },
-//         },
-//       },
-//       {
-//         seriesName: "Doanh thu",
-//         opposite: true,
-//         axisTicks: {
-//           show: true,
-//         },
-//         axisBorder: {
-//           show: true,
-//         },
-//         labels: {
-//           style: {
-//             colors: "#00E396",
-//           },
-//         },
-//         title: {
-//           text: "Tổng doanh thu",
-//           style: {
-//             color: "#00E396",
-//           },
-//         },
-//       },
-//     ],
-//     tooltip: {
-//       shared: true,
-//     },
-//   };
+  const options: ApexOptions = {
+    chart: {
+      id: "mixed-chart",
+      stacked: false,
+    },
+    xaxis: {
+      categories: ["Week 1", "Week 2", "Week 3", "Week 4"],
+    },
+    yaxis: [
+      {
+        seriesName: "Đơn hàng",
+        axisTicks: {
+          show: true,
+        },
+        axisBorder: {
+          show: true,
+        },
+        labels: {
+          style: {
+            colors: "#008FFB",
+          },
+        },
+        title: {
+          text: "Quantity of Orders",
+          style: {
+            color: "#008FFB",
+          },
+        },
+      },
+      {
+        seriesName: "Doanh thu",
+        opposite: true,
+        axisTicks: {
+          show: true,
+        },
+        axisBorder: {
+          show: true,
+        },
+        labels: {
+          style: {
+            colors: "#00E396",
+          },
+        },
+        title: {
+          text: "Tổng doanh thu",
+          style: {
+            color: "#00E396",
+          },
+        },
+      },
+    ],
+    tooltip: {
+      shared: true,
+    },
+  };
 
   return (
     <Flex mt={4} justify="space-between">
@@ -95,13 +95,13 @@ const ActivityChart = () => {
           height={400}
           width={1400}
         /> */}
-        {/* <Chart
+        <Chart
           options={options}
           series={series}
           type="line"
           height={400}
           width={1400}
-        /> */}
+        />
         {/* <FirstChart/> */}
       </Box>
       <Box
