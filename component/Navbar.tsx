@@ -124,6 +124,7 @@ export default function NavBar() {
     localStorage.removeItem("access_token");
     localStorage.removeItem("createdAt");
     setIsLogin(false);
+    window.location.href = "/"
   }
 
   return (
@@ -230,7 +231,7 @@ export default function NavBar() {
                   Cài đặt
                 </MenuItem>
                 <MenuDivider />
-                <MenuItem onClick={() => handleLogout()}>Log out</MenuItem>
+                <MenuItem onClick={() => handleLogout()}>Đăng xuất</MenuItem>
               </MenuList>
             </Menu>
           ) : (
