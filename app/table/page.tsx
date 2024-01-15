@@ -30,6 +30,7 @@ import {
   Heading,
   HStack,
   VStack,
+  Button,
 } from "@chakra-ui/react";
 
 import {
@@ -115,6 +116,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
+      <Button onClick={()=>router.push("/create")}  m={4} w="8vw" colorScheme="green">+ Tạo đơn </Button>
       {LinkItems.map((link) => (
         <NavItem  
           key={link.name} 
