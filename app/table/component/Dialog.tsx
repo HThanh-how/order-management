@@ -15,6 +15,10 @@ import {
   Button,
   useDisclosure,
   Textarea,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  FormHelperText,
 } from "@chakra-ui/react";
 
 
@@ -46,11 +50,18 @@ interface City {
   districts: District[];
 }
 
-export default function AddressSelect() {
+export default function AddressSelect({ setCustomers }: any) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedVillage, setSelectedVillage] = useState("");
+  const [formData, setFormData] = useState({
+    username:"",
+    phoneNumber:"",
+    address:"",
+    note:"",
+  });
+
   const handleCityChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedCity(event.target.value);
     setSelectedDistrict("");
@@ -66,19 +77,62 @@ export default function AddressSelect() {
   };
 
   const selectedCityData = cityData.find(
-    (city) => city.codename === selectedCity
+    (city) => city.name === selectedCity
   );
   const selectedDistrictData = selectedCityData?.districts.find(
-    (district) => district.codename === selectedDistrict
+    (district) => district.name === selectedDistrict
   );
-  // ...
+
+  const handleChange = (e: { target: { name: any; value: any; } }) => {
+    if(e.target.name === "address") {
+      setFormData({ ...formData, [e.target.name]: `${e.target.value}, ${selectedVillage}, ${selectedDistrict}, ${selectedCity}` });
+    }
+    else setFormData({ ...formData, [e.target.name]: e.target.value });
+  }
+
+  const getReceivers = async () => {
+    await fetch("http://localhost:8091/api/v1/receivers", 
+                {
+                  method: 'GET',
+                  headers: {
+                    "Content-Type": "application/json",
+                    "userId": '9a74d120-bd12-4e1b-b6da-80f74d70e178',
+                  }
+                
+                })
+    .then(data => data.json())
+    .then(processedData => setCustomers(processedData.data))
+    .catch(error => console.log(error))
+
+  }
+
+  const onSubmit = async(event: any) => {
+    event.preventDefault();
+    
+    await fetch("http://localhost:8091/api/v1/receivers/create", 
+                {
+                  method: 'POST',
+                  headers: {
+                    "Content-Type": "application/json",
+                    "userId": '9a74d120-bd12-4e1b-b6da-80f74d70e178',
+                  },
+                  body: JSON.stringify(formData),
+                
+                })
+    .then(data => data.json())
+    .then(processedData => console.log(processedData.data))
+    .catch(error => console.log(error))
+
+    onClose();
+    getReceivers();
+  }
 
   return (
     <>
-      <Button m={{ base: 2, md: 8 }} colorScheme="teal" onClick={onOpen}>
+      <Button m={{ base: 2, md: 8 }} colorScheme="orange" onClick={onOpen}>
         Thêm người nhận
       </Button>
-      {/* <AddressSelect/> */}
+      
       <Modal
         closeOnOverlayClick={false}
         isOpen={isOpen}
@@ -90,14 +144,21 @@ export default function AddressSelect() {
           <ModalHeader>Thêm người nhận</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <Box>
-              <Input mt={4} placeholder={"Số điện thoại"} />
-              <Input mt={4} placeholder={"Họ và tên"} />
+            <FormControl isRequired>
+              <FormLabel>Tên người nhận</FormLabel>
+              <Input type='text' name="username"  onChange={handleChange} />
+            </FormControl>
+            <FormControl mt={4} isRequired>
+              <FormLabel>Số điện thoại</FormLabel>
+              <Input type='text' name="phoneNumber"  onChange={handleChange} />
+            </FormControl>
               {/* Dropdown chọn thành phố */}
+            <FormControl mt={4} isRequired>
+              <FormLabel>Tỉnh/Thành phố</FormLabel>
               <Select
                 my={4}
                 placeholder="Chọn tỉnh thành"
-                value={selectedCity}
+                // value={selectedCity}
                 onChange={handleCityChange}
                 variant="filled"
               >
@@ -105,19 +166,19 @@ export default function AddressSelect() {
                   Chọn tỉnh thành
                 </option>
                 {cityData.map((city) => (
-                  <option key={city.code} value={city.codename}>
+                  <option key={city.code} value={city.name}>
                     {city.name}
                   </option>
                 ))}
               </Select>
-
-              {/* Dropdown chọn quận */}
-
+            </FormControl>
+            <FormControl mt={4} isRequired>
+              <FormLabel>Quận/Huyện</FormLabel>
               <Select
                 my={4}
                 placeholder="Chọn quận"
                 isDisabled={selectedCity == "" ? true : false}
-                value={selectedDistrict}
+                // value={selectedDistrict}
                 onChange={handleDistrictChange}
                 variant="filled"
               >
@@ -125,14 +186,15 @@ export default function AddressSelect() {
                   Chọn quận
                 </option>
                 {selectedCityData?.districts.map((district) => (
-                  <option key={district.code} value={district.codename}>
+                  <option key={district.code} value={district.name}>
                     {district.name}
                   </option>
                 ))}
               </Select>
+            </FormControl>
 
-              {/* Dropdown chọn phường */}
-
+            <FormControl mt={4} isRequired>
+              <FormLabel>Phường/xã</FormLabel>
               <Select
                 my={4}
                 variant="filled"
@@ -144,26 +206,31 @@ export default function AddressSelect() {
                   Chọn phường
                 </option>
                 {selectedDistrictData?.wards.map((ward) => (
-                  <option key={ward.code} value={ward.codename}>
+                  <option key={ward.code} value={ward.name}>
                     {ward.name}
                   </option>
                 ))}
               </Select>
-
-              <Checkbox colorScheme="green" defaultChecked>
-                Nhận tại bưu cục
-              </Checkbox>
-              <Input mt ={4} placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} />
-              <Textarea mt ={4} placeholder={"Ghi chú"} />
-              
-            </Box>
+            </FormControl>
+            <FormControl mt={4} isRequired>
+              <FormLabel>Địa chỉ chi tiết</FormLabel>
+              <Input type="text" name="address" placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} onChange={handleChange}/>
+            </FormControl>
+            <FormControl mt={4} isRequired>
+              <FormLabel>Ghi chú</FormLabel>
+              <Textarea name="note" placeholder={"Ghi chú"} onChange={handleChange}/>
+            </FormControl>
+           
+            <Checkbox colorScheme="orange" defaultChecked>
+              Nhận tại bưu cục
+            </Checkbox>   
           </ModalBody>
 
           <ModalFooter>
             <Button onClick={onClose} mr={3}>
               Cancel
             </Button>
-            <Button colorScheme="teal" onClick={onClose}>
+            <Button colorScheme="orange" onClick={onSubmit}>
               Save
             </Button>
           </ModalFooter>

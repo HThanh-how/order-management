@@ -22,23 +22,15 @@ import {
   HStack,
 } from "@chakra-ui/react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
-export default function AddressSelect({ setProducts }: any) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  
-  const [formData, setFormData] = useState({
-    name:"",
-    photo:"",
-    status: "AVAILABLE",
-    price: 0,
-    weight: 0,
-    length: 0,
-    width: 0,
-    height: 0,
-    description:"",
-  });
+export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selectedProduct }: any) {
+  const [formData, setFormData] = useState<any>({});
+
+  useEffect(() => {
+    setFormData({...selectedProduct});
+  }, [selectedProduct])
 
   const handleChange = (e: { target: { name: any; value: any; } }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -63,9 +55,9 @@ export default function AddressSelect({ setProducts }: any) {
   const onSubmit = async(event: any) => {
     event.preventDefault();
     
-    await fetch("http://localhost:8082/api/v1/products", 
+    await fetch(`http://localhost:8082/api/v1/products/${selectedProduct.id}`, 
                 {
-                  method: 'POST',
+                  method: 'PUT',
                   headers: {
                     "Content-Type": "application/json",
                     "userId": '9a74d120-bd12-4e1b-b6da-80f74d70e178',
@@ -80,14 +72,8 @@ export default function AddressSelect({ setProducts }: any) {
     onClose();
     getProducts();
 }
-  
-
 
   return (
-    <>
-      <Button m={{ base: 2, md: 8 }} colorScheme="orange" onClick={onOpen}>
-        Thêm sản phẩm
-      </Button>
       <Modal
         closeOnOverlayClick={false}
         isOpen={isOpen}
@@ -96,38 +82,46 @@ export default function AddressSelect({ setProducts }: any) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Thêm sản phẩm</ModalHeader>
+          <ModalHeader>Sửa thông tin sản phẩm</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             
             <FormControl isRequired>
               <FormLabel>Tên hàng hóa</FormLabel>
-              <Input type='text' name="name"  onChange={handleChange} />
+              <Input type='text' name="name" value={formData.name} onChange={handleChange} />
             </FormControl>
             <FormControl mt={4}>
               <FormLabel>Ảnh</FormLabel>
-              <Input type='text' name="photo"  onChange={handleChange} />
+              <Input type='text' name="photo" value={formData.photo} onChange={handleChange} />
             </FormControl>
             <FormControl isRequired mt={4}>
               <FormLabel>Trọng lượng (g)</FormLabel>
-              <Input type='text' name="weight"  onChange={handleChange}/>
+              <Input type='text' name="weight" value={formData.weight} onChange={handleChange}/>
             </FormControl>
             <FormControl isRequired mt={4}>
               <FormLabel>Đơn giá (VNĐ)</FormLabel>
-              <Input type='text' name="price"  onChange={handleChange}/>
+              <Input type='text' name="price" value={formData.price} onChange={handleChange}/>
+            </FormControl>
+            <FormControl mt={4}>
+                <FormLabel>Trạng thái</FormLabel>
+                <Select name="status" placeholder='Chọn trạng thái' onChange={handleChange}>
+                    <option value="AVAILABLE">CÒN HÀNG</option>
+                    <option value="BACK_ORDER">DỰ TRỮ</option>
+                    <option value="OUT_OF_STOCK">HẾT HÀNG</option>
+                </Select>
             </FormControl>
             <HStack spacing='16px' mt={4}>
               <FormControl>
                 <FormLabel>Dài (cm)</FormLabel>
-                <Input type='text' name="length"  onChange={handleChange}/>
+                <Input type='text' name="length" value={formData.length} onChange={handleChange}/>
               </FormControl>
               <FormControl>
                 <FormLabel>Rộng (cm)</FormLabel>
-                <Input type='text' name="width"  onChange={handleChange}/>
+                <Input type='text' name="width" value={formData.width} onChange={handleChange}/>
               </FormControl>
               <FormControl>
                 <FormLabel>Cao (cm)</FormLabel>
-                <Input type='text' name="height"  onChange={handleChange}/>
+                <Input type='text' name="height" value={formData.height} onChange={handleChange}/>
               </FormControl>
             </HStack>
             <Textarea mt={4} 
@@ -136,8 +130,7 @@ export default function AddressSelect({ setProducts }: any) {
               value={formData.description} 
               onChange={handleChange}
             />
-            
-            
+               
           </ModalBody>
 
           <ModalFooter>
@@ -151,6 +144,5 @@ export default function AddressSelect({ setProducts }: any) {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </>
   );
 }

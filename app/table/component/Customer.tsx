@@ -26,13 +26,13 @@ import {
   TableCaption,
   TableContainer,
 } from "@chakra-ui/react";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState, useRef } from "react";
 import Dialog from "./Dialog";
 import CustomerList from "./Table";
 
-type User = {
+type Customer = {
   id: number;
-  name: string;
+  username: string;
   status: string;
   tags: string[];
   phoneNumber: string;
@@ -40,179 +40,38 @@ type User = {
   note: string;
 };
 
-const users: User[] = [
-  {
-    id: 1,
-    name: "John Doe",
-    status: "report",
-    tags: ["developer", "designer"],
-    phoneNumber: "+1234567890",
-    address: "123 Main St",
-    note: "Lorem ipsum dolor sit amet",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    status: "warning",
-    tags: ["designer"],
-    phoneNumber: "+0987654321",
-    address: "456 Elm St",
-    note: "Consectetur adipiscing elit",
-  },
-  {
-    id: 3,
-    name: "John Doe",
-    status: "active",
-    tags: ["developer", "designer"],
-    phoneNumber: "+1234567890",
-    address: "123 Main St",
-    note: "Lorem ipsum dolor sit amet",
-  },
-  {
-    id: 4,
-    name: "Jane Smith",
-    status: "blacklist",
-    tags: ["designer"],
-    phoneNumber: "+0987654321",
-    address: "456 Elm St",
-    note: "Consectetur adipiscing elit",
-  },
-  {
-    id: 5,
-    name: "John Doe",
-    status: "active",
-    tags: ["developer", "designer"],
-    phoneNumber: "+1234567890",
-    address: "123 Main St",
-    note: "Lorem ipsum dolor sit amet",
-  },
-  {
-    id: 6,
-    name: "Jane Smith",
-    status: "inactive",
-    tags: ["designer"],
-    phoneNumber: "+0987654321",
-    address: "456 Elm St",
-    note: "Consectetur adipiscing elit",
-  },
-  {
-    id: 7,
-    name: "John Doe",
-    status: "active",
-    tags: ["developer", "designer"],
-    phoneNumber: "+1234567890",
-    address: "123 Main St",
-    note: "Lorem ipsum dolor sit amet",
-  },
-  {
-    id: 8,
-    name: "Jane Smith",
-    status: "inactive",
-    tags: ["designer"],
-    phoneNumber: "+0987654321",
-    address: "456 Elm St",
-    note: "Consectetur adipiscing elit",
-  },
-  {
-    id: 9,
-    name: "John Doe",
-    status: "active",
-    tags: ["developer", "designer"],
-    phoneNumber: "+1234567890",
-    address: "123 Main St",
-    note: "Lorem ipsum dolor sit amet",
-  },
-  {
-    id: 10,
-    name: "Jane Smith",
-    status: "inactive",
-    tags: ["designer"],
-    phoneNumber: "+0987654321",
-    address: "456 Elm St",
-    note: "Consectetur adipiscing elit",
-  },
-  {
-    id: 11,
-    name: "John Doe",
-    status: "active",
-    tags: ["developer", "designer"],
-    phoneNumber: "+1234567890",
-    address: "123 Main St",
-    note: "Lorem ipsum dolor sit amet",
-  },
-  {
-    id: 12,
-    name: "Jane Smith",
-    status: "inactive",
-    tags: ["designer"],
-    phoneNumber: "+0987654321",
-    address: "456 Elm St",
-    note: "Consectetur adipiscing elit",
-  },
-  {
-    id: 13,
-    name: "John Doe",
-    status: "active",
-    tags: ["developer", "designer"],
-    phoneNumber: "+1234567890",
-    address: "123 Main St",
-    note: "Lorem ipsum dolor sit amet",
-  },
-  {
-    id: 14,
-    name: "Jane Smith",
-    status: "inactive",
-    tags: ["designer"],
-    phoneNumber: "+0987654321",
-    address: "456 Elm St",
-    note: "Consectetur adipiscing elit",
-  },
-  {
-    id: 15,
-    name: "John Doe",
-    status: "active",
-    tags: ["developer", "designer"],
-    phoneNumber: "+1234567890",
-    address: "123 Main St",
-    note: "Lorem ipsum dolor sit amet",
-  },
-  {
-    id: 16,
-    name: "Jane Smith",
-    status: "inactive",
-    tags: ["designer"],
-    phoneNumber: "+0987654321",
-    address: "456 Elm St",
-    note: "Consectetur adipiscing elit",
-  },
-  {
-    id: 1,
-    name: "John Doe",
-    status: "active",
-    tags: ["developer", "designer"],
-    phoneNumber: "+1234567890",
-    address: "123 Main St",
-    note: "Lorem ipsum dolor sit amet",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    status: "inactive",
-    tags: ["designer"],
-    phoneNumber: "+0987654321",
-    address: "456 Elm St",
-    note: "Consectetur adipiscing elit",
-  },
-  // ...
-];
-
 export default function CustomerTable() {
   const [searchInput, setSearchInput] = useState("");
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
+  const [customers, setCustomers] = useState<any>([]);
+  const firstUpdate = useRef(true);
 
   useEffect(() => {
+    const getReceivers = async () => {
+      await fetch("http://localhost:8091/api/v1/receivers", 
+                  {
+                    method: 'GET',
+                    headers: {
+                      "Content-Type": "application/json",
+                      "userId": '9a74d120-bd12-4e1b-b6da-80f74d70e178',
+                    }
+                  
+                  })
+      .then(data => data.json())
+      .then(processedData => setCustomers(processedData.data))
+      .catch(error => console.log(error))
+
+    }
+
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      getReceivers();
+      return;
+    }
+    
+    console.log(customers);
     handleSearchInputChange({ target: { value: '' } });
-  }, []);
+  }, [customers]);
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
 
@@ -220,12 +79,12 @@ export default function CustomerTable() {
     setSearchInput(inputValue);
 
     // console.log(inputValue)
-    const filteredResults = users.filter(
-      (user) =>
-        user.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-        user.phoneNumber.includes(inputValue)
+    const filteredResults = customers.filter(
+      (customer: any) =>
+        customer.username.toLowerCase().includes(inputValue.toLowerCase()) ||
+        customer.phoneNumber.includes(inputValue)
     );
-    setFilteredUsers(filteredResults);
+    setFilteredCustomers(filteredResults);
   };
 
   useEffect(() => {
@@ -257,44 +116,13 @@ export default function CustomerTable() {
             onChange={handleSearchInputChange}
           />
         </Flex>
-        <Dialog />
+        <Dialog setCustomers={setCustomers}/>
       </Flex>
-      {/* <Table variant="simple">
 
-        <Thead>
-          <Tr>
-            <Th>Khách hàng</Th>
-            <Th>into</Th>
-            <Th isNumeric>multiply by</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          <Tr>
-            <Td>inches</Td>
-            <Td>millimetres (mm)</Td>
-            <Td isNumeric>25.4</Td>
-          </Tr>
-          <Tr>
-            <Td>feet</Td>
-            <Td>centimetres (cm)</Td>
-            <Td isNumeric>30.48</Td>
-          </Tr>
-          <Tr>
-            <Td>yards</Td>
-            <Td>metres (m)</Td>
-            <Td isNumeric>0.91444</Td>
-          </Tr>
-        </Tbody>
-        <Tfoot>
-          <Tr>
-            <Th>To convert</Th>
-            <Th>into</Th>
-            <Th isNumeric>multiply by</Th>
-          </Tr>
-        </Tfoot>
-      </Table> */}
-
-      <CustomerList users={filteredUsers} />
+      <CustomerList 
+        customers={filteredCustomers} 
+        setCustomers={setCustomers}
+      />
     </TableContainer>
   );
 }

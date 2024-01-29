@@ -22,13 +22,20 @@ import {
   MenuGroup,
   MenuOptionGroup,
   MenuDivider,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useState } from "react";
 
-type User = {
+type Customer = {
   id: number;
-  name: string;
+  username: string;
   status: string;
   tags: string[];
   phoneNumber: string;
@@ -36,62 +43,109 @@ type User = {
   note: string;
 };
 
-interface UserTableProps {
-  users: User[];
+interface CustomerTableProps {
+  customers: Customer[];
+  setCustomers: any;
 }
 
-const UserTable: React.FC<UserTableProps> = ({ users }) => {
+const CustomerTable: React.FC<CustomerTableProps> = ({ customers, setCustomers }) => {
   const [checkedAll, setCheckedAll] = useState(false);
-  const [userSelections, setUserSelections] = useState<number[]>([]);
+  const [customerSelections, setCustomerSelections] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [usersPerPage, setUsersPerPage] = useState(5);
+  const [customersPerPage, setCustomersPerPage] = useState(5);
+  const [selectedCustomer, setSelectedCustomer] = useState<any>({});
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const handleDeleteClose = async () => {
+    setDeleteOpen(false);
+    setSelectedCustomer({});
+  }
+  const handleDeleteOpen = async (id: any) => {
+    const p = customers.find((tmp) => tmp.id === id);
+    setSelectedCustomer({...p});
+    setDeleteOpen(true);
+  }
+
+  const getReceivers = async () => {
+    await fetch("http://localhost:8091/api/v1/receivers", 
+                {
+                  method: 'GET',
+                  headers: {
+                    "Content-Type": "application/json",
+                    "userId": '9a74d120-bd12-4e1b-b6da-80f74d70e178',
+                  }
+                
+                })
+    .then(data => data.json())
+    .then(processedData => setCustomers(processedData.data))
+    .catch(error => console.log(error))
+
+  }
+
+  const handleDelete = async (id: any) => {
+    await fetch(`http://localhost:8091/api/v1/receivers/${id}`, 
+                {
+                  method: 'DELETE',
+                  headers: {
+                    "Content-Type": "application/json",
+                    "userId": '9a74d120-bd12-4e1b-b6da-80f74d70e178',
+                  },
+                
+                })
+    .then(data => data.json())
+    .then(processedData => console.log(processedData.data))
+    .catch(error => console.log(error))
+
+    getReceivers();
+    handleDeleteClose();
+  }
 
   const handleMasterCheckboxChange = () => {
     setCheckedAll(!checkedAll);
 
     if (!checkedAll) {
-      const allUserIds = users.map((user) => user.id);
-      setUserSelections(allUserIds);
+      const allCustomerIds = customers.map((customer) => customer.id);
+      setCustomerSelections(allCustomerIds);
     } else {
-      setUserSelections([]);
+      setCustomerSelections([]);
     }
   };
 
-  const handleCheckboxChange = (userId: number) => {
-    if (userSelections.includes(userId)) {
-      const updatedSelections = userSelections.filter(
-        (selection) => selection !== userId
+  const handleCheckboxChange = (customerId: number) => {
+    if (customerSelections.includes(customerId)) {
+      const updatedSelections = customerSelections.filter(
+        (selection) => selection !== customerId
       );
-      setUserSelections(updatedSelections);
+      setCustomerSelections(updatedSelections);
     } else {
-      setUserSelections([...userSelections, userId]);
+      setCustomerSelections([...customerSelections, customerId]);
     }
   };
 
-  const paginateUsers = () => {
-    const startingIndex = (currentPage - 1) * usersPerPage;
-    const endingIndex = Math.min(startingIndex + usersPerPage, users.length);
-    return users.slice(startingIndex, endingIndex);
+  const paginateCustomers = () => {
+    const startingIndex = (currentPage - 1) * customersPerPage;
+    const endingIndex = Math.min(startingIndex + customersPerPage, customers.length);
+    return customers.slice(startingIndex, endingIndex);
   };
 
   const handlePageChange = (pageNumber: number) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
       setCheckedAll(false);
-      setUserSelections([]);
+      setCustomerSelections([]);
     } else {
       console.error("Invalid page number");
     }
   };
 
-  const handleUsersPerPageChange = (perPage: number) => {
+  const handlecustomersPerPageChange = (perPage: number) => {
     setCurrentPage(1);
-    setUsersPerPage(perPage);
+    setCustomersPerPage(perPage);
     setCheckedAll(false);
-    setUserSelections([]);
+    setCustomerSelections([]);
   };
 
-  const totalPages = Math.ceil(users.length / usersPerPage);
+  const totalPages = Math.ceil(customers.length / customersPerPage);
 
   return (
     <Box overflowX="auto" p={8}>
@@ -105,8 +159,8 @@ const UserTable: React.FC<UserTableProps> = ({ users }) => {
               />
             </Th>
             <Th>Name</Th>
-            <Th>Trạng thái</Th>
-            <Th>Tags</Th>
+            {/* <Th>Trạng thái</Th>
+            <Th>Tags</Th> */}
             <Th>Số điện thoại</Th>
             <Th>Địa chỉ</Th>
             <Th>Ghi chú</Th>
@@ -115,63 +169,61 @@ const UserTable: React.FC<UserTableProps> = ({ users }) => {
                 <MenuButton>
                   <Icon as={SlOptionsVertical} />
                 </MenuButton>
-                <MenuList>
-                  <MenuItem>Sửa</MenuItem>
-                  {/* <MenuItem>Nhân đôi</MenuItem> */}
+                {/* <MenuList>
+                  <MenuItem>Sửa</MenuItem>                  
                   <MenuItem>Xoá</MenuItem>
-                </MenuList>
+                </MenuList> */}
               </Menu>
             </Th>
           </Tr>
         </Thead>
         <Tbody>
-          {paginateUsers().map((user) => (
-            <Tr key={user.id}>
+          {paginateCustomers().map((customer) => (
+            <Tr key={customer.id}>
               <Td>
                 <Checkbox
-                  isChecked={userSelections.includes(user.id)}
-                  onChange={() => handleCheckboxChange(user.id)}
+                  isChecked={customerSelections.includes(customer.id)}
+                  onChange={() => handleCheckboxChange(customer.id)}
                 />
               </Td>
-              <Td>{user.name}</Td>
-              <Td> <Badge
+              <Td>{customer.username}</Td>
+              {/* <Td> <Badge
                 colorScheme={
-                  user.status === "warning"
+                  customer.status === "warning"
                     ? "yellow"
-                    : user.status === "report"
+                    : customer.status === "report"
                     ? "orange"
-                    : user.status === "blacklist"
+                    : customer.status === "blacklist"
                     ? "red"
                     : "green"
                 }
                 borderRadius={"xl"}
               >
-                {user.status}
+                {customer.status}
               </Badge></Td>
               <Td>
                 <Flex>
-                  {user.tags.slice(0, 3).map((tag, index) => (
+                  {customer.tags.slice(0, 3).map((tag, index) => (
                     <Badge key={index} mr={2} colorScheme="blue">
                       {tag}
                     </Badge>
                   ))}
-                  {user.tags.length > 3 && (
-                    <Badge colorScheme="purple">+{user.tags.length - 3}</Badge>
+                  {customer.tags.length > 3 && (
+                    <Badge colorScheme="purple">+{customer.tags.length - 3}</Badge>
                   )}
                 </Flex>
-              </Td>
-              <Td>{user.phoneNumber}</Td>
-              <Td>{user.address}</Td>
-              <Td>{user.note}</Td>
+              </Td> */}
+              <Td>{customer.phoneNumber}</Td>
+              <Td>{customer.address}</Td>
+              <Td>{customer.note}</Td>
               <Td>
                 <Menu>
                   <MenuButton>
                     <Icon as={SlOptionsVertical} color={"gray"} />
                   </MenuButton>
                   <MenuList>
-                    <MenuItem>Sửa</MenuItem>
-                    {/* <MenuItem>Nhân đôi</MenuItem> */}
-                    <MenuItem>Xoá</MenuItem>
+                    {/* <MenuItem>Sửa</MenuItem> */}
+                    <MenuItem onClick={() => handleDeleteOpen(customer.id)}>Xoá</MenuItem>
                   </MenuList>
                 </Menu>
               </Td>
@@ -180,35 +232,49 @@ const UserTable: React.FC<UserTableProps> = ({ users }) => {
         </Tbody>
       </Table>
 
+      <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalCloseButton />
+          <ModalBody>
+              Bạn có chắc chắn xóa sản phẩm này?
+          </ModalBody>
+          <ModalFooter>
+            <Button mr={3} onClick={() => handleDeleteClose()}>Đóng</Button>
+            <Button colorScheme='orange' onClick={() => handleDelete(selectedCustomer.id)}>Xác nhận</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
       <Flex justify="space-between" mt={4}>
         <ButtonGroup>
           <Button
-            onClick={() => handleUsersPerPageChange(5)}
-            colorScheme={usersPerPage === 5 ? "teal" : "gray"}
+            onClick={() => handlecustomersPerPageChange(5)}
+            colorScheme={customersPerPage === 5 ? "orange" : "gray"}
           >
             5
           </Button>
           <Button
-            onClick={() => handleUsersPerPageChange(10)}
-            colorScheme={usersPerPage === 10 ? "teal" : "gray"}
+            onClick={() => handlecustomersPerPageChange(10)}
+            colorScheme={customersPerPage === 10 ? "orange" : "gray"}
           >
             10
           </Button>
           <Button
-            onClick={() => handleUsersPerPageChange(15)}
-            colorScheme={usersPerPage === 15 ? "teal" : "gray"}
+            onClick={() => handlecustomersPerPageChange(15)}
+            colorScheme={customersPerPage === 15 ? "orange" : "gray"}
           >
             15
           </Button>
           <Button
-            onClick={() => handleUsersPerPageChange(20)}
-            colorScheme={usersPerPage === 20 ? "teal" : "gray"}
+            onClick={() => handlecustomersPerPageChange(20)}
+            colorScheme={customersPerPage === 20 ? "orange" : "gray"}
           >
             20
           </Button>
           <Button
-            onClick={() => handleUsersPerPageChange(25)}
-            colorScheme={usersPerPage === 25 ? "teal" : "gray"}
+            onClick={() => handlecustomersPerPageChange(25)}
+            colorScheme={customersPerPage === 25 ? "orange" : "gray"}
           >
             25
           </Button>
@@ -246,4 +312,4 @@ const UserTable: React.FC<UserTableProps> = ({ users }) => {
   );
 };
 
-export default UserTable;
+export default CustomerTable;
