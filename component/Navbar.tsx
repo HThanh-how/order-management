@@ -67,63 +67,65 @@ export default function NavBar() {
 
 
   useEffect(() => {
-    const lastAccess = localStorage.getItem("createdAt");
+    const lastAccess = localStorage.getItem("accessToken");
     if (lastAccess === null) {
       setIsLogin(false);
-    } else setLastTimeAccess(lastAccess);
+    } else setIsLogin(true);
   }, []);
-  useEffect(() => {
-    if (Date.now() - new Date(lastTimeAccess).getTime() > 1800000) {
-      setIsLogin(false);
-    } else {
-      setIsLogin(true);
-    }
-  }, [lastTimeAccess, pathname]);
+  // useEffect(() => {
+  //   if (Date.now() - new Date(lastTimeAccess).getTime() > 1800000) {
+  //     setIsLogin(false);
+  //   } else {
+  //     setIsLogin(true);
+  //   }
+  // }, [lastTimeAccess, pathname]);
 
-  useEffect(() => {
-    let intervalId: NodeJS.Timeout;
+  // useEffect(() => {
+  //   let intervalId: NodeJS.Timeout;
 
-    if (isLogin) {
-      intervalId = setInterval(() => {
-        fetch("https://game-be-v2.vercel.app/auth/refreshToken", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: localStorage.getItem("id"),
-          }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            const { access_token } = data;
-            localStorage.setItem("access_token", access_token);
-            console.log(access_token);
-            const createdAt = new Date().toISOString();
-            localStorage.setItem("createdAt", createdAt);
-          })
-          .catch((error) => {
-            console.error("Lỗi:", error);
-          });
-      }, 1500000);
-    }
+  //   if (isLogin) {
+  //     intervalId = setInterval(() => {
+  //       fetch("https://game-be-v2.vercel.app/auth/refreshToken", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           id: localStorage.getItem("id"),
+  //         }),
+  //       })
+  //         .then((response) => response.json())
+  //         .then((data) => {
+  //           const { access_token } = data;
+  //           localStorage.setItem("access_token", access_token);
+  //           console.log(access_token);
+  //           const createdAt = new Date().toISOString();
+  //           localStorage.setItem("createdAt", createdAt);
+  //         })
+  //         .catch((error) => {
+  //           console.error("Lỗi:", error);
+  //         });
+  //     }, 1500000);
+  //   }
 
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [isLogin]);
+  //   return () => {
+  //     clearInterval(intervalId);
+  //   };
+  // }, [isLogin]);
 
   useEffect(() => {
     if ((pathname === "/login" && isLogin) ||
       (pathname === "/register" && isLogin)) {
-      router.replace("/");
+      router.replace("/dashboard");
     }
   }, [pathname, isLogin]);
 
   function handleLogout(): void {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("createdAt");
+    localStorage.removeItem("accessToken");
+    //localStorage.removeItem("createdAt");
+    localStorage.removeItem("userId");
     setIsLogin(false);
+    router.replace("/login");
   }
 
   return (

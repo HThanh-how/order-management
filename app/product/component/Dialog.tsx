@@ -45,12 +45,13 @@ export default function AddressSelect({ setProducts }: any) {
   }
 
   const getProducts = async () => {
-    await fetch("http://localhost:8082/api/v1/products", 
+    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}/api/v1/products`, 
                 {
                   method: 'GET',
                   headers: {
                     "Content-Type": "application/json",
-                    "userId": '9a74d120-bd12-4e1b-b6da-80f74d70e178',
+                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+                    "userId": `${localStorage.getItem("userId")}`,
                   }
                 
                 })
@@ -63,12 +64,13 @@ export default function AddressSelect({ setProducts }: any) {
   const onSubmit = async(event: any) => {
     event.preventDefault();
     
-    await fetch("http://localhost:8082/api/v1/products", 
+    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/products`, 
                 {
                   method: 'POST',
                   headers: {
                     "Content-Type": "application/json",
-                    "userId": '9a74d120-bd12-4e1b-b6da-80f74d70e178',
+                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+                    "userId": `${localStorage.getItem("userId")}`,
                   },
                   body: JSON.stringify(formData),
                 

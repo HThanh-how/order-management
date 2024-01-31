@@ -32,11 +32,12 @@ import CustomerList from "./Table";
 
 type Customer = {
   id: number;
-  username: string;
+  name: string;
   status: string;
   tags: string[];
   phoneNumber: string;
   address: string;
+  detailedAddress: string;
   note: string;
 };
 
@@ -48,12 +49,13 @@ export default function CustomerTable() {
 
   useEffect(() => {
     const getReceivers = async () => {
-      await fetch("http://localhost:8091/api/v1/receivers", 
+      await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/receivers`, 
                   {
                     method: 'GET',
                     headers: {
                       "Content-Type": "application/json",
-                      "userId": '9a74d120-bd12-4e1b-b6da-80f74d70e178',
+                      "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+                      "userId": `${localStorage.getItem("userId")}`,
                     }
                   
                   })
@@ -81,7 +83,7 @@ export default function CustomerTable() {
     // console.log(inputValue)
     const filteredResults = customers.filter(
       (customer: any) =>
-        customer.username.toLowerCase().includes(inputValue.toLowerCase()) ||
+        customer.name.toLowerCase().includes(inputValue.toLowerCase()) ||
         customer.phoneNumber.includes(inputValue)
     );
     setFilteredCustomers(filteredResults);

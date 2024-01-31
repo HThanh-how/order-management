@@ -35,11 +35,12 @@ import { useState } from "react";
 
 type Customer = {
   id: number;
-  username: string;
+  name: string;
   status: string;
   tags: string[];
   phoneNumber: string;
   address: string;
+  detailedAddress: string;
   note: string;
 };
 
@@ -67,12 +68,13 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers, setCustomers }
   }
 
   const getReceivers = async () => {
-    await fetch("http://localhost:8091/api/v1/receivers", 
+    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/receivers`, 
                 {
                   method: 'GET',
                   headers: {
                     "Content-Type": "application/json",
-                    "userId": '9a74d120-bd12-4e1b-b6da-80f74d70e178',
+                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+                    "userId": `${localStorage.getItem("userId")}`,
                   }
                 
                 })
@@ -83,13 +85,14 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers, setCustomers }
   }
 
   const handleDelete = async (id: any) => {
-    await fetch(`http://localhost:8091/api/v1/receivers/${id}`, 
+    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/receivers/${id}`, 
                 {
                   method: 'DELETE',
                   headers: {
                     "Content-Type": "application/json",
-                    "userId": '9a74d120-bd12-4e1b-b6da-80f74d70e178',
-                  },
+                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+                    "userId": `${localStorage.getItem("userId")}`,
+                  }
                 
                 })
     .then(data => data.json())
@@ -186,7 +189,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers, setCustomers }
                   onChange={() => handleCheckboxChange(customer.id)}
                 />
               </Td>
-              <Td>{customer.username}</Td>
+              <Td>{customer.name}</Td>
               {/* <Td> <Badge
                 colorScheme={
                   customer.status === "warning"
@@ -214,7 +217,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers, setCustomers }
                 </Flex>
               </Td> */}
               <Td>{customer.phoneNumber}</Td>
-              <Td>{customer.address}</Td>
+              <Td>{customer.detailedAddress}, {customer.address}</Td>
               <Td>{customer.note}</Td>
               <Td>
                 <Menu>

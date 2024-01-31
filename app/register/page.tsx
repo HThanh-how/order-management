@@ -32,14 +32,18 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [retypePassword, setRetypePassword] = useState("");
-  const [fullName, setFullName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({
     username: "",
     email: "",
     password: "",
     retypePassword: "",
-    fullName: "",
+    firstName: "",
+    lastName: "",
+    phoneNumber: "",
   });
 
   const validateUsername = () => {
@@ -113,14 +117,24 @@ export default function Login() {
     }
   };
 
-  const validateFullName = () => {
-    if (!fullName) {
-      setErrors((errors) => ({ ...errors, fullName: "Vui lòng nhập tên" }));
+  const validateFirstName = () => {
+    if (!firstName) {
+      setErrors((errors) => ({ ...errors, firstName: "Vui lòng nhập tên" }));
     } else if (!/^[^~`!@#$%^&*()_+={}[\]|;:'",.<>?]+$/u
-    .test(fullName)) {
-      setErrors((errors) => ({ ...errors, fullName: "Tên không hợp lệ" }));
+    .test(firstName)) {
+      setErrors((errors) => ({ ...errors, firstName: "Tên không hợp lệ" }));
     } else {
-      setErrors((errors) => ({ ...errors, fullName: "" }));
+      setErrors((errors) => ({ ...errors, firstName: "" }));
+    }
+  };
+  const validateLastName = () => {
+    if (!lastName) {
+      setErrors((errors) => ({ ...errors, lastName: "Vui lòng nhập tên" }));
+    } else if (!/^[^~`!@#$%^&*()_+={}[\]|;:'",.<>?]+$/u
+    .test(lastName)) {
+      setErrors((errors) => ({ ...errors, lastName: "Tên không hợp lệ" }));
+    } else {
+      setErrors((errors) => ({ ...errors, lastName: "" }));
     }
   };
 
@@ -131,7 +145,8 @@ export default function Login() {
     validateEmail();
     validatePassword();
     validateRetypePassword();
-    validateFullName();
+    validateFirstName();
+    validateLastName();
 
     if (Object.values(errors).some((error) => error !== "")) {
       return;
@@ -139,9 +154,9 @@ export default function Login() {
 
     try {
       setIsLoading(true);
-      const data = { username, email, password, retypePassword, fullName };
+      const data = { username, email, password, firstName, lastName, phoneNumber };
       const response = await axios.post(
-        "https://game-be-v2.vercel.app/users",
+        `${process.env.NEXT_PUBLIC_HOSTNAME}auth/register`,
         data
       );
       console.log(response.data);
@@ -228,7 +243,7 @@ export default function Login() {
    
           <Box as={"form"} mt={10} onSubmit={handleRegister}>
             <Stack spacing={4}>
-            <FormControl isInvalid={!!errors.fullName}>
+            <FormControl isInvalid={!!errors.firstName}>
                 <Input
                   placeholder="Họ và tên"
                   bg={"#0a0a0a"}
@@ -238,11 +253,27 @@ export default function Login() {
                     color: "gray.500",
                   }}
                   type="text"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  onBlur={validateFullName}
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  onBlur={validateFirstName}
                 />
-                <FormErrorMessage>{errors.fullName}</FormErrorMessage>
+                <FormErrorMessage>{errors.firstName}</FormErrorMessage>
+              </FormControl>
+              <FormControl isInvalid={!!errors.lastName}>
+                <Input
+                  placeholder="Họ và tên"
+                  bg={"#0a0a0a"}
+                  border={0}
+                  color={"white"}
+                  _placeholder={{
+                    color: "gray.500",
+                  }}
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  onBlur={validateLastName}
+                />
+                <FormErrorMessage>{errors.lastName}</FormErrorMessage>
               </FormControl>
               <FormControl isInvalid={!!errors.username}>
                 <Input

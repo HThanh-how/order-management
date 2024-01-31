@@ -74,12 +74,13 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, setProducts }) =>
     setDeleteOpen(true);
   }
   const getProducts = async () => {
-    await fetch("http://localhost:8082/api/v1/products", 
+    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/products`, 
                 {
                   method: 'GET',
                   headers: {
                     "Content-Type": "application/json",
-                    "userId": '9a74d120-bd12-4e1b-b6da-80f74d70e178',
+                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+                    "userId": `${localStorage.getItem("userId")}`,
                   }
                 
                 })
@@ -96,13 +97,14 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, setProducts }) =>
   }
 
   const handleDelete = async (id: any) => {
-    await fetch(`http://localhost:8082/api/v1/products/${id}`, 
+    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/products/${id}`, 
                 {
                   method: 'DELETE',
                   headers: {
                     "Content-Type": "application/json",
-                    // "userId": '9a74d120-bd12-4e1b-b6da-80f74d70e178',
-                  },
+                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+                    //"userId": `${localStorage.getItem("userId")}`,
+                  }
                 
                 })
     .then(data => data.json())

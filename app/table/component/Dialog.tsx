@@ -56,9 +56,10 @@ export default function AddressSelect({ setCustomers }: any) {
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedVillage, setSelectedVillage] = useState("");
   const [formData, setFormData] = useState({
-    username:"",
+    name:"",
     phoneNumber:"",
-    address:"",
+    address: "",
+    detailedAddress: "",
     note:"",
   });
 
@@ -84,19 +85,17 @@ export default function AddressSelect({ setCustomers }: any) {
   );
 
   const handleChange = (e: { target: { name: any; value: any; } }) => {
-    if(e.target.name === "address") {
-      setFormData({ ...formData, [e.target.name]: `${e.target.value}, ${selectedVillage}, ${selectedDistrict}, ${selectedCity}` });
-    }
-    else setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, address: `${selectedVillage}, ${selectedDistrict}, ${selectedCity}`, [e.target.name]: e.target.value });
   }
 
   const getReceivers = async () => {
-    await fetch("http://localhost:8091/api/v1/receivers", 
+    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}/api/v1/receivers`, 
                 {
                   method: 'GET',
                   headers: {
                     "Content-Type": "application/json",
-                    "userId": '9a74d120-bd12-4e1b-b6da-80f74d70e178',
+                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+                    "userId": `${localStorage.getItem("userId")}`,
                   }
                 
                 })
@@ -109,12 +108,13 @@ export default function AddressSelect({ setCustomers }: any) {
   const onSubmit = async(event: any) => {
     event.preventDefault();
     
-    await fetch("http://localhost:8091/api/v1/receivers/create", 
+    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/receivers/create`, 
                 {
                   method: 'POST',
                   headers: {
                     "Content-Type": "application/json",
-                    "userId": '9a74d120-bd12-4e1b-b6da-80f74d70e178',
+                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+                    "userId": `${localStorage.getItem("userId")}`,
                   },
                   body: JSON.stringify(formData),
                 
@@ -146,7 +146,7 @@ export default function AddressSelect({ setCustomers }: any) {
           <ModalBody pb={6}>
             <FormControl isRequired>
               <FormLabel>Tên người nhận</FormLabel>
-              <Input type='text' name="username"  onChange={handleChange} />
+              <Input type='text' name="name"  onChange={handleChange} />
             </FormControl>
             <FormControl mt={4} isRequired>
               <FormLabel>Số điện thoại</FormLabel>
@@ -214,7 +214,7 @@ export default function AddressSelect({ setCustomers }: any) {
             </FormControl>
             <FormControl mt={4} isRequired>
               <FormLabel>Địa chỉ chi tiết</FormLabel>
-              <Input type="text" name="address" placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} onChange={handleChange}/>
+              <Input type="text" name="detailedAddress" placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} onChange={handleChange}/>
             </FormControl>
             <FormControl mt={4} isRequired>
               <FormLabel>Ghi chú</FormLabel>

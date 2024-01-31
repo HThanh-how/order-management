@@ -31,27 +31,29 @@ export default function Login() {
   const toast = useToast()
 
 const handleLogin = async () => {
-
-  
-
   try {
-    const response = await axios.post("https://game-be-v2.vercel.app/auth/login", {
-      username,
-      password,
-    }
-    , {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}auth/login`, 
+    {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-    }
-    );
-    const { access_token,  id} = response.data;
-    localStorage.setItem("access_token", access_token);
-    const historyPathname = localStorage.getItem("historyPathname");
-    localStorage.setItem("id_token", id);
-    const createdAt = new Date().toISOString();
-    localStorage.setItem('createdAt', createdAt);
-    document.cookie = `access_token=${access_token}; expires=Thu, 01 Jan 2022 00:00:00 UTC; path=/`;
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }), 
+    })
+    .then(data => data.json())
+    .then(processedData => {
+      console.log(processedData);
+      localStorage.setItem('accessToken', processedData.accessToken);
+      localStorage.setItem('userId', processedData.userId);
+    })
+    .catch(error => console.log(error));
+    
+    // const createdAt = new Date().toISOString();
+    // localStorage.setItem('createdAt', createdAt);
+    // document.cookie = `access_token=${access_token}; expires=Thu, 01 Jan 2022 00:00:00 UTC; path=/`;
     window.location.href =  '/dashboard'
 
   } catch (error) {
