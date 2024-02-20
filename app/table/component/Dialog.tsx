@@ -23,6 +23,8 @@ import {
 
 
 import { ChangeEvent, useState } from "react";
+import { useForm } from "react-hook-form"
+import { useAddCustomerMutation } from "@/app/_lib/features/api/apiSlice"
 
 interface Ward {
   name: string;
@@ -50,18 +52,36 @@ interface City {
   districts: District[];
 }
 
-export default function AddressSelect({ setCustomers }: any) {
+type FormData = {
+  name:string,
+  phoneNumber:string,
+  address: string,
+  village: string,
+  district: string,
+  city: string,
+  detailedAddress: string,
+  note:string,
+  callBeforeSend: boolean,
+  receiveAtPost: boolean,
+}
+
+export default function AddressSelect() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedVillage, setSelectedVillage] = useState("");
-  const [formData, setFormData] = useState({
-    name:"",
-    phoneNumber:"",
-    address: "",
-    detailedAddress: "",
-    note:"",
-  });
+  //only 1 checkbox be checked
+  const [checkbox1Checked, setCheckbox1Checked] = useState(true);
+  const [checkbox2Checked, setCheckbox2Checked] = useState(false);
+ 
+  const [addCustomer, {isLoading}] = useAddCustomerMutation();
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>()
 
   const handleCityChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedCity(event.target.value);
@@ -75,6 +95,7 @@ export default function AddressSelect({ setCustomers }: any) {
 
   const handleVillageChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedVillage(event.target.value);
+    setValue('address', `${event.target.value}, ${selectedDistrict}, ${selectedCity}`);
   };
 
   const selectedCityData = cityData.find(
@@ -84,47 +105,29 @@ export default function AddressSelect({ setCustomers }: any) {
     (district) => district.name === selectedDistrict
   );
 
-  const handleChange = (e: { target: { name: any; value: any; } }) => {
-    setFormData({ ...formData, address: `${selectedVillage}, ${selectedDistrict}, ${selectedCity}`, [e.target.name]: e.target.value });
-  }
+  const handleCheckboxChange = (checkboxId: string) => {
+    if (checkboxId === 'checkbox1') {
+      setCheckbox1Checked(true);
+      setCheckbox2Checked(false);
+      setValue('callBeforeSend', false);
+    } else if (checkboxId === 'checkbox2') {
+      setCheckbox1Checked(false);
+      setCheckbox2Checked(true);
+      setValue('receiveAtPost', false);
+    }
+  };
 
-  const getReceivers = async () => {
-    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}/api/v1/receivers`, 
-                {
-                  method: 'GET',
-                  headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
-                    "userId": `${localStorage.getItem("userId")}`,
-                  }
-                
-                })
-    .then(data => data.json())
-    .then(processedData => setCustomers(processedData.data))
-    .catch(error => console.log(error))
-
-  }
-
-  const onSubmit = async(event: any) => {
-    event.preventDefault();
-    
-    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/receivers/create`, 
-                {
-                  method: 'POST',
-                  headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
-                    "userId": `${localStorage.getItem("userId")}`,
-                  },
-                  body: JSON.stringify(formData),
-                
-                })
-    .then(data => data.json())
-    .then(processedData => console.log(processedData.data))
-    .catch(error => console.log(error))
-
-    onClose();
-    getReceivers();
+  const onSubmit = async(data: FormData) => {
+    const {village, district, city, ...sendData} = data;
+    try {
+      await addCustomer(sendData).unwrap();
+      onClose();
+    } catch (err) {
+      console.error('Failed to save customer: ', err)
+    } finally {
+      reset();
+      console.log(data);
+    }
   }
 
   return (
@@ -144,23 +147,34 @@ export default function AddressSelect({ setCustomers }: any) {
           <ModalHeader>Thêm người nhận</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <FormControl isRequired>
+            <FormControl isRequired isInvalid={Boolean(errors.name)}>
               <FormLabel>Tên người nhận</FormLabel>
-              <Input type='text' name="name"  onChange={handleChange} />
+              <Input type='text' {...register('name', {
+                required: 'This is required',
+              })} />
+              <FormErrorMessage>
+                {errors.name && errors.name.message}
+              </FormErrorMessage>
             </FormControl>
-            <FormControl mt={4} isRequired>
+            
+            <FormControl mt={4} isRequired isInvalid={Boolean(errors.phoneNumber)}>
               <FormLabel>Số điện thoại</FormLabel>
-              <Input type='text' name="phoneNumber"  onChange={handleChange} />
+              <Input type='text' {...register('phoneNumber', {
+                required: 'This is required',
+              })} />
             </FormControl>
               {/* Dropdown chọn thành phố */}
-            <FormControl mt={4} isRequired>
+            <FormControl mt={4} isRequired isInvalid={Boolean(errors.city)}>
               <FormLabel>Tỉnh/Thành phố</FormLabel>
               <Select
                 my={4}
                 placeholder="Chọn tỉnh thành"
                 // value={selectedCity}
-                onChange={handleCityChange}
                 variant="filled"
+                {...register('city', {
+                  required: 'This is required',
+                })}
+                onChange={handleCityChange}
               >
                 <option value="" disabled hidden>
                   Chọn tỉnh thành
@@ -171,14 +185,20 @@ export default function AddressSelect({ setCustomers }: any) {
                   </option>
                 ))}
               </Select>
+              <FormErrorMessage>
+                {errors.city && errors.city.message}
+              </FormErrorMessage>
             </FormControl>
-            <FormControl mt={4} isRequired>
+            <FormControl mt={4} isRequired isInvalid={Boolean(errors.district)}>
               <FormLabel>Quận/Huyện</FormLabel>
               <Select
                 my={4}
                 placeholder="Chọn quận"
                 isDisabled={selectedCity == "" ? true : false}
                 // value={selectedDistrict}
+                {...register('district', {
+                  required: 'This is required',
+                })}
                 onChange={handleDistrictChange}
                 variant="filled"
               >
@@ -191,14 +211,20 @@ export default function AddressSelect({ setCustomers }: any) {
                   </option>
                 ))}
               </Select>
+              <FormErrorMessage>
+                {errors.district && errors.district.message}
+              </FormErrorMessage>
             </FormControl>
 
-            <FormControl mt={4} isRequired>
+            <FormControl mt={4} isRequired isInvalid={Boolean(errors.village)}>
               <FormLabel>Phường/xã</FormLabel>
               <Select
                 my={4}
                 variant="filled"
                 placeholder="Chọn phường"
+                {...register('village', {
+                  required: 'This is required',
+                })}
                 onChange={handleVillageChange}
                 isDisabled={selectedDistrict == "" ? true : false}
               >
@@ -211,26 +237,42 @@ export default function AddressSelect({ setCustomers }: any) {
                   </option>
                 ))}
               </Select>
+              <FormErrorMessage>
+                {errors.village && errors.village.message}
+              </FormErrorMessage>
             </FormControl>
-            <FormControl mt={4} isRequired>
+            <FormControl mt={4} isRequired isInvalid={Boolean(errors.detailedAddress)}>
               <FormLabel>Địa chỉ chi tiết</FormLabel>
-              <Input type="text" name="detailedAddress" placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} onChange={handleChange}/>
+              <Input 
+                type="text" 
+                placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
+                {...register('detailedAddress', {
+                  required: 'This is required',
+                })} 
+              />
+              <FormErrorMessage>
+                {errors.detailedAddress && errors.detailedAddress.message}
+              </FormErrorMessage>
             </FormControl>
-            <FormControl mt={4} isRequired>
+            <FormControl mt={4}>
               <FormLabel>Ghi chú</FormLabel>
-              <Textarea name="note" placeholder={"Ghi chú"} onChange={handleChange}/>
+              <Textarea placeholder={"Ghi chú"} {...register('note')}/>
             </FormControl>
            
-            <Checkbox colorScheme="orange" defaultChecked>
+            <Checkbox id="checkbox1" colorScheme="orange" isChecked={checkbox1Checked} {...register('receiveAtPost')} onChange={() => handleCheckboxChange('checkbox1')}>
               Nhận tại bưu cục
-            </Checkbox>   
+            </Checkbox> 
+            <br />
+            <Checkbox id="checkbox2" colorScheme="orange" isChecked={checkbox2Checked} {...register('callBeforeSend')} onChange={() => handleCheckboxChange('checkbox2')}>
+              Liên hệ trước khi gửi
+            </Checkbox>  
           </ModalBody>
 
           <ModalFooter>
             <Button onClick={onClose} mr={3}>
               Cancel
             </Button>
-            <Button colorScheme="orange" onClick={onSubmit}>
+            <Button colorScheme="orange" onClick={handleSubmit(onSubmit)}>
               Save
             </Button>
           </ModalFooter>

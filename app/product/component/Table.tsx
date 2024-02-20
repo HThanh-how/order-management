@@ -31,11 +31,14 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  Spinner
 } from "@chakra-ui/react";
 import { SlOptionsVertical } from "react-icons/sl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from 'next/image';
 import EditDialog from "./EditDialog";
+import { useAppSelector, useAppDispatch } from '../../_lib/hooks'
+import { useRemoveProductMutation } from "@/app/_lib/features/api/apiSlice"
 
 type Product = {
   id: number;
@@ -52,10 +55,9 @@ type Product = {
 
 interface ProductTableProps {
   products: Product[];
-  setProducts: any;
 }
 
-const ProductTable: React.FC<ProductTableProps> = ({ products, setProducts }) => {
+const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
   const [checkedAll, setCheckedAll] = useState(false);
   const [productSelections, setProductSelections] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -63,6 +65,10 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, setProducts }) =>
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedProduct, setSelectedProduct] = useState<any>({});
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const dispatch = useAppDispatch();
+  const [removeProduct, {isLoading}] = useRemoveProductMutation();
+
+  
 
   const handleDeleteClose = async () => {
     setDeleteOpen(false);
@@ -73,22 +79,6 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, setProducts }) =>
     setSelectedProduct({...p});
     setDeleteOpen(true);
   }
-  const getProducts = async () => {
-    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/products`, 
-                {
-                  method: 'GET',
-                  headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
-                    "userId": `${localStorage.getItem("userId")}`,
-                  }
-                
-                })
-    .then(data => data.json())
-    .then(processedData => setProducts(processedData.data))
-    .catch(error => console.log(error))
-
-  }
 
   const handleUpdate = async (id: any) => {
     const p = products.find((tmp) => tmp.id === id);
@@ -97,22 +87,28 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, setProducts }) =>
   }
 
   const handleDelete = async (id: any) => {
-    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/products/${id}`, 
-                {
-                  method: 'DELETE',
-                  headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
-                    //"userId": `${localStorage.getItem("userId")}`,
-                  }
+    // await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/products/${id}`, 
+    //             {
+    //               method: 'DELETE',
+    //               headers: {
+    //                 "Content-Type": "application/json",
+    //                 "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
+    //                 //"userId": `${localStorage.getItem("userId")}`,
+    //               }
                 
-                })
-    .then(data => data.json())
-    .then(processedData => console.log(processedData.data))
-    .catch(error => console.log(error))
+    //             })
+    // .then(data => data.json())
+    // .then(processedData => console.log(processedData.data))
+    // .catch(error => console.log(error))
 
-    getProducts();
-    handleDeleteClose();
+    //getProducts();
+    try {
+      await removeProduct(id).unwrap();
+      handleDeleteClose();
+    } catch (err) {
+      console.error('Failed to delete product: ', err)
+    }
+    
   }
 
   const handleMasterCheckboxChange = () => {
@@ -161,6 +157,8 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, setProducts }) =>
   };
 
   const totalPages = Math.ceil(products.length / productsPerPage);
+
+  
 
   return (
     <Box overflowX="auto" p={8}>
@@ -262,7 +260,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, setProducts }) =>
         isOpen={isOpen}
         onOpen={onOpen}
         onClose={onClose}
-        setProducts={setProducts}
+        //setProducts={setProducts}
         selectedProduct={selectedProduct}
       />
 

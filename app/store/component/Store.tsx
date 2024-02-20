@@ -31,55 +31,55 @@ import {
 } from "@chakra-ui/react";
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
-import ProductTable from "./Table";
+import StoreList from "./Table";
+import { useGetStoresQuery } from "@/app/_lib/features/api/apiSlice"
 
-import { useGetProductsQuery }  from "@/app/_lib/features/api/apiSlice"
-
-type Product = {
+type Store = {
   id: number;
   name: string;
-  photo: string;
   status: string;
-  price: number;
-  weight: number;
-  length: number;
-  width: number;
-  height: number;
+  tags: string[];
+  phoneNumber: string;
+  address: string;
+  detailedAddress: string;
   description: string;
 };
 
-export default function Product() {
+export default function StoreTable() {
   const [searchInput, setSearchInput] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  
+  const [filteredStores, setFilteredStores] = useState<Store[]>([]);
+
   const {
-    data: products,
+    data: stores,
     isLoading,
     isSuccess,
     isError,
     error,
-  } = useGetProductsQuery()
+  } = useGetStoresQuery()
 
-  const getProducts = useMemo (() => {
-    if(isSuccess) return products.data
-  }, [products])
+  const getStores = useMemo (() => {
+    if(isSuccess) return stores.data
+  }, [stores])
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
+
     const inputValue = event.target.value;
     setSearchInput(inputValue);
+
     if(isSuccess) {
-      const filteredResults = getProducts.filter(
-        (product: any) =>
-          product.name.toLowerCase().includes(inputValue.toLowerCase())
+      const filteredResults = getStores.filter(
+        (store: any) =>
+          store.name.toLowerCase().includes(inputValue.toLowerCase()) ||
+          store.phoneNumber.includes(inputValue)
       );
-      setFilteredProducts(filteredResults);
+    
+      setFilteredStores(filteredResults);
     }
   };
 
   useEffect(() => {
     handleSearchInputChange({ target: { value: '' } });
-  }, [products]);
-
+  }, [stores]);
   return (
     <TableContainer bgColor={"white"} rounded={"2xl"}>
       <Flex
@@ -93,23 +93,21 @@ export default function Product() {
           maxW={{ base: "80vw", md: "full" }}
         >
           <Text fontSize={{ base: "xl", md: "3xl" }} fontWeight={700}>
-            Sản phẩm
+            Cửa hàng
           </Text>
-          <Text color={"gray"}>Bạn bán hơn 60 sản phẩm mỗi ngày</Text>
+          <Text color={"gray"}>Tuần này bạn có thêm 20 khách hàng mới</Text>
         </VStack>
         <Flex>
           <Input
             m={{ base: 2, md: 8 }}
             variant="filled"
-            placeholder="Tìm tên sản phẩm"
+            placeholder="Tìm mã vận đơn"
             w={{ base: "70vw", md: "30vw" }}
             onChange={handleSearchInputChange}
           />
         </Flex>
-        {/* <Dialog setProducts={setProducts}/> */}
         <Dialog />
       </Flex>
-      
         {isLoading ? (
           <Flex
           alignItems="center"
@@ -130,9 +128,9 @@ export default function Product() {
             </Alert>
           </Flex>
         ) : (
-        <ProductTable products={filteredProducts} />
+        <StoreList stores={filteredStores} />
         )}
-        
+      
     </TableContainer>
   );
 }

@@ -1,4 +1,6 @@
+"use client";
 import React, { ReactNode } from "react";
+import { useRouter } from "next/navigation"
 import {
   IconButton,
   Box,
@@ -16,36 +18,59 @@ import {
   Stack,
   Select,
   Checkbox,
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+  Heading,
+  HStack,
+  VStack,
+  Button,
 } from "@chakra-ui/react";
+
 import {
   FiHome,
   FiTrendingUp,
-  FiCompass,
+  FiShoppingBag,
   FiStar,
   FiSettings,
   FiMenu,
+  FiUser,
+  FiAirplay
 } from "react-icons/fi";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
-import Location from "./Location";
-import ProductInfor from "./ProductInfor";
+import StoreTable from "./component/Store";
+// import Location from "./Location";
+// import ProductInfor from "./ProductInfor";
+
 
 interface LinkItemProps {
   name: string;
   icon: IconType;
+  link: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-  { name: "Home", icon: FiHome },
-  { name: "Trending", icon: FiTrendingUp },
-  { name: "Explore", icon: FiCompass },
-  { name: "Favourites", icon: FiStar },
-  { name: "Settings", icon: FiSettings },
+  { name: "Tổng quan", icon: FiHome, link: "/dashboard" },
+  { name: "Nhân sự", icon: FiUser, link: "/staff" },
+  { name: "Cửa hàng", icon: FiAirplay, link: "/store" },
+  { name: "Sản phẩm", icon: FiShoppingBag, link: "/product" },
+  { name: "Khách hàng", icon: FiStar, link: "/table" },
+  { name: "Cài đặt", icon: FiSettings, link: "#" },
 ];
 
 export default function Sidebar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  
   return (
+
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+          <title>Đơn hàng</title>
       <SidebarContent
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
@@ -64,26 +89,8 @@ export default function Sidebar() {
       </Drawer>
       {/* mobilenav */}
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }} p="8">
-        <Stack direction={{ base: "column", lg: "row" }}>
-          <Box w={{ base: "80wv", lg: "50%" }}>
-            <Box p={4} bg="gray.50">
-              <Text fontWeight={"700"}> Người gửi: </Text>
-              <Select mt={4} placeholder="Địa chi nơi gửi" variant="filled">
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
-              </Select>
-              <Checkbox m={4} colorScheme="green" defaultChecked>
-                Nhận tại bưu cục
-              </Checkbox>
-            </Box>
-            <Location />
-          </Box>
-          <Box w={{ base: "80wv", lg: "50%" }}>
-            <ProductInfor />
-          </Box>
-        </Stack>
+      <Box ml={{ base: 0, md: 60 }} p={8}>
+        <StoreTable/>
       </Box>
     </Box>
   );
@@ -94,6 +101,7 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+  const router = useRouter();
   return (
     <Box
       bg={useColorModeValue("white", "gray.900")}
@@ -110,8 +118,13 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         </Text>
         <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
       </Flex>
+      <Button onClick={()=>router.push("/create")}  m={4} w="8vw" colorScheme="orange">+ Tạo đơn </Button>
       {LinkItems.map((link) => (
-        <NavItem key={link.name} icon={link.icon}>
+        <NavItem  
+          key={link.name} 
+          icon={link.icon}
+          onClick={() => router.push(`${link.link}`)}
+        >
           {link.name}
         </NavItem>
       ))}

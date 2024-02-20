@@ -32,9 +32,9 @@ import {
 } from "@chakra-ui/react";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useState } from "react";
-import { useRemoveCustomerMutation } from "@/app/_lib/features/api/apiSlice"
+import { useRemoveStoreMutation } from "@/app/_lib/features/api/apiSlice"
 
-type Customer = {
+type Store = {
   id: number;
   name: string;
   status: string;
@@ -42,35 +42,35 @@ type Customer = {
   phoneNumber: string;
   address: string;
   detailedAddress: string;
-  note: string;
+  description: string;
 };
 
-interface CustomerTableProps {
-  customers: Customer[];
+interface StoreTableProps {
+  stores: Store[];
 }
 
-const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
+const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
   const [checkedAll, setCheckedAll] = useState(false);
-  const [customerSelections, setCustomerSelections] = useState<number[]>([]);
+  const [storeSelections, setStoreSelections] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [customersPerPage, setCustomersPerPage] = useState(5);
-  const [selectedCustomer, setSelectedCustomer] = useState<any>({});
+  const [storesPerPage, setStoresPerPage] = useState(5);
+  const [selectedStore, setSelectedStore] = useState<any>({});
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const [removeCustomer, {isLoading}] = useRemoveCustomerMutation();
+  const [removeStore, {isLoading}] = useRemoveStoreMutation();
 
   const handleDeleteClose = async () => {
     setDeleteOpen(false);
-    setSelectedCustomer({});
+    setSelectedStore({});
   }
   const handleDeleteOpen = async (id: any) => {
-    const p = customers.find((tmp) => tmp.id === id);
-    setSelectedCustomer({...p});
+    const p = stores.find((tmp) => tmp.id === id);
+    setSelectedStore({...p});
     setDeleteOpen(true);
   }
 
   const handleDelete = async (id: any) => {
-    // await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/receivers/${id}`, 
+    // await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/stores/${id}`, 
     //             {
     //               method: 'DELETE',
     //               headers: {
@@ -83,11 +83,12 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
     // .then(data => data.json())
     // .then(processedData => console.log(processedData.data))
     // .catch(error => console.log(error))
+
     try {
-      await removeCustomer(id).unwrap();
+      await removeStore(id).unwrap();
       handleDeleteClose();
     } catch (err) {
-      console.error('Failed to delete customer: ', err)
+      console.error('Failed to delete store: ', err)
     }
   }
 
@@ -95,48 +96,48 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
     setCheckedAll(!checkedAll);
 
     if (!checkedAll) {
-      const allCustomerIds = customers.map((customer) => customer.id);
-      setCustomerSelections(allCustomerIds);
+      const allStoreIds = stores.map((store) => store.id);
+      setStoreSelections(allStoreIds);
     } else {
-      setCustomerSelections([]);
+      setStoreSelections([]);
     }
   };
 
-  const handleCheckboxChange = (customerId: number) => {
-    if (customerSelections.includes(customerId)) {
-      const updatedSelections = customerSelections.filter(
-        (selection) => selection !== customerId
+  const handleCheckboxChange = (storeId: number) => {
+    if (storeSelections.includes(storeId)) {
+      const updatedSelections = storeSelections.filter(
+        (selection) => selection !== storeId
       );
-      setCustomerSelections(updatedSelections);
+      setStoreSelections(updatedSelections);
     } else {
-      setCustomerSelections([...customerSelections, customerId]);
+      setStoreSelections([...storeSelections, storeId]);
     }
   };
 
-  const paginateCustomers = () => {
-    const startingIndex = (currentPage - 1) * customersPerPage;
-    const endingIndex = Math.min(startingIndex + customersPerPage, customers.length);
-    return customers.slice(startingIndex, endingIndex);
+  const paginateStores = () => {
+    const startingIndex = (currentPage - 1) * storesPerPage;
+    const endingIndex = Math.min(startingIndex + storesPerPage, stores.length);
+    return stores.slice(startingIndex, endingIndex);
   };
 
   const handlePageChange = (pageNumber: number) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
       setCheckedAll(false);
-      setCustomerSelections([]);
+      setStoreSelections([]);
     } else {
       console.error("Invalid page number");
     }
   };
 
-  const handlecustomersPerPageChange = (perPage: number) => {
+  const handlestoresPerPageChange = (perPage: number) => {
     setCurrentPage(1);
-    setCustomersPerPage(perPage);
+    setStoresPerPage(perPage);
     setCheckedAll(false);
-    setCustomerSelections([]);
+    setStoreSelections([]);
   };
 
-  const totalPages = Math.ceil(customers.length / customersPerPage);
+  const totalPages = Math.ceil(stores.length / storesPerPage);
 
   return (
     <Box overflowX="auto" p={8}>
@@ -169,44 +170,44 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
           </Tr>
         </Thead>
         <Tbody>
-          {paginateCustomers().map((customer) => (
-            <Tr key={customer.id}>
+          {paginateStores().map((store) => (
+            <Tr key={store.id}>
               <Td>
                 <Checkbox
-                  isChecked={customerSelections.includes(customer.id)}
-                  onChange={() => handleCheckboxChange(customer.id)}
+                  isChecked={storeSelections.includes(store.id)}
+                  onChange={() => handleCheckboxChange(store.id)}
                 />
               </Td>
-              <Td>{customer.name}</Td>
+              <Td>{store.name}</Td>
               {/* <Td> <Badge
                 colorScheme={
-                  customer.status === "warning"
+                  store.status === "warning"
                     ? "yellow"
-                    : customer.status === "report"
+                    : store.status === "report"
                     ? "orange"
-                    : customer.status === "blacklist"
+                    : store.status === "blacklist"
                     ? "red"
                     : "green"
                 }
                 borderRadius={"xl"}
               >
-                {customer.status}
+                {store.status}
               </Badge></Td>
               <Td>
                 <Flex>
-                  {customer.tags.slice(0, 3).map((tag, index) => (
+                  {store.tags.slice(0, 3).map((tag, index) => (
                     <Badge key={index} mr={2} colorScheme="blue">
                       {tag}
                     </Badge>
                   ))}
-                  {customer.tags.length > 3 && (
-                    <Badge colorScheme="purple">+{customer.tags.length - 3}</Badge>
+                  {store.tags.length > 3 && (
+                    <Badge colorScheme="purple">+{store.tags.length - 3}</Badge>
                   )}
                 </Flex>
               </Td> */}
-              <Td>{customer.phoneNumber}</Td>
-              <Td>{customer.detailedAddress}, {customer.address}</Td>
-              <Td>{customer.note}</Td>
+              <Td>{store.phoneNumber}</Td>
+              <Td>{store.detailedAddress}, {store.address}</Td>
+              <Td>{store.description}</Td>
               <Td>
                 <Menu>
                   <MenuButton>
@@ -214,7 +215,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
                   </MenuButton>
                   <MenuList>
                     {/* <MenuItem>Sửa</MenuItem> */}
-                    <MenuItem onClick={() => handleDeleteOpen(customer.id)}>Xoá</MenuItem>
+                    <MenuItem onClick={() => handleDeleteOpen(store.id)}>Xoá</MenuItem>
                   </MenuList>
                 </Menu>
               </Td>
@@ -232,7 +233,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
           </ModalBody>
           <ModalFooter>
             <Button mr={3} onClick={() => handleDeleteClose()}>Đóng</Button>
-            <Button colorScheme='orange' onClick={() => handleDelete(selectedCustomer.id)}>Xác nhận</Button>
+            <Button colorScheme='orange' onClick={() => handleDelete(selectedStore.id)}>Xác nhận</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -240,32 +241,32 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
       <Flex justify="space-between" mt={4}>
         <ButtonGroup>
           <Button
-            onClick={() => handlecustomersPerPageChange(5)}
-            colorScheme={customersPerPage === 5 ? "orange" : "gray"}
+            onClick={() => handlestoresPerPageChange(5)}
+            colorScheme={storesPerPage === 5 ? "orange" : "gray"}
           >
             5
           </Button>
           <Button
-            onClick={() => handlecustomersPerPageChange(10)}
-            colorScheme={customersPerPage === 10 ? "orange" : "gray"}
+            onClick={() => handlestoresPerPageChange(10)}
+            colorScheme={storesPerPage === 10 ? "orange" : "gray"}
           >
             10
           </Button>
           <Button
-            onClick={() => handlecustomersPerPageChange(15)}
-            colorScheme={customersPerPage === 15 ? "orange" : "gray"}
+            onClick={() => handlestoresPerPageChange(15)}
+            colorScheme={storesPerPage === 15 ? "orange" : "gray"}
           >
             15
           </Button>
           <Button
-            onClick={() => handlecustomersPerPageChange(20)}
-            colorScheme={customersPerPage === 20 ? "orange" : "gray"}
+            onClick={() => handlestoresPerPageChange(20)}
+            colorScheme={storesPerPage === 20 ? "orange" : "gray"}
           >
             20
           </Button>
           <Button
-            onClick={() => handlecustomersPerPageChange(25)}
-            colorScheme={customersPerPage === 25 ? "orange" : "gray"}
+            onClick={() => handlestoresPerPageChange(25)}
+            colorScheme={storesPerPage === 25 ? "orange" : "gray"}
           >
             25
           </Button>
@@ -303,4 +304,4 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
   );
 };
 
-export default CustomerTable;
+export default StoreTable;

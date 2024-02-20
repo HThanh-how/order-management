@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ChakraProvider } from "@chakra-ui/react";
 import NavBar from "@/component/Navbar";
+import { store } from './_lib/store'
+import { Provider } from 'react-redux'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,12 +37,13 @@ export default function RootLayout({
       />
       </head>
       <body className={inter.className}>
-
+        <Provider store={store}>
         <ChakraProvider>
           <NavBar/>
           {/* <script src="https://www.google.com/recaptcha/api.js?render=reCAPTCHA_site_key"></script> */}
           {children} 
         </ChakraProvider>
+        </Provider>
       </body>
     </html>
   );
