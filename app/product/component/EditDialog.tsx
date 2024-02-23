@@ -21,57 +21,59 @@ import {
   FormHelperText,
   HStack,
 } from "@chakra-ui/react";
+import { watch } from "fs";
 
 import { useEffect, useState } from "react";
+import { useForm,  Controller, SubmitHandler } from "react-hook-form"
+import { useEditProductMutation } from "@/app/_lib/features/api/apiSlice"
 
+type FormData = {
+  name:string,
+  photo:string,
+  status: string,
+  price: number,
+  weight: number,
+  length: number,
+  width: number,
+  height: number,
+  description:string,
+}
 
 export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selectedProduct }: any) {
-  const [formData, setFormData] = useState<any>({});
+  const {
+    register,
+    reset,
+    setValue,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({defaultValues: {
+    name: selectedProduct.name || "",
+    photo:selectedProduct.photo || "",
+    status: selectedProduct.status || "",
+    price: selectedProduct.price || "",
+    weight: selectedProduct.weight || "",
+    length: selectedProduct.length || "",
+    width: selectedProduct.width || "",
+    height: selectedProduct.height || "",
+    description: selectedProduct.description || "",
+  }})
+
+  const [editProduct, {isLoading}] = useEditProductMutation();
+
 
   useEffect(() => {
-    setFormData({...selectedProduct});
+    reset(selectedProduct);
   }, [selectedProduct])
 
-  const handleChange = (e: { target: { name: any; value: any; } }) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  }
 
-  const getProducts = async () => {
-    await fetch("http://localhost:8082/api/v1/products", 
-                {
-                  method: 'GET',
-                  headers: {
-                    "Content-Type": "application/json",
-                    "userId": '9a74d120-bd12-4e1b-b6da-80f74d70e178',
-                  }
-                
-                })
-    .then(data => data.json())
-    .then(processedData => setProducts(processedData.data))
-    .catch(error => console.log(error))
-
-  }
-
-  const onSubmit = async(event: any) => {
-    event.preventDefault();
-    
-    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/products/${selectedProduct.id}`, 
-                {
-                  method: 'PUT',
-                  headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
-                    "userId": `${localStorage.getItem("userId")}`,
-                  },
-                  body: JSON.stringify(formData),
-                
-                })
-    .then(data => data.json())
-    .then(processedData => console.log(processedData.data))
-    .catch(error => console.log(error))
-
-    onClose();
-    getProducts();
+  const onSubmit = async(data: FormData) => {
+    try {
+      await editProduct(data).unwrap();
+      onClose();
+    } catch (err) {
+      console.error('Failed to edit product: ', err)
+    }
 }
 
   return (
@@ -87,49 +89,69 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
           <ModalCloseButton />
           <ModalBody pb={6}>
             
-            <FormControl isRequired>
+          <FormControl isRequired isInvalid={Boolean(errors.name)}>
               <FormLabel>Tên hàng hóa</FormLabel>
-              <Input type='text' name="name" value={formData.name} onChange={handleChange} />
+              <Input type='text' {...register('name', {
+                required: 'This is required',
+              })}   />
+              <FormErrorMessage>
+                {errors.name && errors.name.message}
+              </FormErrorMessage>
             </FormControl>
             <FormControl mt={4}>
               <FormLabel>Ảnh</FormLabel>
-              <Input type='text' name="photo" value={formData.photo} onChange={handleChange} />
+              <Input type='text' {...register('photo')}  />
             </FormControl>
-            <FormControl isRequired mt={4}>
+            <FormControl isRequired isInvalid={Boolean(errors.name)} mt={4}>
               <FormLabel>Trọng lượng (g)</FormLabel>
-              <Input type='text' name="weight" value={formData.weight} onChange={handleChange}/>
+              <Input type='text' {...register('weight', {
+                required: 'This is required'
+              })} />
+              <FormErrorMessage>
+                {errors.name && errors.name.message}
+              </FormErrorMessage>
             </FormControl>
-            <FormControl isRequired mt={4}>
+            <FormControl isRequired isInvalid={Boolean(errors.name)} mt={4}>
               <FormLabel>Đơn giá (VNĐ)</FormLabel>
-              <Input type='text' name="price" value={formData.price} onChange={handleChange}/>
+              <Input type='text' {...register('price', {
+                required: 'This is required'
+              })} />
+              <FormErrorMessage>
+                {errors.name && errors.name.message}
+              </FormErrorMessage>
             </FormControl>
-            <FormControl mt={4}>
-                <FormLabel>Trạng thái</FormLabel>
-                <Select name="status" placeholder='Chọn trạng thái' onChange={handleChange}>
-                    <option value="AVAILABLE">CÒN HÀNG</option>
-                    <option value="BACK_ORDER">DỰ TRỮ</option>
-                    <option value="OUT_OF_STOCK">HẾT HÀNG</option>
-                </Select>
+            
+            <FormControl isRequired isInvalid={Boolean(errors.name)} mt={4}>
+              <FormLabel>Trạng thái</FormLabel>
+              <Select placeholder='Chọn trạng thái' {...register('status', {
+                required: 'This is required'
+              })} >
+                  <option value="AVAILABLE">CÒN HÀNG</option>
+                  <option value="BACK_ORDER">DỰ TRỮ</option>
+                  <option value="OUT_OF_STOCK">HẾT HÀNG</option>
+              </Select>
+              <FormErrorMessage>
+                {errors.name && errors.name.message}
+              </FormErrorMessage>
             </FormControl>
+
             <HStack spacing='16px' mt={4}>
               <FormControl>
                 <FormLabel>Dài (cm)</FormLabel>
-                <Input type='text' name="length" value={formData.length} onChange={handleChange}/>
+                <Input type='text' {...register('length')} />
               </FormControl>
               <FormControl>
                 <FormLabel>Rộng (cm)</FormLabel>
-                <Input type='text' name="width" value={formData.width} onChange={handleChange}/>
+                <Input type='text' {...register('width')}  />
               </FormControl>
               <FormControl>
                 <FormLabel>Cao (cm)</FormLabel>
-                <Input type='text' name="height" value={formData.height} onChange={handleChange}/>
+                <Input type='text' {...register('height')}  />
               </FormControl>
             </HStack>
             <Textarea mt={4} 
               placeholder="Mô tả chi tiết"
-              name="description"
-              value={formData.description} 
-              onChange={handleChange}
+              {...register('description')}            
             />
                
           </ModalBody>
@@ -138,7 +160,7 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
             <Button onClick={onClose} mr={3}>
               Cancel
             </Button>
-            <Button colorScheme="orange" onClick={onSubmit}>
+            <Button colorScheme="orange" onClick={handleSubmit(onSubmit)}>
               Save
             </Button>
             

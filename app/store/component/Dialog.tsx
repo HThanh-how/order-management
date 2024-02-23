@@ -1,8 +1,30 @@
 "use client";
-import { Box, Select, Input, Text, Checkbox } from "@chakra-ui/react";
+import {
+  Box,
+  Select,
+  Input,
+  Text,
+  Checkbox,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  useDisclosure,
+  Textarea,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  FormHelperText,
+} from "@chakra-ui/react";
 
-import data from "@/public/province.json";
+
 import { ChangeEvent, useState } from "react";
+import { useForm } from "react-hook-form"
+import { useAddStoreMutation } from "@/app/_lib/features/api/apiSlice"
 
 interface Ward {
   name: string;
@@ -30,9 +52,33 @@ interface City {
   districts: District[];
 }
 
+type FormData = {
+  name:string,
+  phoneNumber:string,
+  address: string,
+  village: string,
+  district: string,
+  city: string,
+  detailedAddress: string,
+  description:string,
+  isDefault: boolean,
+  sendAtPost: boolean, 
+}
+
 export default function AddressSelect() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
+  const [selectedVillage, setSelectedVillage] = useState("");
+
+  const [addStore, {isLoading}] = useAddStoreMutation();
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>()
 
   const handleCityChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedCity(event.target.value);
@@ -41,82 +87,183 @@ export default function AddressSelect() {
 
   const handleDistrictChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedDistrict(event.target.value);
+    setSelectedVillage("");
   };
+
+  const handleVillageChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedVillage(event.target.value);
+    setValue('address', `${event.target.value}, ${selectedDistrict}, ${selectedCity}`);
+  };
+
   const selectedCityData = cityData.find(
-    (city) => city.codename === selectedCity
+    (city) => city.name === selectedCity
   );
   const selectedDistrictData = selectedCityData?.districts.find(
-    (district) => district.codename === selectedDistrict
+    (district) => district.name === selectedDistrict
   );
-  // ...
+
+  const onSubmit = async(data: FormData) => {
+    const {village, district, city, ...sendData} = data;
+    console.log(data);
+    try {
+      await addStore(sendData).unwrap();
+      onClose();
+    } catch (err) {
+      console.error('Failed to save store: ', err)
+    } finally {
+      reset();
+    }
+  }
 
   return (
-    <Box p={4} bg="gray.50" mt={4}>
-      <Text fontWeight={"700"}>Người nhận</Text>
-
-      <Input mt={4} placeholder={"Số điện thoại"} />
-      <Input mt={4} placeholder={"Họ và tên"} />
-      {/* Dropdown chọn thành phố */}
-      <Select
-        my={4}
-        placeholder="Chọn tỉnh thành"
-        value={selectedCity}
-        onChange={handleCityChange}
-        variant="filled"
+    <>
+      <Button m={{ base: 2, md: 8 }} colorScheme="orange" onClick={onOpen}>
+        Thêm cửa hàng
+      </Button>
+      
+      <Modal
+        closeOnOverlayClick={false}
+        isOpen={isOpen}
+        onClose={onClose}
+        isCentered
       >
-        <option value="" disabled hidden>
-          Chọn tỉnh thành
-        </option>
-        {cityData.map((city) => (
-          <option key={city.code} value={city.codename}>
-            {city.name}
-          </option>
-        ))}
-      </Select>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Thêm cửa hàng</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+          <FormControl isRequired isInvalid={Boolean(errors.name)}>
+              <FormLabel>Tên cửa hàng</FormLabel>
+              <Input type='text' {...register('name', {
+                required: 'This is required',
+              })} />
+              <FormErrorMessage>
+                {errors.name && errors.name.message}
+              </FormErrorMessage>
+            </FormControl>
+            
+            <FormControl mt={4} isRequired isInvalid={Boolean(errors.phoneNumber)}>
+              <FormLabel>Số điện thoại</FormLabel>
+              <Input type='text' {...register('phoneNumber', {
+                required: 'This is required',
+              })} />
+            </FormControl>
+              {/* Dropdown chọn thành phố */}
+            <FormControl mt={4} isRequired isInvalid={Boolean(errors.city)}>
+              <FormLabel>Tỉnh/Thành phố</FormLabel>
+              <Select
+                my={4}
+                placeholder="Chọn tỉnh thành"
+                // value={selectedCity}
+                variant="filled"
+                {...register('city', {
+                  required: 'This is required',
+                })}
+                onChange={handleCityChange}
+              >
+                <option value="" disabled hidden>
+                  Chọn tỉnh thành
+                </option>
+                {cityData.map((city) => (
+                  <option key={city.code} value={city.name}>
+                    {city.name}
+                  </option>
+                ))}
+              </Select>
+              <FormErrorMessage>
+                {errors.city && errors.city.message}
+              </FormErrorMessage>
+            </FormControl>
+            <FormControl mt={4} isRequired isInvalid={Boolean(errors.district)}>
+              <FormLabel>Quận/Huyện</FormLabel>
+              <Select
+                my={4}
+                placeholder="Chọn quận"
+                isDisabled={selectedCity == "" ? true : false}
+                // value={selectedDistrict}
+                {...register('district', {
+                  required: 'This is required',
+                })}
+                onChange={handleDistrictChange}
+                variant="filled"
+              >
+                <option value="" disabled hidden>
+                  Chọn quận
+                </option>
+                {selectedCityData?.districts.map((district) => (
+                  <option key={district.code} value={district.name}>
+                    {district.name}
+                  </option>
+                ))}
+              </Select>
+              <FormErrorMessage>
+                {errors.district && errors.district.message}
+              </FormErrorMessage>
+            </FormControl>
 
-      {/* Dropdown chọn quận */}
+            <FormControl mt={4} isRequired isInvalid={Boolean(errors.village)}>
+              <FormLabel>Phường/xã</FormLabel>
+              <Select
+                my={4}
+                variant="filled"
+                placeholder="Chọn phường"
+                {...register('village', {
+                  required: 'This is required',
+                })}
+                onChange={handleVillageChange}
+                isDisabled={selectedDistrict == "" ? true : false}
+              >
+                <option value="" disabled hidden>
+                  Chọn phường
+                </option>
+                {selectedDistrictData?.wards.map((ward) => (
+                  <option key={ward.code} value={ward.name}>
+                    {ward.name}
+                  </option>
+                ))}
+              </Select>
+              <FormErrorMessage>
+                {errors.village && errors.village.message}
+              </FormErrorMessage>
+            </FormControl>
+            <FormControl mt={4} isRequired isInvalid={Boolean(errors.detailedAddress)}>
+              <FormLabel>Địa chỉ chi tiết</FormLabel>
+              <Input 
+                type="text" 
+                placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
+                {...register('detailedAddress', {
+                  required: 'This is required',
+                })} 
+              />
+              <FormErrorMessage>
+                {errors.detailedAddress && errors.detailedAddress.message}
+              </FormErrorMessage>
+            </FormControl>
+            <FormControl mt={4}>
+              <FormLabel>Mô tả chi tiết</FormLabel>
+              <Textarea placeholder={"Mô tả"} {...register('description')}/>
+            </FormControl>
 
-      <Select
-        my={4}
-        placeholder="Chọn quận"
-        isDisabled={selectedCity == "" ? true : false}
-        value={selectedDistrict}
-        onChange={handleDistrictChange}
-        variant="filled"
-      >
-        <option value="" disabled hidden>
-          Chọn quận
-        </option>
-        {selectedCityData?.districts.map((district) => (
-          <option key={district.code} value={district.codename}>
-            {district.name}
-          </option>
-        ))}
-      </Select>
+            <Checkbox colorScheme="orange" {...register('isDefault')}>
+              Đặt làm cửa hàng mặc định
+            </Checkbox> 
+            <br />   
+            <Checkbox colorScheme="orange" {...register('sendAtPost')}>
+              Nhận tại bưu cục
+            </Checkbox>   
+          </ModalBody>
 
-      {/* Dropdown chọn phường */}
-
-      <Select
-        my={4}
-        variant="filled"
-        placeholder="Chọn phường"
-        isDisabled={selectedDistrict == "" ? true : false}
-      >
-        <option value="" disabled hidden>
-          Chọn phường
-        </option>
-        {selectedDistrictData?.wards.map((ward) => (
-          <option key={ward.code} value={ward.codename}>
-            {ward.name}
-          </option>
-        ))}
-      </Select>
-
-      <Checkbox m={4} colorScheme="green" defaultChecked>
-        Nhận tại bưu cục
-      </Checkbox>
-      <Input placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} />
-    </Box>
+          <ModalFooter>
+            <Button onClick={onClose} mr={3}>
+              Cancel
+            </Button>
+            <Button colorScheme="orange" onClick={handleSubmit(onSubmit)}>
+              Save
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   );
 }
 

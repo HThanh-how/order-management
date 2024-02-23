@@ -41,6 +41,7 @@ import {
   FiSettings,
   FiMenu,
   FiUser,
+  FiAirplay,
 } from "react-icons/fi";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
@@ -57,6 +58,7 @@ interface LinkItemProps {
 const LinkItems: Array<LinkItemProps> = [
   { name: "Tổng quan", icon: FiHome, link: "/dashboard" },
   { name: "Nhân sự", icon: FiUser, link: "/staff" },
+  { name: "Cửa hàng", icon: FiAirplay, link: "/store" },
   { name: "Sản phẩm", icon: FiShoppingBag, link: "/product" },
   { name: "Khách hàng", icon: FiStar, link: "/table" },
   { name: "Cài đặt", icon: FiSettings, link: "#" },

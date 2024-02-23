@@ -25,10 +25,14 @@ import {
   Td,
   TableCaption,
   TableContainer,
+  Spinner,
+  Alert,
+  AlertIcon,
 } from "@chakra-ui/react";
-import { ChangeEvent, useEffect, useState, useRef } from "react";
+import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
 import CustomerList from "./Table";
+import { useGetCustomersQuery } from "@/app/_lib/features/api/apiSlice"
 
 type Customer = {
   id: number;
@@ -44,54 +48,35 @@ type Customer = {
 export default function CustomerTable() {
   const [searchInput, setSearchInput] = useState("");
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
-  const [customers, setCustomers] = useState<any>([]);
-  const firstUpdate = useRef(true);
+  const {
+    data: customers,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetCustomersQuery()
 
-  useEffect(() => {
-    const getReceivers = async () => {
-      await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/receivers`, 
-                  {
-                    method: 'GET',
-                    headers: {
-                      "Content-Type": "application/json",
-                      "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
-                      "userId": `${localStorage.getItem("userId")}`,
-                    }
-                  
-                  })
-      .then(data => data.json())
-      .then(processedData => setCustomers(processedData.data))
-      .catch(error => console.log(error))
-
-    }
-
-    if (firstUpdate.current) {
-      firstUpdate.current = false;
-      getReceivers();
-      return;
-    }
-    
-    console.log(customers);
-    handleSearchInputChange({ target: { value: '' } });
-  }, [customers]);
+  const getCustomers = useMemo (() => {
+    if(isSuccess) return customers.data
+  }, [customers])
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
 
     const inputValue = event.target.value;
     setSearchInput(inputValue);
-
-    // console.log(inputValue)
-    const filteredResults = customers.filter(
-      (customer: any) =>
-        customer.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-        customer.phoneNumber.includes(inputValue)
-    );
-    setFilteredCustomers(filteredResults);
+    if(isSuccess) {
+      const filteredResults = getCustomers.filter(
+        (customer: any) =>
+          customer.name.toLowerCase().includes(inputValue.toLowerCase()) ||
+          customer.phoneNumber.includes(inputValue)
+      );
+      setFilteredCustomers(filteredResults);
+    }
   };
 
   useEffect(() => {
     handleSearchInputChange({ target: { value: '' } });
-  }, []);
+  }, [customers]);
   return (
     <TableContainer bgColor={"white"} rounded={"2xl"}>
       <Flex
@@ -118,13 +103,32 @@ export default function CustomerTable() {
             onChange={handleSearchInputChange}
           />
         </Flex>
-        <Dialog setCustomers={setCustomers}/>
+        <Dialog />
       </Flex>
 
-      <CustomerList 
-        customers={filteredCustomers} 
-        setCustomers={setCustomers}
-      />
+        {isLoading ? (
+          <Flex
+          alignItems="center"
+          justify="center"
+          direction={{ base: "column", md: "row" }}
+          >
+            <Spinner size='lg' color='orange.500' />
+          </Flex>
+        ) : isError ? (
+          <Flex
+          alignItems="center"
+          justify="center"
+          direction={{ base: "column", md: "row" }}
+          >
+            <Alert w='25%' status='error'>
+              <AlertIcon />
+              Can not fetch data from server
+            </Alert>
+          </Flex>
+        ) : (
+        <CustomerList customers={filteredCustomers} />
+        )}
+  
     </TableContainer>
   );
 }

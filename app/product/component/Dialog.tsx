@@ -22,68 +22,47 @@ import {
   HStack,
 } from "@chakra-ui/react";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form"
+import { useAddProductMutation } from "@/app/_lib/features/api/apiSlice"
 
-
-export default function AddressSelect({ setProducts }: any) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  
-  const [formData, setFormData] = useState({
-    name:"",
-    photo:"",
-    status: "AVAILABLE",
-    price: 0,
-    weight: 0,
-    length: 0,
-    width: 0,
-    height: 0,
-    description:"",
-  });
-
-  const handleChange = (e: { target: { name: any; value: any; } }) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  }
-
-  const getProducts = async () => {
-    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}/api/v1/products`, 
-                {
-                  method: 'GET',
-                  headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
-                    "userId": `${localStorage.getItem("userId")}`,
-                  }
-                
-                })
-    .then(data => data.json())
-    .then(processedData => setProducts(processedData.data))
-    .catch(error => console.log(error))
-
-  }
-
-  const onSubmit = async(event: any) => {
-    event.preventDefault();
-    
-    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/products`, 
-                {
-                  method: 'POST',
-                  headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
-                    "userId": `${localStorage.getItem("userId")}`,
-                  },
-                  body: JSON.stringify(formData),
-                
-                })
-    .then(data => data.json())
-    .then(processedData => console.log(processedData.data))
-    .catch(error => console.log(error))
-
-    onClose();
-    getProducts();
+type FormData = {
+  name:string,
+  photo:string,
+  status: string,
+  price: number,
+  weight: number,
+  length: number,
+  width: number,
+  height: number,
+  description:string,
 }
-  
 
+
+export default function Dialog() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>()
+
+  const [addProduct, {isLoading}] = useAddProductMutation();
+
+
+  const onSubmit = async(data: FormData) => {
+    try {
+      await addProduct(data).unwrap();
+      onClose();
+    } catch (err) {
+      console.error('Failed to save product: ', err)
+    } finally {
+      reset();
+    }
+
+}
 
   return (
     <>
@@ -102,41 +81,67 @@ export default function AddressSelect({ setProducts }: any) {
           <ModalCloseButton />
           <ModalBody pb={6}>
             
-            <FormControl isRequired>
+            <FormControl isRequired isInvalid={Boolean(errors.name)}>
               <FormLabel>Tên hàng hóa</FormLabel>
-              <Input type='text' name="name"  onChange={handleChange} />
+              <Input type='text' id="name" {...register('name', {
+                required: 'This is required',
+              })}/>
+              <FormErrorMessage>
+                {errors.name && errors.name.message}
+              </FormErrorMessage>
             </FormControl>
             <FormControl mt={4}>
               <FormLabel>Ảnh</FormLabel>
-              <Input type='text' name="photo"  onChange={handleChange} />
+              <Input type='text' {...register('photo')}  />
             </FormControl>
-            <FormControl isRequired mt={4}>
+            <FormControl isRequired isInvalid={Boolean(errors.weight)} mt={4}>
               <FormLabel>Trọng lượng (g)</FormLabel>
-              <Input type='text' name="weight"  onChange={handleChange}/>
+              <Input type='text' {...register('weight', {
+                required: 'This is required'
+              })} />
+              <FormErrorMessage>
+                {errors.weight && errors.weight.message}
+              </FormErrorMessage>
             </FormControl>
-            <FormControl isRequired mt={4}>
+            <FormControl isRequired isInvalid={Boolean(errors.price)} mt={4}>
               <FormLabel>Đơn giá (VNĐ)</FormLabel>
-              <Input type='text' name="price"  onChange={handleChange}/>
+              <Input type='text' {...register('price', {
+                required: 'This is required'
+              })} />
+              <FormErrorMessage>
+                {errors.price && errors.price.message}
+              </FormErrorMessage>
+            </FormControl>
+            <FormControl isRequired isInvalid={Boolean(errors.status)} mt={4}>
+              <FormLabel>Trạng thái</FormLabel>
+              <Select placeholder='Chọn trạng thái' {...register('status', {
+                required: 'This is required'
+              })} >
+                  <option value="AVAILABLE">CÒN HÀNG</option>
+                  <option value="BACK_ORDER">DỰ TRỮ</option>
+                  <option value="OUT_OF_STOCK">HẾT HÀNG</option>
+              </Select>
+              <FormErrorMessage>
+                {errors.status && errors.status.message}
+              </FormErrorMessage>
             </FormControl>
             <HStack spacing='16px' mt={4}>
               <FormControl>
                 <FormLabel>Dài (cm)</FormLabel>
-                <Input type='text' name="length"  onChange={handleChange}/>
+                <Input type='text' {...register('length')} />
               </FormControl>
               <FormControl>
                 <FormLabel>Rộng (cm)</FormLabel>
-                <Input type='text' name="width"  onChange={handleChange}/>
+                <Input type='text' {...register('width')}  />
               </FormControl>
               <FormControl>
                 <FormLabel>Cao (cm)</FormLabel>
-                <Input type='text' name="height"  onChange={handleChange}/>
+                <Input type='text' {...register('height')}  />
               </FormControl>
             </HStack>
             <Textarea mt={4} 
               placeholder="Mô tả chi tiết"
-              name="description"
-              value={formData.description} 
-              onChange={handleChange}
+              {...register('description')}            
             />
             
             
@@ -146,7 +151,7 @@ export default function AddressSelect({ setProducts }: any) {
             <Button onClick={onClose} mr={3}>
               Cancel
             </Button>
-            <Button colorScheme="orange" onClick={onSubmit}>
+            <Button colorScheme="orange" onClick={handleSubmit(onSubmit)}>
               Save
             </Button>
             
