@@ -250,7 +250,7 @@ export default function AddressSelect() {
           >
             Thêm hàng hoá
           </Button>
-          <Dialog setProducts={setProducts}/>
+          {/* <Dialog setProducts={setProducts}/> */}
         </Flex>
 
         <Divider my={2} orientation="horizontal" color={"gray.800"} />

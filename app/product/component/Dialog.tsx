@@ -149,10 +149,10 @@ export default function Dialog() {
 
           <ModalFooter>
             <Button onClick={onClose} mr={3}>
-              Cancel
+              Huỷ 
             </Button>
             <Button colorScheme="orange" onClick={handleSubmit(onSubmit)}>
-              Save
+              Lưu
             </Button>
             
           </ModalFooter>
