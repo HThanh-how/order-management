@@ -31,42 +31,43 @@ import {
 } from "@chakra-ui/react";
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
-import ProductTable from "./Table";
+import OrderTable from "./Table";
 
-import { useGetProductsQuery }  from "@/app/_lib/features/api/apiSlice"
-import { Product } from "@/app/type";
+import { useGetOrdersQuery }  from "@/app/_lib/features/api/apiSlice"
+import { Order } from "@/app/type";
 
-export default function Product() {
+export default function Order() {
   const [searchInput, setSearchInput] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<Order[]>([]);
   
   const {
-    data: products,
+    data: orders,
     isLoading,
     isSuccess,
     isError,
     error,
-  } = useGetProductsQuery()
+  } = useGetOrdersQuery()
 
-  const getProducts = useMemo (() => {
-    if(isSuccess) return products.data
-  }, [products])
+  const getOrders = useMemo (() => {
+    if(isSuccess) return orders.data
+  }, [orders])
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
     const inputValue = event.target.value;
     setSearchInput(inputValue);
     if(isSuccess) {
-      const filteredResults = getProducts.filter(
-        (product: any) =>
-          product.name.toLowerCase().includes(inputValue.toLowerCase())
+      const filteredResults = getOrders.filter(
+        (order: any) =>
+          // order.code.toLowerCase().includes(inputValue.toLowerCase())
+          order.id === inputValue
       );
-      setFilteredProducts(filteredResults);
+      setFilteredOrders(filteredResults);
     }
   };
 
   useEffect(() => {
     handleSearchInputChange({ target: { value: '' } });
-  }, [products]);
+  }, [orders]);
 
   return (
     <TableContainer bgColor={"white"} rounded={"2xl"}>
@@ -81,21 +82,20 @@ export default function Product() {
           maxW={{ base: "80vw", md: "full" }}
         >
           <Text fontSize={{ base: "xl", md: "3xl" }} fontWeight={700}>
-            Sản phẩm
+            Đơn hàng
           </Text>
-          <Text color={"gray"}>Bạn bán hơn 60 sản phẩm mỗi ngày</Text>
+          <Text color={"gray"}>Bạn bán hơn 60 đơn hàng mỗi ngày</Text>
         </VStack>
         <Flex>
           <Input
             m={{ base: 2, md: 8 }}
             variant="filled"
-            placeholder="Tìm tên sản phẩm"
+            placeholder="Tìm mã đơn hàng"
             w={{ base: "70vw", md: "30vw" }}
             onChange={handleSearchInputChange}
           />
         </Flex>
-        {/* <Dialog setProducts={setProducts}/> */}
-        <Dialog />
+        {/* <Dialog /> */}
       </Flex>
       
         {isLoading ? (
@@ -111,7 +111,6 @@ export default function Product() {
           alignItems="center"
           justify="center"
           direction={{ base: "column", md: "row" }}
-          m={4}
           >
             <Alert w='25%' status='error'>
               <AlertIcon />
@@ -119,7 +118,7 @@ export default function Product() {
             </Alert>
           </Flex>
         ) : (
-        <ProductTable products={filteredProducts} />
+        <OrderTable orders={getOrders} />
         )}
         
     </TableContainer>

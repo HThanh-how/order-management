@@ -19,10 +19,11 @@ import {
   FormLabel,
   FormErrorMessage,
   FormHelperText,
+  useToast,
 } from "@chakra-ui/react";
 
 
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useEffect } from "react";
 import { useForm } from "react-hook-form"
 import { useAddCustomerMutation } from "@/app/_lib/features/api/apiSlice"
 
@@ -73,6 +74,7 @@ export default function AddressSelect() {
   //only 1 checkbox be checked
   const [checkbox1Checked, setCheckbox1Checked] = useState(true);
   const [checkbox2Checked, setCheckbox2Checked] = useState(false);
+  const toast = useToast();
  
   const [addCustomer, {isLoading}] = useAddCustomerMutation();
   const {
@@ -80,8 +82,12 @@ export default function AddressSelect() {
     setValue,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful },
   } = useForm<FormData>()
+
+  useEffect(() => {
+    if(isSubmitSuccessful) reset();
+  }, [isSubmitSuccessful, reset])
 
   const handleCityChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedCity(event.target.value);
@@ -124,9 +130,13 @@ export default function AddressSelect() {
       onClose();
     } catch (err) {
       console.error('Failed to save customer: ', err)
-    } finally {
-      reset();
-      console.log(data);
+      toast({
+        title: 'Có lỗi khi thêm khách hàng mới',
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
     }
   }
 
@@ -150,7 +160,7 @@ export default function AddressSelect() {
             <FormControl isRequired isInvalid={Boolean(errors.name)}>
               <FormLabel>Tên người nhận</FormLabel>
               <Input type='text' {...register('name', {
-                required: 'This is required',
+                required: 'Trường này không được bỏ trống',
               })} />
               <FormErrorMessage>
                 {errors.name && errors.name.message}
@@ -160,7 +170,7 @@ export default function AddressSelect() {
             <FormControl mt={4} isRequired isInvalid={Boolean(errors.phoneNumber)}>
               <FormLabel>Số điện thoại</FormLabel>
               <Input type='text' {...register('phoneNumber', {
-                required: 'This is required',
+                required: 'Trường này không được bỏ trống',
               })} />
             </FormControl>
               {/* Dropdown chọn thành phố */}
@@ -172,7 +182,7 @@ export default function AddressSelect() {
                 // value={selectedCity}
                 variant="filled"
                 {...register('city', {
-                  required: 'This is required',
+                  required: 'Trường này không được bỏ trống',
                 })}
                 onChange={handleCityChange}
               >
@@ -197,7 +207,7 @@ export default function AddressSelect() {
                 isDisabled={selectedCity == "" ? true : false}
                 // value={selectedDistrict}
                 {...register('district', {
-                  required: 'This is required',
+                  required: 'Trường này không được bỏ trống',
                 })}
                 onChange={handleDistrictChange}
                 variant="filled"
@@ -223,7 +233,7 @@ export default function AddressSelect() {
                 variant="filled"
                 placeholder="Chọn phường"
                 {...register('village', {
-                  required: 'This is required',
+                  required: 'Trường này không được bỏ trống',
                 })}
                 onChange={handleVillageChange}
                 isDisabled={selectedDistrict == "" ? true : false}
@@ -247,7 +257,7 @@ export default function AddressSelect() {
                 type="text" 
                 placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
                 {...register('detailedAddress', {
-                  required: 'This is required',
+                  required: 'Trường này không được bỏ trống',
                 })} 
               />
               <FormErrorMessage>

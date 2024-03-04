@@ -20,13 +20,11 @@ import {
   FormErrorMessage,
   FormHelperText,
   HStack,
-  useToast,
 } from "@chakra-ui/react";
-import { watch } from "fs";
 
 import { useEffect, useState } from "react";
-import { useForm,  Controller, SubmitHandler } from "react-hook-form"
-import { useEditProductMutation } from "@/app/_lib/features/api/apiSlice"
+import { useForm } from "react-hook-form"
+import { useAddProductMutation } from "@/app/_lib/features/api/apiSlice"
 
 type FormData = {
   name:string,
@@ -40,52 +38,37 @@ type FormData = {
   description:string,
 }
 
-export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selectedProduct }: any) {
+
+export default function Dialog() {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const {
     register,
-    reset,
     setValue,
-    watch,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm<FormData>({defaultValues: {
-    name: selectedProduct.name || "",
-    photo:selectedProduct.photo || "",
-    status: selectedProduct.status || "",
-    price: selectedProduct.price || "",
-    weight: selectedProduct.weight || "",
-    length: selectedProduct.length || "",
-    width: selectedProduct.width || "",
-    height: selectedProduct.height || "",
-    description: selectedProduct.description || "",
-  }})
+  } = useForm<FormData>()
 
-  const [editProduct, {isLoading}] = useEditProductMutation();
-  const toast = useToast();
-
-
-  useEffect(() => {
-    reset(selectedProduct);
-  }, [selectedProduct])
+  const [addProduct, {isLoading}] = useAddProductMutation();
 
 
   const onSubmit = async(data: FormData) => {
     try {
-      await editProduct(data).unwrap();
+      await addProduct(data).unwrap();
       onClose();
     } catch (err) {
-      console.error('Failed to edit product: ', err)
-      toast({
-        title: 'Có lỗi khi sửa thông tin sản phẩm',
-        position: 'top',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
+      console.error('Failed to save product: ', err)
+    } finally {
+      reset();
     }
+
 }
 
   return (
+    <>
+      <Button m={{ base: 2, md: 8 }} colorScheme="orange" onClick={onOpen}>
+        Thêm sản phẩm
+      </Button>
       <Modal
         closeOnOverlayClick={false}
         isOpen={isOpen}
@@ -94,15 +77,15 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Sửa thông tin sản phẩm</ModalHeader>
+          <ModalHeader>Thêm sản phẩm</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             
-          <FormControl isRequired isInvalid={Boolean(errors.name)}>
+            <FormControl isRequired isInvalid={Boolean(errors.name)}>
               <FormLabel>Tên hàng hóa</FormLabel>
-              <Input type='text' {...register('name', {
-                required: 'Trường này không được bỏ trống',
-              })}   />
+              <Input type='text' id="name" {...register('name', {
+                required: 'This is required',
+              })}/>
               <FormErrorMessage>
                 {errors.name && errors.name.message}
               </FormErrorMessage>
@@ -111,39 +94,37 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
               <FormLabel>Ảnh</FormLabel>
               <Input type='text' {...register('photo')}  />
             </FormControl>
-            <FormControl isRequired isInvalid={Boolean(errors.name)} mt={4}>
+            <FormControl isRequired isInvalid={Boolean(errors.weight)} mt={4}>
               <FormLabel>Trọng lượng (g)</FormLabel>
               <Input type='text' {...register('weight', {
-                required: 'Trường này không được bỏ trống'
+                required: 'This is required'
               })} />
               <FormErrorMessage>
-                {errors.name && errors.name.message}
+                {errors.weight && errors.weight.message}
               </FormErrorMessage>
             </FormControl>
-            <FormControl isRequired isInvalid={Boolean(errors.name)} mt={4}>
+            <FormControl isRequired isInvalid={Boolean(errors.price)} mt={4}>
               <FormLabel>Đơn giá (VNĐ)</FormLabel>
               <Input type='text' {...register('price', {
-                required: 'Trường này không được bỏ trống'
+                required: 'This is required'
               })} />
               <FormErrorMessage>
-                {errors.name && errors.name.message}
+                {errors.price && errors.price.message}
               </FormErrorMessage>
             </FormControl>
-            
-            <FormControl isRequired isInvalid={Boolean(errors.name)} mt={4}>
+            <FormControl isRequired isInvalid={Boolean(errors.status)} mt={4}>
               <FormLabel>Trạng thái</FormLabel>
               <Select placeholder='Chọn trạng thái' {...register('status', {
-                required: 'Trường này không được bỏ trống'
+                required: 'This is required'
               })} >
                   <option value="AVAILABLE">CÒN HÀNG</option>
                   <option value="BACK_ORDER">DỰ TRỮ</option>
                   <option value="OUT_OF_STOCK">HẾT HÀNG</option>
               </Select>
               <FormErrorMessage>
-                {errors.name && errors.name.message}
+                {errors.status && errors.status.message}
               </FormErrorMessage>
             </FormControl>
-
             <HStack spacing='16px' mt={4}>
               <FormControl>
                 <FormLabel>Dài (cm)</FormLabel>
@@ -162,19 +143,21 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
               placeholder="Mô tả chi tiết"
               {...register('description')}            
             />
-               
+            
+            
           </ModalBody>
 
           <ModalFooter>
             <Button onClick={onClose} mr={3}>
-              Cancel
+              Huỷ 
             </Button>
             <Button colorScheme="orange" onClick={handleSubmit(onSubmit)}>
-              Save
+              Lưu
             </Button>
             
           </ModalFooter>
         </ModalContent>
       </Modal>
+    </>
   );
 }

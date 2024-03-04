@@ -16,20 +16,39 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
+  BoxProps,
+  FlexProps,
+  CloseButton,
+  Icon,
+  Drawer,
+  DrawerContent,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
+import { FiBell } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, createContext } from "react";
 import { usePathname } from "next/navigation";
 // import { searchResults } from "./SearchBar";
+import {
+  FiHome,
+  FiTrendingUp,
+  FiShoppingBag,
+  FiStar,
+  FiSettings,
+  FiMenu,
+  FiUser,
+  FiAirplay,
+  FiShoppingCart
+} from "react-icons/fi";
+import { IconType } from "react-icons";
+import { ReactText } from "react";
+
 interface Props {
   children: React.ReactNode;
 }
 
-
-
 export const IsLoginContext = createContext<boolean | null>(null);
-const Links = ["STORE", "SUPPORT", "CONTACT"];
+//const Links = ["STORE", "SUPPORT", "CONTACT"];
 
 const NavLink = (props: Props) => {
   const router = useRouter();
@@ -52,10 +71,21 @@ const NavLink = (props: Props) => {
   );
 };
 
+interface LinkItemProps {
+  name: string;
+  icon: IconType;
+  link: string;
+}
+const LinkItems: Array<LinkItemProps> = [
+  { name: "Tổng quan", icon: FiHome, link: "/dashboard" },
+  { name: "Đơn hàng", icon: FiShoppingCart, link: "/order" },
+  { name: "Nhân sự", icon: FiUser, link: "/staff" },
+  { name: "Cửa hàng", icon: FiAirplay, link: "/store" },
+  { name: "Sản phẩm", icon: FiShoppingBag, link: "/product" },
+  { name: "Khách hàng", icon: FiStar, link: "/table" },
+];
+
 export default function NavBar() {
-  
-  // console.log("Kết quả: ", searchResults);
-  
   const [lastTimeAccess, setLastTimeAccess] = useState("2020");
   const [isLogin, setIsLogin] = useState(false);
   const router = useRouter();
@@ -67,8 +97,8 @@ export default function NavBar() {
 
 
   useEffect(() => {
-    const lastAccess = localStorage.getItem("accessToken");
-    if (lastAccess === null) {
+    // const lastAccess = localStorage.getItem("createAt");
+    if (localStorage.getItem("accessToken") === null) {
       setIsLogin(false);
     } else setIsLogin(true);
   }, []);
@@ -85,27 +115,28 @@ export default function NavBar() {
 
   //   if (isLogin) {
   //     intervalId = setInterval(() => {
-  //       fetch("https://game-be-v2.vercel.app/auth/refreshToken", {
+  //       fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}auth/refreshToken`, {
   //         method: "POST",
   //         headers: {
   //           "Content-Type": "application/json",
   //         },
   //         body: JSON.stringify({
-  //           id: localStorage.getItem("id"),
+  //           refreshToken: localStorage.getItem("refreshToken"),
   //         }),
   //       })
   //         .then((response) => response.json())
   //         .then((data) => {
-  //           const { access_token } = data;
-  //           localStorage.setItem("access_token", access_token);
-  //           console.log(access_token);
+  //           const { accessToken, refreshToken } = data;
+  //           localStorage.setItem("accessToken", accessToken);
+  //           localStorage.setItem("refreshToken", refreshToken);
+  //           console.log(data);
   //           const createdAt = new Date().toISOString();
   //           localStorage.setItem("createdAt", createdAt);
   //         })
   //         .catch((error) => {
   //           console.error("Lỗi:", error);
   //         });
-  //     }, 1500000);
+  //     }, 900000);
   //   }
 
   //   return () => {
@@ -122,7 +153,8 @@ export default function NavBar() {
 
   function handleLogout(): void {
     localStorage.removeItem("accessToken");
-    //localStorage.removeItem("createdAt");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("createdAt");
     localStorage.removeItem("userId");
     setIsLogin(false);
     router.replace("/login");
@@ -136,18 +168,34 @@ export default function NavBar() {
       textColor={"white"}
     >
       <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
-        <IconButton
+        {/* <IconButton
           size={"md"}
           icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
           aria-label={"Open Menu"}
           display={{ md: "none" }}
           onClick={isOpen ? onClose : onOpen}
-        />
+        /> */}
+        <Drawer
+          isOpen={isOpen}
+          placement="left"
+          onClose={onClose}
+          returnFocusOnClose={false}
+          onOverlayClick={onClose}
+          size="full"
+        >
+          <DrawerContent>
+            <SidebarContent onClose={onClose} />
+          </DrawerContent>
+        </Drawer>
+        <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
         <HStack spacing={8} alignItems={"center"}>
-          <Box onClick={() => router.push("/")} cursor={"pointer"}>
-            Orlist
+          <Box ml={8} fontSize='20px' onClick={() => router.push("/")} cursor={"pointer"}>
+            <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
+              OrList
+            </Text>
           </Box>
-          {isLogin&&<Box
+          {isLogin&&
+            <Box
               px={2}
               py={1}
               rounded={"md"}
@@ -159,7 +207,8 @@ export default function NavBar() {
               cursor={"pointer"}
             >
               QUẢN LÝ
-            </Box>}
+            </Box>
+          }
           {/* <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
             <Box
               px={2}
@@ -202,16 +251,19 @@ export default function NavBar() {
             </Box>
           </HStack> */}
         </HStack> 
-
+        {/* TODO: Refresh token navbar */}
         <Flex alignItems={"center"} color="#171717">
           {isLogin ? (
+            <>
             <Menu>
+              <FiBell size="20px" color="white"/>
               <MenuButton
                 as={Button}
                 rounded={"full"}
                 variant={"link"}
                 cursor={"pointer"}
                 minW={0}
+                ml={6}
               >
                 <Avatar
                   size={"sm"}
@@ -235,6 +287,7 @@ export default function NavBar() {
                 <MenuItem onClick={() => handleLogout()}>Đăng xuất</MenuItem>
               </MenuList>
             </Menu>
+            </>
           ) : (
             <Button
               color="blue"
@@ -245,17 +298,128 @@ export default function NavBar() {
           )}
         </Flex>
       </Flex>
-
-      {isOpen ? (
-        <Box pb={4} display={{ md: "none" }}>
-          <Stack as={"nav"} spacing={4}>
-            {Links.map((link) => (
-              <NavLink key={link}>{link}</NavLink>
-            ))}
-          </Stack>
-        </Box>
-      ) : null}
     </Box>
     </IsLoginContext.Provider>
   );
 }
+
+interface SidebarProps extends BoxProps {
+  onClose: () => void;
+}
+
+const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+  const router = useRouter();
+  return (
+    <Box
+      bg={useColorModeValue("white", "gray.900")}
+      borderRight="1px"
+      borderRightColor={useColorModeValue("gray.200", "gray.700")}
+      w={{ base: "full", md: 60 }}
+      pos="fixed"
+      h="full"
+      {...rest}
+    >
+      <Flex  display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="8" justifyContent="space-between">
+        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
+          OrList
+        </Text>
+        <CloseButton onClick={onClose} />
+      </Flex>
+      <Button 
+        onClick={() => {
+          onClose();
+          router.push("/create");
+        }} 
+        ml={8} mt={6} mb={2} 
+        w="25%" 
+        colorScheme="orange"
+      >
+        + Tạo đơn 
+      </Button>
+      {LinkItems.map((link) => (
+        <NavItem  
+          key={link.name} 
+          icon={link.icon}
+          onClick={() => {
+            onClose();
+            router.push(`${link.link}`)
+          }}
+        >
+          {link.name}
+        </NavItem>
+      ))}
+    </Box>
+  );
+};
+
+interface NavItemProps extends FlexProps {
+  icon: IconType;
+  children: ReactText;
+}
+const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
+  return (
+    <Box
+      as="a"
+
+      style={{ textDecoration: "none" }}
+      _focus={{ boxShadow: "none" }}
+    >
+      <Flex
+        align="center"
+        p="4"
+        mx="4"
+        borderRadius="lg"
+        role="group"
+        cursor="pointer"
+        _hover={{
+          bg: "cyan.400",
+          color: "white",
+        }}
+        {...rest}
+      >
+        {icon && (
+          <Icon
+            mr="4"
+            fontSize="16"
+            _groupHover={{
+              color: "white",
+            }}
+            as={icon}
+          />
+        )}
+        {children}
+      </Flex>
+    </Box>
+  );
+};
+
+interface MobileProps extends FlexProps {
+  onOpen: () => void;
+}
+const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+  return (
+    <Flex
+      ml={{ base: 0, md: 60 }}
+      px={{ base: 4, md: 24 }}
+      height="20"
+      alignItems="center"
+      // bg={useColorModeValue("white", "gray.900")}
+      // borderBottomWidth="1px"
+      // borderBottomColor={useColorModeValue("gray.200", "gray.700")}
+      justifyContent="flex-start"
+      {...rest}
+    >
+      <IconButton
+        variant="filled"
+        onClick={onOpen}
+        aria-label="open menu"
+        color='white'
+        icon={<FiMenu />}
+      />
+
+      {/* <Text fontSize="2xl" ml="8" fontFamily="monospace" fontWeight="bold">
+        OrList
+      </Text> */}
+    </Flex>
+  );
+};

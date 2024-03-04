@@ -1,20 +1,8 @@
 import { createSlice, PayloadAction,createAsyncThunk } from '@reduxjs/toolkit'
 import type { RootState } from '../../store'
 import axios from 'axios';
+import { Product } from '@/app/type';
 
-// Define a type for the slice state
-export type Product = {
-    id: number;
-    name: string;
-    photo: string;
-    status: string;
-    price: number;
-    weight: number;
-    length: number;
-    width: number;
-    height: number;
-    description: string;
-};
 
 export interface ProductState {
   value: Product[],

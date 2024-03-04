@@ -31,8 +31,7 @@ export default function Login() {
   const toast = useToast()
 
 const handleLogin = async () => {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}auth/login`, 
+    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}auth/login`, 
     {
       method: "POST",
       headers: {
@@ -45,25 +44,33 @@ const handleLogin = async () => {
     })
     .then(data => data.json())
     .then(processedData => {
+      if(processedData.accessToken === undefined) {
+        throw new Error('Sai tên đăng nhập hoặc mật khẩu');
+      }
       console.log(processedData);
       localStorage.setItem('accessToken', processedData.accessToken);
       localStorage.setItem('userId', processedData.userId);
+      localStorage.setItem('refreshToken', processedData.refreshToken);
+      window.location.href =  '/dashboard'
     })
-    .catch(error => console.log(error));
+    .catch ((error) => {
+      setUsername('');
+      setPassword('');
+      toast({
+        title: `Sai tên đăng nhập hoặc mật khẩu`,
+        status: 'error',
+        position: "top-right",
+        isClosable: true,
+      })
+    })
     
-    // const createdAt = new Date().toISOString();
-    // localStorage.setItem('createdAt', createdAt);
+    
+    const createdAt = new Date().toISOString();
+    localStorage.setItem('createdAt', createdAt);
     // document.cookie = `access_token=${access_token}; expires=Thu, 01 Jan 2022 00:00:00 UTC; path=/`;
-    window.location.href =  '/dashboard'
+    
 
-  } catch (error) {
-    toast({
-      title: `Sai tên đăng nhập hoặc mật khẩu`,
-      status: 'error',
-      position: "top-right",
-      isClosable: true,
-    })
-  }
+  
 };
 
   return (

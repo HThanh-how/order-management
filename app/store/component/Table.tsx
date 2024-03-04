@@ -29,21 +29,12 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  useToast,
 } from "@chakra-ui/react";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useState } from "react";
 import { useRemoveStoreMutation } from "@/app/_lib/features/api/apiSlice"
-
-type Store = {
-  id: number;
-  name: string;
-  status: string;
-  tags: string[];
-  phoneNumber: string;
-  address: string;
-  detailedAddress: string;
-  description: string;
-};
+import { Store } from "@/app/type";
 
 interface StoreTableProps {
   stores: Store[];
@@ -58,6 +49,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const [removeStore, {isLoading}] = useRemoveStoreMutation();
+  const toast = useToast();
 
   const handleDeleteClose = async () => {
     setDeleteOpen(false);
@@ -70,25 +62,19 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
   }
 
   const handleDelete = async (id: any) => {
-    // await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/stores/${id}`, 
-    //             {
-    //               method: 'DELETE',
-    //               headers: {
-    //                 "Content-Type": "application/json",
-    //                 "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
-    //                 "userId": `${localStorage.getItem("userId")}`,
-    //               }
-                
-    //             })
-    // .then(data => data.json())
-    // .then(processedData => console.log(processedData.data))
-    // .catch(error => console.log(error))
-
     try {
       await removeStore(id).unwrap();
       handleDeleteClose();
     } catch (err) {
+      handleDeleteClose();
       console.error('Failed to delete store: ', err)
+      toast({
+        title: 'Có lỗi khi xóa cửa hàng này',
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
     }
   }
 

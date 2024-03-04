@@ -33,17 +33,8 @@ import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
 import CustomerList from "./Table";
 import { useGetCustomersQuery } from "@/app/_lib/features/api/apiSlice"
+import { Customer } from "@/app/type";
 
-type Customer = {
-  id: number;
-  name: string;
-  status: string;
-  tags: string[];
-  phoneNumber: string;
-  address: string;
-  detailedAddress: string;
-  note: string;
-};
 
 export default function CustomerTable() {
   const [searchInput, setSearchInput] = useState("");
@@ -119,6 +110,7 @@ export default function CustomerTable() {
           alignItems="center"
           justify="center"
           direction={{ base: "column", md: "row" }}
+          m={4}
           >
             <Alert w='25%' status='error'>
               <AlertIcon />

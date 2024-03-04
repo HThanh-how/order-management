@@ -20,15 +20,19 @@ import {
   FormErrorMessage,
   FormHelperText,
   HStack,
+  InputGroup,
+  Icon,
+  useToast,
 } from "@chakra-ui/react";
-
-import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form"
+import { FiFile } from 'react-icons/fi'
+import { ReactNode, useEffect, useState } from "react";
+import { useForm, UseFormRegisterReturn } from "react-hook-form"
 import { useAddProductMutation } from "@/app/_lib/features/api/apiSlice"
+import getFromLocalStorage from "@/app/_lib/getFromLocalStorage";
 
 type FormData = {
-  name:string,
-  photo:string,
+  name: string,
+  photo: string,
   status: string,
   price: number,
   weight: number,
@@ -41,27 +45,65 @@ type FormData = {
 
 export default function Dialog() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
   const {
     register,
     setValue,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful, isValid },
   } = useForm<FormData>()
 
+  const [img, setImg] = useState<any>(null);
   const [addProduct, {isLoading}] = useAddProductMutation();
 
+  useEffect(() => {
+    if(isSubmitSuccessful) reset();
+  }, [isSubmitSuccessful, reset])
 
-  const onSubmit = async(data: FormData) => {
+  const validateFiles = (e: any) => {
+    if(!e.target.files) return 'Trường này không được bỏ trống'
+    const value = e.target.files[0];
+    const fsMb = value.size / (1024 * 1024)
+    const MAX_FILE_SIZE = 10
+    if (fsMb > MAX_FILE_SIZE) {
+      return 'Max file size 10mb'
+    }     
+    setImg(value);
+  }
+
+  const getBase64string = async (value: any) => {
+    const formData = new FormData();
+    formData.append('file', value);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/products/image`, 
+    {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${getFromLocalStorage('accessToken')}`,
+      },
+      body: formData, 
+    })
+    return res.json()
+  }
+
+  const onSubmit = async (data: FormData) => {
+    const tmp = await getBase64string(img);
+    console.log(tmp);
+    data.photo = tmp.base64;
+    
     try {
       await addProduct(data).unwrap();
       onClose();
     } catch (err) {
       console.error('Failed to save product: ', err)
-    } finally {
-      reset();
-    }
-
+      toast({
+        title: 'Có lỗi khi thêm sản phẩm mới',
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    } 
 }
 
   return (
@@ -84,20 +126,24 @@ export default function Dialog() {
             <FormControl isRequired isInvalid={Boolean(errors.name)}>
               <FormLabel>Tên hàng hóa</FormLabel>
               <Input type='text' id="name" {...register('name', {
-                required: 'This is required',
+                required: 'Trường này không được bỏ trống',
               })}/>
               <FormErrorMessage>
                 {errors.name && errors.name.message}
               </FormErrorMessage>
             </FormControl>
-            <FormControl mt={4}>
-              <FormLabel>Ảnh</FormLabel>
-              <Input type='text' {...register('photo')}  />
+            <FormControl mt={4} isInvalid={!!errors.photo} isRequired>
+              <FormLabel>Hình ảnh sản phẩm</FormLabel>
+              <Input type='file' accept="image/png" onChange={validateFiles}/>
+              <FormErrorMessage>
+                {errors.photo && errors?.photo.message}
+              </FormErrorMessage>
             </FormControl>
+
             <FormControl isRequired isInvalid={Boolean(errors.weight)} mt={4}>
               <FormLabel>Trọng lượng (g)</FormLabel>
               <Input type='text' {...register('weight', {
-                required: 'This is required'
+                required: 'Trường này không được bỏ trống'
               })} />
               <FormErrorMessage>
                 {errors.weight && errors.weight.message}
@@ -106,7 +152,7 @@ export default function Dialog() {
             <FormControl isRequired isInvalid={Boolean(errors.price)} mt={4}>
               <FormLabel>Đơn giá (VNĐ)</FormLabel>
               <Input type='text' {...register('price', {
-                required: 'This is required'
+                required: 'Trường này không được bỏ trống'
               })} />
               <FormErrorMessage>
                 {errors.price && errors.price.message}
@@ -115,7 +161,7 @@ export default function Dialog() {
             <FormControl isRequired isInvalid={Boolean(errors.status)} mt={4}>
               <FormLabel>Trạng thái</FormLabel>
               <Select placeholder='Chọn trạng thái' {...register('status', {
-                required: 'This is required'
+                required: 'Trường này không được bỏ trống'
               })} >
                   <option value="AVAILABLE">CÒN HÀNG</option>
                   <option value="BACK_ORDER">DỰ TRỮ</option>

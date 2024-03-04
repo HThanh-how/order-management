@@ -20,7 +20,6 @@ import {
   FormErrorMessage,
   FormHelperText,
   HStack,
-  useToast,
 } from "@chakra-ui/react";
 import { watch } from "fs";
 
@@ -61,7 +60,6 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
   }})
 
   const [editProduct, {isLoading}] = useEditProductMutation();
-  const toast = useToast();
 
 
   useEffect(() => {
@@ -75,13 +73,6 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
       onClose();
     } catch (err) {
       console.error('Failed to edit product: ', err)
-      toast({
-        title: 'Có lỗi khi sửa thông tin sản phẩm',
-        position: 'top',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
     }
 }
 
@@ -101,7 +92,7 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
           <FormControl isRequired isInvalid={Boolean(errors.name)}>
               <FormLabel>Tên hàng hóa</FormLabel>
               <Input type='text' {...register('name', {
-                required: 'Trường này không được bỏ trống',
+                required: 'This is required',
               })}   />
               <FormErrorMessage>
                 {errors.name && errors.name.message}
@@ -114,7 +105,7 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
             <FormControl isRequired isInvalid={Boolean(errors.name)} mt={4}>
               <FormLabel>Trọng lượng (g)</FormLabel>
               <Input type='text' {...register('weight', {
-                required: 'Trường này không được bỏ trống'
+                required: 'This is required'
               })} />
               <FormErrorMessage>
                 {errors.name && errors.name.message}
@@ -123,7 +114,7 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
             <FormControl isRequired isInvalid={Boolean(errors.name)} mt={4}>
               <FormLabel>Đơn giá (VNĐ)</FormLabel>
               <Input type='text' {...register('price', {
-                required: 'Trường này không được bỏ trống'
+                required: 'This is required'
               })} />
               <FormErrorMessage>
                 {errors.name && errors.name.message}
@@ -133,7 +124,7 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
             <FormControl isRequired isInvalid={Boolean(errors.name)} mt={4}>
               <FormLabel>Trạng thái</FormLabel>
               <Select placeholder='Chọn trạng thái' {...register('status', {
-                required: 'Trường này không được bỏ trống'
+                required: 'This is required'
               })} >
                   <option value="AVAILABLE">CÒN HÀNG</option>
                   <option value="BACK_ORDER">DỰ TRỮ</option>

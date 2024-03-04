@@ -33,17 +33,7 @@ import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
 import StoreList from "./Table";
 import { useGetStoresQuery } from "@/app/_lib/features/api/apiSlice"
-
-type Store = {
-  id: number;
-  name: string;
-  status: string;
-  tags: string[];
-  phoneNumber: string;
-  address: string;
-  detailedAddress: string;
-  description: string;
-};
+import { Store } from "@/app/type";
 
 export default function StoreTable() {
   const [searchInput, setSearchInput] = useState("");
@@ -121,6 +111,7 @@ export default function StoreTable() {
           alignItems="center"
           justify="center"
           direction={{ base: "column", md: "row" }}
+          m={4}
           >
             <Alert w='25%' status='error'>
               <AlertIcon />

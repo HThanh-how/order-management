@@ -42,6 +42,7 @@ import {
   FiMenu,
   FiUser,
   FiAirplay,
+  FiShoppingCart
 } from "react-icons/fi";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
@@ -57,11 +58,12 @@ interface LinkItemProps {
 }
 const LinkItems: Array<LinkItemProps> = [
   { name: "Tổng quan", icon: FiHome, link: "/dashboard" },
+  { name: "Đơn hàng", icon: FiShoppingCart, link: "/order" },
   { name: "Nhân sự", icon: FiUser, link: "/staff" },
   { name: "Cửa hàng", icon: FiAirplay, link: "/store" },
   { name: "Sản phẩm", icon: FiShoppingBag, link: "/product" },
   { name: "Khách hàng", icon: FiStar, link: "/table" },
-  { name: "Cài đặt", icon: FiSettings, link: "#" },
+  
 ];
 
 export default function Sidebar() {
@@ -73,7 +75,7 @@ export default function Sidebar() {
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
       />
-      <Drawer
+      {/* <Drawer
         isOpen={isOpen}
         placement="left"
         onClose={onClose}
@@ -84,9 +86,9 @@ export default function Sidebar() {
         <DrawerContent>
           <SidebarContent onClose={onClose} />
         </DrawerContent>
-      </Drawer>
+      </Drawer> */}
       {/* mobilenav */}
-      <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
+      {/* <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} /> */}
       <Box ml={{ base: 0, md: 60 }} p={8}>
         <CustomerTable/>
       </Box>
@@ -110,13 +112,13 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       h="full"
       {...rest}
     >
-      <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
+      <Flex display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           OrList
         </Text>
-        <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
+        <CloseButton  onClick={onClose} />
       </Flex>
-      <Button onClick={()=>router.push("/create")}  m={4} w="8vw" colorScheme="green">+ Tạo đơn </Button>
+      <Button onClick={()=>router.push("/create")}  ml={8} mt={6} mb={2} w="50%" colorScheme="orange">+ Tạo đơn </Button>
       {LinkItems.map((link) => (
         <NavItem  
           key={link.name} 
@@ -171,32 +173,32 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
   );
 };
 
-interface MobileProps extends FlexProps {
-  onOpen: () => void;
-}
-const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
-  return (
-    <Flex
-      ml={{ base: 0, md: 60 }}
-      px={{ base: 4, md: 24 }}
-      height="20"
-      alignItems="center"
-      bg={useColorModeValue("white", "gray.900")}
-      borderBottomWidth="1px"
-      borderBottomColor={useColorModeValue("gray.200", "gray.700")}
-      justifyContent="flex-start"
-      {...rest}
-    >
-      <IconButton
-        variant="outline"
-        onClick={onOpen}
-        aria-label="open menu"
-        icon={<FiMenu />}
-      />
+// interface MobileProps extends FlexProps {
+//   onOpen: () => void;
+// }
+// const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+//   return (
+//     <Flex
+//       ml={{ base: 0, md: 60 }}
+//       px={{ base: 4, md: 24 }}
+//       height="20"
+//       alignItems="center"
+//       bg={useColorModeValue("white", "gray.900")}
+//       borderBottomWidth="1px"
+//       borderBottomColor={useColorModeValue("gray.200", "gray.700")}
+//       justifyContent="flex-start"
+//       {...rest}
+//     >
+//       <IconButton
+//         variant="outline"
+//         onClick={onOpen}
+//         aria-label="open menu"
+//         icon={<FiMenu />}
+//       />
 
-      <Text fontSize="2xl" ml="8" fontFamily="monospace" fontWeight="bold">
-        OrList
-      </Text>
-    </Flex>
-  );
-};
+//       <Text fontSize="2xl" ml="8" fontFamily="monospace" fontWeight="bold">
+//         OrList
+//       </Text>
+//     </Flex>
+//   );
+// };

@@ -29,21 +29,12 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  useToast,
 } from "@chakra-ui/react";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useState } from "react";
 import { useRemoveCustomerMutation } from "@/app/_lib/features/api/apiSlice"
-
-type Customer = {
-  id: number;
-  name: string;
-  status: string;
-  tags: string[];
-  phoneNumber: string;
-  address: string;
-  detailedAddress: string;
-  note: string;
-};
+import { Customer } from "@/app/type";
 
 interface CustomerTableProps {
   customers: Customer[];
@@ -58,6 +49,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
 
   const [removeCustomer, {isLoading}] = useRemoveCustomerMutation();
+  const toast = useToast();
 
   const handleDeleteClose = async () => {
     setDeleteOpen(false);
@@ -70,24 +62,19 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
   }
 
   const handleDelete = async (id: any) => {
-    // await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/receivers/${id}`, 
-    //             {
-    //               method: 'DELETE',
-    //               headers: {
-    //                 "Content-Type": "application/json",
-    //                 "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
-    //                 "userId": `${localStorage.getItem("userId")}`,
-    //               }
-                
-    //             })
-    // .then(data => data.json())
-    // .then(processedData => console.log(processedData.data))
-    // .catch(error => console.log(error))
     try {
       await removeCustomer(id).unwrap();
       handleDeleteClose();
     } catch (err) {
+      handleDeleteClose();
       console.error('Failed to delete customer: ', err)
+      toast({
+        title: 'Có lỗi khi xóa khách hàng này',
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
     }
   }
 

@@ -1,6 +1,11 @@
 // Import the RTK Query methods from the React-specific entry point
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import getFromLocalStorage from '../../getFromLocalStorage';
+import type {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+} from '@reduxjs/toolkit/query';
 
 interface IHeader {
   "Content-Type": string;
@@ -11,23 +16,87 @@ const Header: IHeader = {
   "Authorization": `Bearer ${getFromLocalStorage("accessToken")}`,
 };
 
+const baseQuery = fetchBaseQuery({ 
+  baseUrl: `${process.env.NEXT_PUBLIC_HOSTNAME}api/v1`,
+  prepareHeaders: (headers: any) => {
+    headers.set("Content-Type", Header["Content-Type"]);
+    headers.set("Authorization", `Bearer ${getFromLocalStorage("accessToken")}`);
+    return headers;
+  },
+});
+
+const baseQueryWithRefresh: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  let result = await baseQuery(args, api, extraOptions);
+  
+  if (result.error && result.error.status === 403) {
+    // try to get a new token
+    
+    const refreshResult = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}auth/refreshToken`, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        refreshToken: getFromLocalStorage('refreshToken'),
+      })
+    })
+      
+    if (refreshResult.ok) {
+      const tmp = await refreshResult.json();
+      console.log(tmp);
+      const { accessToken, refreshToken } = tmp;
+      // store the new token in the store or wherever you keep it
+      localStorage.setItem('accessToken', accessToken)
+      localStorage.setItem('refreshToken', refreshToken)
+      const createdAt = new Date().toISOString();
+      localStorage.setItem("createdAt", createdAt);
+      // retry the initial query
+      result = await baseQuery(args, api, extraOptions);
+    } else {
+      // refresh failed - do something like redirect to login or show a "retry" button
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("createdAt");
+      localStorage.removeItem("userId");
+      // window.location.href =  '/login';
+    }
+  }
+  return result;
+};
+
+
 // Define our single API slice object
 export const apiSlice = createApi({
   // The cache reducer expects to be added at `state.api` (already default - this is optional)
   reducerPath: 'api',
   // All of our requests will have URLs starting with '/fakeApi'
-  baseQuery: fetchBaseQuery({ 
-    baseUrl: `${process.env.NEXT_PUBLIC_HOSTNAME}api/v1`,
-    prepareHeaders: (headers) => {
-      headers.set("Content-Type", Header["Content-Type"]);
-      headers.set("Authorization", Header["Authorization"]);
-      return headers;
-    }
-  }),
-  tagTypes: ['Product', 'Customer', 'Store'],
+  baseQuery: baseQueryWithRefresh,
+  // baseQuery: fetchBaseQuery({ 
+  //   baseUrl: `${process.env.NEXT_PUBLIC_HOSTNAME}api/v1`,
+  //   prepareHeaders: (headers) => {
+  //     headers.set("Content-Type", Header["Content-Type"]);
+  //     headers.set("Authorization", Header["Authorization"]);
+  //     return headers;
+  //   }
+  // }),
+  tagTypes: ['Product', 'Customer', 'Store', 'Order'],
   // The "endpoints" represent operations and requests for this server
   endpoints: builder => ({
     // The `getPosts` endpoint is a "query" operation that returns data
+    getRefreshToken: builder.mutation({
+      query: refreshToken => ({
+        url: "http://localhost:8080/auth/refreshToken",
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: refreshToken
+      }),
+    }),
     getProducts: builder.query<any, void>({
       // The URL for the request is '/fakeApi/posts'
       query: () => ({
@@ -40,7 +109,7 @@ export const apiSlice = createApi({
     }),
     addProduct: builder.mutation({
       query: newProduct => ({
-        url: "products",
+        url: "/products",
         method: "POST",
         headers: {
           "userId": `${getFromLocalStorage("userId")}`,
@@ -51,7 +120,7 @@ export const apiSlice = createApi({
     }),
     editProduct: builder.mutation({
       query: newProduct => ({
-        url: `products/${newProduct.id}`,
+        url: `/products/${newProduct.id}`,
         method: "PUT",
         headers: {
           "userId": `${getFromLocalStorage("userId")}`,
@@ -62,7 +131,7 @@ export const apiSlice = createApi({
     }),
     removeProduct: builder.mutation({
       query: id => ({
-        url: `products/${id}`,
+        url: `/products/${id}`,
         method: "DELETE",
       }),
     
@@ -81,7 +150,7 @@ export const apiSlice = createApi({
     }),
     addCustomer: builder.mutation({
       query: newReceiver => ({
-        url: "receivers/create",
+        url: "/receivers/create",
         method: "POST",
         headers: {
           "userId": `${getFromLocalStorage("userId")}`,
@@ -92,7 +161,7 @@ export const apiSlice = createApi({
     }),
     removeCustomer: builder.mutation({
       query: id => ({
-        url: `receivers/${id}`,
+        url: `/receivers/${id}`,
         method: "DELETE",
         headers: {
           "userId": `${getFromLocalStorage("userId")}`,
@@ -106,33 +175,39 @@ export const apiSlice = createApi({
       // The URL for the request is '/fakeApi/posts'
       query: () => ({
         url: "/stores",
-        // headers: {
-        //   "userId": `${getFromLocalStorage("userId")}`,
-        // },
       }),
       providesTags: ['Store']  
     }),
     addStore: builder.mutation({
       query: newReceiver => ({
-        url: "stores/create",
+        url: "/stores/create",
         method: "POST",
-        // headers: {
-        //   "userId": `${getFromLocalStorage("userId")}`,
-        // },
         body: newReceiver
       }),
       invalidatesTags: ['Store'],
     }),
     removeStore: builder.mutation({
       query: id => ({
-        url: `stores/${id}`,
+        url: `/stores/${id}`,
         method: "DELETE",
-        // headers: {
-        //   "userId": `${getFromLocalStorage("userId")}`,
-        // },
       }),
-    
       invalidatesTags: ['Store'],
+    }),
+
+    getOrders: builder.query<any, void>({
+      // The URL for the request is '/fakeApi/posts'
+      query: () => ({
+        url: "/order",
+      }),
+      providesTags: ['Order']  
+    }),
+    addOrder: builder.mutation({
+      query: newOrder => ({
+        url: "/order",
+        method: "POST",
+        body: newOrder
+      }),
+      invalidatesTags: ['Order'],
     }),
   })
 })
@@ -140,4 +215,5 @@ export const apiSlice = createApi({
 // Export the auto-generated hook for the `getPosts` query endpoint
 export const { useGetProductsQuery, useAddProductMutation, useEditProductMutation, useRemoveProductMutation,
                 useGetCustomersQuery, useAddCustomerMutation, useRemoveCustomerMutation,
-                useGetStoresQuery, useAddStoreMutation, useRemoveStoreMutation } = apiSlice
+                useGetStoresQuery, useAddStoreMutation, useRemoveStoreMutation,
+                useGetOrdersQuery, useAddOrderMutation, useGetRefreshTokenMutation } = apiSlice
