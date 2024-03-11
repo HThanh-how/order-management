@@ -33,6 +33,8 @@ import {
   ModalCloseButton,
   Spinner,
   useToast,
+  Select, 
+  VStack,
 } from "@chakra-ui/react";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useEffect, useState } from "react";
@@ -138,6 +140,13 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
     setProductSelections([]);
   };
 
+  const formatMoney = (number: number) => {
+    const tmp = number.toString();
+    const formattedInteger = tmp.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    const formattedMoney = `${formattedInteger}`;
+    return formattedMoney;
+  };
+
   const totalPages = Math.ceil(products.length / productsPerPage);
 
   
@@ -154,7 +163,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
               />
             </Th>
             <Th>Tên</Th>
-            <Th>Giá</Th>
+            {/* <Th>Giá</Th> */}
             <Th>Trạng thái</Th>
             <Th>Thông tin</Th>
             
@@ -183,18 +192,23 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
               <Td>
               <Flex>
                 <Image
-                  src={`data:image/png;base64, ${product.photo}`}
+                  src={product.photoUrl}
                   width={50}
                   height={20}
                   alt="product image"
                 />
-                <Center>
-                  <strong>{product.name}</strong>
-                </Center>
                 
+                <VStack ml={4}>
+                  <Center>
+                    <strong>{product.name}</strong> 
+                  </Center>
+                  <Center>
+                    {formatMoney(product.price)} VNĐ
+                  </Center>
+                </VStack>
               </Flex>
               </Td>
-              <Td>{product.price} VNĐ</Td>
+              {/* <Td>{product.price} VNĐ</Td> */}
               <Td> 
                 {product.status === "AVAILABLE" && (
                   <Badge mr={2} colorScheme="green">
@@ -261,7 +275,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
       </Modal>
                
       <Flex justify="space-between" mt={4}>
-        <ButtonGroup>
+        {/* <ButtonGroup>
           <Button
             onClick={() => handleProductsPerPageChange(5)}
             colorScheme={productsPerPage === 5 ? "orange" : "gray"}
@@ -292,7 +306,13 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
           >
             25
           </Button>
-        </ButtonGroup>
+        </ButtonGroup> */}
+        <Select w={'25%'} onChange={(e) => handleProductsPerPageChange(Number(e.target.value))}>
+          <option defaultChecked value='5' >5 sản phẩm</option>
+          <option value='10' >10 sản phẩm</option>
+          <option value='15' >15 sản phẩm</option>
+          <option value='20' >20 sản phẩm</option>
+        </Select>
 
         <Flex align="center">
           <Text>{`Page `}</Text>

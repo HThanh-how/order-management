@@ -20,12 +20,12 @@ const series :Array<seri> = [
   {
     name: "Đơn hàng",
     type: "column",
-    data: [30, 40, 45, 50],
+    data: [30, 40, 45, 20, 10],
   },
   {
     name: "Doanh thu",
-    type: "area",
-    data: [10000, 15000, 20000, 18000],
+    type: "line",
+    data: [10000, 15000, 20000, 12000, 5000],
   },
 ];
 
@@ -36,7 +36,7 @@ const ActivityChart = () => {
       stacked: false,
     },
     xaxis: {
-      categories: ["Week 1", "Week 2", "Week 3", "Week 4"],
+      categories: ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"],
     },
     yaxis: [
       {
@@ -53,7 +53,7 @@ const ActivityChart = () => {
           },
         },
         title: {
-          text: "Quantity of Orders",
+          text: "Số lượng đơn",
           style: {
             color: "#008FFB",
           },
@@ -79,6 +79,7 @@ const ActivityChart = () => {
             color: "#00E396",
           },
         },
+        
       },
     ],
     tooltip: {
@@ -88,7 +89,7 @@ const ActivityChart = () => {
 
   return (
     <Flex mt={4} justify="space-between">
-      <Box p={4} h="40vh" maxW="100%" bgColor="white" borderRadius="xl">
+      <Box p={4} h="40vh" maxW="50%"  borderRadius="xl">
         {/* <ApexCharts
           options={chartSettings}
           series={series}
@@ -101,11 +102,12 @@ const ActivityChart = () => {
           series={series}
           type="line"
           height={400}
-          width={1400}
+          width={1000}
+          
         />
         {/* <FirstChart/> */}
       </Box>
-      <Box
+      {/* <Box
         p={4}
         h="40vh"
         w="35%"
@@ -118,7 +120,7 @@ const ActivityChart = () => {
         <Box w="40vh" h="40vh" mt={4}>
           <SecondChart />
         </Box>
-      </Box>
+      </Box> */}
     </Flex>
   );
 };

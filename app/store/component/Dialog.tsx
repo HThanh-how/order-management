@@ -110,11 +110,12 @@ export default function AddressSelect() {
 
   const onSubmit = async(data: FormData) => {
     const {village, district, city, ...sendData} = data;
-    console.log(data);
+    let isSuccess: boolean = true;
     try {
       await addStore(sendData).unwrap();
       onClose();
     } catch (err) {
+      isSuccess = false;
       console.error('Failed to save store: ', err)
       toast({
         title: 'Có lỗi khi thêm cửa hàng mới',
@@ -123,7 +124,17 @@ export default function AddressSelect() {
         duration: 3000,
         isClosable: true,
       })
-    } 
+    } finally {
+      if(isSuccess) {
+        toast({
+          title: 'Thêm cửa hàng mới thành công',
+          position: 'top',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        })
+      }
+    }
   }
 
   return (

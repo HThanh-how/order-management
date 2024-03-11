@@ -1,7 +1,7 @@
 export type Product = {
     id: number;
     name: string;
-    photo: string;
+    photoUrl: string;
     status: string;
     price: number;
     weight: number;
@@ -33,6 +33,13 @@ export type Store = {
     isDefault: boolean,
     sendAtPost: boolean, 
   };
+
+export type Staff = {
+  id: string;
+  phone: string;
+  email: string;
+  permissions: string[];
+}
 
 export type Order = {
   id: number,

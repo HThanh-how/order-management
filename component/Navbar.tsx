@@ -21,7 +21,19 @@ import {
   CloseButton,
   Icon,
   Drawer,
+  DrawerBody,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
   DrawerContent,
+  DrawerCloseButton,
+  Spinner,
+  Alert,
+  AlertIcon,
+  VStack,
+  useToast,
+  AvatarBadge,
+  Divider,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { FiBell } from "react-icons/fi";
@@ -41,7 +53,8 @@ import {
   FiShoppingCart
 } from "react-icons/fi";
 import { IconType } from "react-icons";
-import { ReactText } from "react";
+import { ReactText, useMemo } from "react";
+import { useGetEmployeesRequestQuery, useApproveEmployeeRequestMutation, useRejectEmployeeRequestMutation } from "@/app/_lib/features/api/apiSlice";
 
 interface Props {
   children: React.ReactNode;
@@ -90,11 +103,71 @@ export default function NavBar() {
   const [isLogin, setIsLogin] = useState(false);
   const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const notification = useDisclosure();
+  const toast = useToast();
   const pathname = usePathname();
-  
-  
+  const {
+    data: employeeRequests,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetEmployeesRequestQuery() 
+  const [approveEmployeeRequest] = useApproveEmployeeRequestMutation();
+  const [rejectEmployeeRequest] = useRejectEmployeeRequestMutation();
+
+  const getEmployeeRequests = useMemo (() => {
+    if(isSuccess) return employeeRequests.data
+  }, [employeeRequests])
+
   const createdAt = new Date().toISOString();
 
+  const handleApproveRequest = async (request: any) => {
+    try {
+      console.log(request);
+      await approveEmployeeRequest({
+        id: request.id, 
+        request: {
+          employeeId: request.employeeId,
+          permissions: request.permissions,
+        }
+        })
+      .unwrap();
+      notification.onClose();
+    } catch (err) {
+      console.error('Failed to send request: ', err)
+      toast({
+        title: 'Có lỗi khi gửi yêu cầu',
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    } 
+  }
+
+  const handleRejectRequest = async (request: any) => {
+    try {
+      const res = await rejectEmployeeRequest({
+        id: request.id, 
+        request: {
+          employeeId: request.employeeId,
+          permissions: request.permissions,
+        }
+        })
+      .unwrap();
+      notification.onClose();
+    } catch (err) {
+      console.error('Failed to send request: ', err)
+      toast({
+        title: 'Có lỗi khi gửi yêu cầu',
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    } 
+  }
 
   useEffect(() => {
     // const lastAccess = localStorage.getItem("createAt");
@@ -256,7 +329,88 @@ export default function NavBar() {
           {isLogin ? (
             <>
             <Menu>
-              <FiBell size="20px" color="white"/>
+              {/* <FiBell size="20px" color="white" onClick={notification.onOpen}>
+                <AvatarBadge boxSize='1.25em' bg='green.500'>1</AvatarBadge>
+              </FiBell> */}
+              <Avatar size='sm' bgColor='#171717' icon={<FiBell size="20px" color="white"/>}  onClick={notification.onOpen}>
+                {isSuccess && getEmployeeRequests.length !== 0 && (
+                  <AvatarBadge boxSize='1.25em' bg='red'>{getEmployeeRequests.length}</AvatarBadge>
+                )}
+              </Avatar>
+              <Drawer
+                isOpen={notification.isOpen}
+                placement='right'
+                onClose={notification.onClose}  
+              >
+                <DrawerOverlay />
+                <DrawerContent>
+                  <DrawerCloseButton />
+                  <DrawerHeader>Notifications</DrawerHeader>
+                  <DrawerBody>
+                    
+                    {isLoading ? (
+                      <Flex
+                      alignItems="center"
+                      justify="center"
+                      direction={{ base: "column", md: "row" }}
+                      >
+                        <Spinner size='lg' color='orange.500' />
+                      </Flex>
+                    ) : isError ? (
+                      <Flex
+                      alignItems="center"
+                      justify="center"
+                      direction={{ base: "column", md: "row" }}
+                      m={4}
+                      >
+                        <Alert w='25%' status='error'>
+                          <AlertIcon />
+                          Can not fetch data from server
+                        </Alert>
+                      </Flex>
+                    ) : (
+                      <>
+                        {getEmployeeRequests.length === 0 && (
+                          <p>Không có thông báo nào</p>
+                        )}
+                        {getEmployeeRequests.length !== 0 && (
+                          getEmployeeRequests.map((req: any) => (
+                            <VStack mb={4} key={req.id}>
+                              <p>Bạn nhận được yêu cầu trở thành nhân viên</p>
+                              <HStack mb={2}>
+                                <Button
+                                  colorScheme="orange"
+                                  variant='outline'
+                                  mx={2}
+                                  onClick={() => handleRejectRequest(req)}
+                                >
+                                  Từ chối
+                                </Button>
+                                <Button
+                                  colorScheme="orange"
+                                  onClick={() => handleApproveRequest(req)}
+                                  mx={2}
+                                >
+                                  Chấp nhận
+                                </Button>
+                              </HStack>
+                              <Divider orientation='horizontal' />
+                            </VStack>
+                          ))
+                        )}
+                      </>
+                    )}
+                  </DrawerBody>
+
+                  {/* <DrawerFooter>
+                    <Button variant='outline' mr={3} onClick={onClose}>
+                      Cancel
+                    </Button>
+                    <Button colorScheme='blue'>Save</Button>
+                  </DrawerFooter> */}
+                </DrawerContent>
+              </Drawer>
+
               <MenuButton
                 as={Button}
                 rounded={"full"}
@@ -289,13 +443,25 @@ export default function NavBar() {
             </Menu>
             </>
           ) : (
+            <>
             <Button
-              color="blue"
+              colorScheme="orange"
+              variant='outline'
+              mx={2}
+              onClick={() => (window.location.href = "/register")}
+            >
+              Đăng ký
+            </Button>
+            <Button
+              colorScheme="orange"
               onClick={() => (window.location.href = "/login")}
+              mx={2}
             >
               Đăng nhập
             </Button>
+          </>
           )}
+          
         </Flex>
       </Flex>
     </Box>

@@ -46,8 +46,9 @@ import {
 } from "react-icons/fi";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
-import Stats from "./component/Stats";
-import MainChart from "./component/MainChart";
+import CustomerTable from "./component/Request";
+// import Location from "./Location";
+// import ProductInfor from "./ProductInfor";
 
 
 interface LinkItemProps {
@@ -55,7 +56,6 @@ interface LinkItemProps {
   icon: IconType;
   link: string;
 }
-
 const LinkItems: Array<LinkItemProps> = [
   { name: "Tổng quan", icon: FiHome, link: "/dashboard" },
   { name: "Đơn hàng", icon: FiShoppingCart, link: "/order" },
@@ -68,10 +68,9 @@ const LinkItems: Array<LinkItemProps> = [
 
 export default function Sidebar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
-      <title>Tổng quan</title>
+          <title>Nhân viên</title>
       <SidebarContent
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
@@ -90,9 +89,8 @@ export default function Sidebar() {
       </Drawer> */}
       {/* mobilenav */}
       {/* <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} /> */}
-      <Box ml={{ base: 0, md: 60 }} p={{base:2, md: 8}}>
-        <Stats />
-        <MainChart/>
+      <Box ml={{ base: 0, md: 60 }} p={8}>
+        <CustomerTable/>
       </Box>
     </Box>
   );
@@ -115,10 +113,10 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       {...rest}
     >
       <Flex display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="8" justifyContent="space-between">
-        <Text  fontSize="2xl" fontFamily="monospace" fontWeight="bold">
+        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           OrList
         </Text>
-        <CloseButton display={{ base: "flex", md: "none" }} onClick={onClose} />
+        <CloseButton  onClick={onClose} />
       </Flex>
       <Button onClick={()=>router.push("/create")}  ml={8} mt={6} mb={2} w="50%" colorScheme="orange">+ Tạo đơn </Button>
       {LinkItems.map((link) => (

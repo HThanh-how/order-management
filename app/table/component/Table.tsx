@@ -30,6 +30,7 @@ import {
   ModalBody,
   ModalCloseButton,
   useToast,
+  Select,
 } from "@chakra-ui/react";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useState } from "react";
@@ -116,7 +117,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
     }
   };
 
-  const handlecustomersPerPageChange = (perPage: number) => {
+  const handleCustomersPerPageChange = (perPage: number) => {
     setCurrentPage(1);
     setCustomersPerPage(perPage);
     setCheckedAll(false);
@@ -225,38 +226,44 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
       </Modal>
 
       <Flex justify="space-between" mt={4}>
-        <ButtonGroup>
+        {/* <ButtonGroup>
           <Button
-            onClick={() => handlecustomersPerPageChange(5)}
+            onClick={() => handleCustomersPerPageChange(5)}
             colorScheme={customersPerPage === 5 ? "orange" : "gray"}
           >
             5
           </Button>
           <Button
-            onClick={() => handlecustomersPerPageChange(10)}
+            onClick={() => handleCustomersPerPageChange(10)}
             colorScheme={customersPerPage === 10 ? "orange" : "gray"}
           >
             10
           </Button>
           <Button
-            onClick={() => handlecustomersPerPageChange(15)}
+            onClick={() => handleCustomersPerPageChange(15)}
             colorScheme={customersPerPage === 15 ? "orange" : "gray"}
           >
             15
           </Button>
           <Button
-            onClick={() => handlecustomersPerPageChange(20)}
+            onClick={() => handleCustomersPerPageChange(20)}
             colorScheme={customersPerPage === 20 ? "orange" : "gray"}
           >
             20
           </Button>
           <Button
-            onClick={() => handlecustomersPerPageChange(25)}
+            onClick={() => handleCustomersPerPageChange(25)}
             colorScheme={customersPerPage === 25 ? "orange" : "gray"}
           >
             25
           </Button>
-        </ButtonGroup>
+        </ButtonGroup> */}
+        <Select w={'25%'} onChange={(e) => handleCustomersPerPageChange(Number(e.target.value))}>
+          <option defaultChecked value='5' >5 khách hàng</option>
+          <option value='10' >10 khách hàng</option>
+          <option value='15' >15 khách hàng</option>
+          <option value='20' >20 khách hàng</option>
+        </Select>
 
         <Flex align="center">
           <Text>{`Page `}</Text>

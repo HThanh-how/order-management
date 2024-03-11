@@ -74,7 +74,7 @@ const handleLogin = async () => {
 };
 
   return (
-<Box position={"relative"} bg="black" h="100vh"> 
+    <Box position={"relative"} bg="white" h="100vh"> 
           <title>Đăng nhập</title>
       <Container
         as={SimpleGrid}
@@ -87,7 +87,7 @@ const handleLogin = async () => {
           <Heading
             lineHeight={1.1}
             fontSize={{ base: "3xl", sm: "4xl", md: "5xl", lg: "6xl" }}
-            color={"gray.50"}
+            color={"#171717"}
           >
             Hệ thống quản trị đơn hàng Thông minh{" "}
             <Text
@@ -126,7 +126,7 @@ const handleLogin = async () => {
             </Heading>
             <Text color={"gray.500"} fontSize={{ base: "sm", sm: "md" }}></Text>
           </Stack>
-          <Box as={"form"} mt={10}>
+          <Box as={"form"} mt={2}>
             <Stack spacing={4}>
               <Input
                 placeholder="Tên đăng nhập"

@@ -21,16 +21,18 @@ import {
   FormHelperText,
   HStack,
   useToast,
+  Image,
+  Center,
 } from "@chakra-ui/react";
-import { watch } from "fs";
 
 import { useEffect, useState } from "react";
 import { useForm,  Controller, SubmitHandler } from "react-hook-form"
 import { useEditProductMutation } from "@/app/_lib/features/api/apiSlice"
+import getFromLocalStorage from "@/app/_lib/getFromLocalStorage";
 
 type FormData = {
   name:string,
-  photo:string,
+  photoUrl:string,
   status: string,
   price: number,
   weight: number,
@@ -50,7 +52,6 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
     formState: { errors },
   } = useForm<FormData>({defaultValues: {
     name: selectedProduct.name || "",
-    photo:selectedProduct.photo || "",
     status: selectedProduct.status || "",
     price: selectedProduct.price || "",
     weight: selectedProduct.weight || "",
@@ -61,6 +62,7 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
   }})
 
   const [editProduct, {isLoading}] = useEditProductMutation();
+  const [img, setImg] = useState<any>(null);
   const toast = useToast();
 
 
@@ -68,8 +70,38 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
     reset(selectedProduct);
   }, [selectedProduct])
 
+  const validateFiles = (e: any) => {
+    if(e.target.files) {
+      const value = e.target.files[0];
+      const fsMb = value.size / (1024 * 1024)
+      const MAX_FILE_SIZE = 10
+      if (fsMb > MAX_FILE_SIZE) {
+        return 'Max file size 10mb'
+      }     
+      setImg(value);
+    }
+    return;
+  }
+
+  const uploadImage = async (value: any) => {
+    const formData = new FormData();
+    formData.append('file', value);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/user/firebase/image`, 
+    {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${getFromLocalStorage('accessToken')}`,
+      },
+      body: formData, 
+    })
+    return res.json()
+  }
 
   const onSubmit = async(data: FormData) => {
+    if(img) {
+      const tmp = await uploadImage(img);
+      data.photoUrl = tmp.base64;
+    }
     try {
       await editProduct(data).unwrap();
       onClose();
@@ -97,8 +129,21 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
           <ModalHeader>Sửa thông tin sản phẩm</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
+          
+            <Center>
+              <Image
+                src={selectedProduct?.photoUrl}
+                width={'50%'}
+                height={'50%'}
+                alt="product image"
+              />
+            </Center>
             
-          <FormControl isRequired isInvalid={Boolean(errors.name)}>
+            <FormControl mt={4}>
+              <input type='file' accept="image/png" onChange={validateFiles}></input>
+            </FormControl>
+
+            <FormControl mt={4} isRequired isInvalid={Boolean(errors.name)}>
               <FormLabel>Tên hàng hóa</FormLabel>
               <Input type='text' {...register('name', {
                 required: 'Trường này không được bỏ trống',
@@ -107,10 +152,7 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
                 {errors.name && errors.name.message}
               </FormErrorMessage>
             </FormControl>
-            <FormControl mt={4}>
-              <FormLabel>Ảnh</FormLabel>
-              <Input type='text' {...register('photo')}  />
-            </FormControl>
+            
             <FormControl isRequired isInvalid={Boolean(errors.name)} mt={4}>
               <FormLabel>Trọng lượng (g)</FormLabel>
               <Input type='text' {...register('weight', {

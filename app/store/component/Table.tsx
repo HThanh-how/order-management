@@ -30,6 +30,7 @@ import {
   ModalBody,
   ModalCloseButton,
   useToast,
+  Select,
 } from "@chakra-ui/react";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useState } from "react";
@@ -116,7 +117,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
     }
   };
 
-  const handlestoresPerPageChange = (perPage: number) => {
+  const handleStoresPerPageChange = (perPage: number) => {
     setCurrentPage(1);
     setStoresPerPage(perPage);
     setCheckedAll(false);
@@ -225,38 +226,44 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
       </Modal>
 
       <Flex justify="space-between" mt={4}>
-        <ButtonGroup>
+        {/* <ButtonGroup>
           <Button
-            onClick={() => handlestoresPerPageChange(5)}
+            onClick={() => handleStoresPerPageChange(5)}
             colorScheme={storesPerPage === 5 ? "orange" : "gray"}
           >
             5
           </Button>
           <Button
-            onClick={() => handlestoresPerPageChange(10)}
+            onClick={() => handleStoresPerPageChange(10)}
             colorScheme={storesPerPage === 10 ? "orange" : "gray"}
           >
             10
           </Button>
           <Button
-            onClick={() => handlestoresPerPageChange(15)}
+            onClick={() => handleStoresPerPageChange(15)}
             colorScheme={storesPerPage === 15 ? "orange" : "gray"}
           >
             15
           </Button>
           <Button
-            onClick={() => handlestoresPerPageChange(20)}
+            onClick={() => handleStoresPerPageChange(20)}
             colorScheme={storesPerPage === 20 ? "orange" : "gray"}
           >
             20
           </Button>
           <Button
-            onClick={() => handlestoresPerPageChange(25)}
+            onClick={() => handleStoresPerPageChange(25)}
             colorScheme={storesPerPage === 25 ? "orange" : "gray"}
           >
             25
           </Button>
-        </ButtonGroup>
+        </ButtonGroup> */}
+        <Select w={'25%'} onChange={(e) => handleStoresPerPageChange(Number(e.target.value))}>
+          <option defaultChecked value='5' >5 cửa hàng</option>
+          <option value='10' >10 cửa hàng</option>
+          <option value='15' >15 cửa hàng</option>
+          <option value='20' >20 cửa hàng</option>
+        </Select>
 
         <Flex align="center">
           <Text>{`Page `}</Text>

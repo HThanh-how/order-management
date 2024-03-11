@@ -26,13 +26,13 @@ import {
 } from "@chakra-ui/react";
 import { FiFile } from 'react-icons/fi'
 import { ReactNode, useEffect, useState } from "react";
-import { useForm, UseFormRegisterReturn } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { useAddProductMutation } from "@/app/_lib/features/api/apiSlice"
 import getFromLocalStorage from "@/app/_lib/getFromLocalStorage";
 
 type FormData = {
   name: string,
-  photo: string,
+  photoUrl: string,
   status: string,
   price: number,
   weight: number,
@@ -72,10 +72,10 @@ export default function Dialog() {
     setImg(value);
   }
 
-  const getBase64string = async (value: any) => {
+  const uploadImage = async (value: any) => {
     const formData = new FormData();
     formData.append('file', value);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/products/image`, 
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/user/firebase/image`, 
     {
       method: "POST",
       headers: {
@@ -87,14 +87,14 @@ export default function Dialog() {
   }
 
   const onSubmit = async (data: FormData) => {
-    const tmp = await getBase64string(img);
-    console.log(tmp);
-    data.photo = tmp.base64;
-    
+    const tmp = await uploadImage(img);
+    data.photoUrl = tmp.base64;
+    let isSuccess: boolean = true;
     try {
       await addProduct(data).unwrap();
       onClose();
     } catch (err) {
+      isSuccess = false;
       console.error('Failed to save product: ', err)
       toast({
         title: 'Có lỗi khi thêm sản phẩm mới',
@@ -103,7 +103,17 @@ export default function Dialog() {
         duration: 3000,
         isClosable: true,
       })
-    } 
+    } finally {
+      if(isSuccess) {
+        toast({
+          title: 'Thêm sản phẩm mới thành công',
+          position: 'top',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        })
+      }
+    }
 }
 
   return (
@@ -132,11 +142,11 @@ export default function Dialog() {
                 {errors.name && errors.name.message}
               </FormErrorMessage>
             </FormControl>
-            <FormControl mt={4} isInvalid={!!errors.photo} isRequired>
+            <FormControl mt={4} isInvalid={!!errors.photoUrl} isRequired>
               <FormLabel>Hình ảnh sản phẩm</FormLabel>
-              <Input type='file' accept="image/png" onChange={validateFiles}/>
+              <input type='file' accept="image/png" onChange={validateFiles}></input>
               <FormErrorMessage>
-                {errors.photo && errors?.photo.message}
+                {errors.photoUrl && errors?.photoUrl.message}
               </FormErrorMessage>
             </FormControl>
 

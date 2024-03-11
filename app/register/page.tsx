@@ -85,6 +85,16 @@ export default function Login() {
     }
   };
 
+  const validatePhoneNumber = () => {
+    if (!phoneNumber) {
+      setErrors((errors) => ({ ...errors, phoneNumber: "Vui lòng nhập số điện thoại" }));
+    } else if (!/[0-9]{10}$/.test(phoneNumber)) {
+      setErrors((errors) => ({ ...errors, phoneNumber: "Số điện thoại không hợp lệ" }));
+    } else {
+      setErrors((errors) => ({ ...errors, phoneNumber: "" }));
+    }
+  };
+
   const validatePassword = () => {
     if (!password) {
       setErrors((errors) => ({
@@ -143,10 +153,9 @@ export default function Login() {
 
     validateUsername();
     validateEmail();
+    validatePhoneNumber();
     validatePassword();
     validateRetypePassword();
-    validateFirstName();
-    validateLastName();
 
     if (Object.values(errors).some((error) => error !== "")) {
       return;
@@ -154,7 +163,7 @@ export default function Login() {
 
     try {
       setIsLoading(true);
-      const data = { username, email, password, firstName, lastName, phoneNumber };
+      const data = { username, email, password, firstName, lastName, phoneNumber, roles: ["user"] };
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_HOSTNAME}auth/register`,
         data
@@ -189,20 +198,20 @@ export default function Login() {
   };
 
   return (
-    <Box position={"relative"} bg="black" h="100vh"> 
+    <Box position={"relative"} bg="white" h="100%"> 
           <title>Đăng ký</title>
       <Container
         as={SimpleGrid}
         maxW={"7xl"}
         columns={{ base: 1, md: 2 }}
         spacing={{ base: 10, lg: 32 }}
-        py={{ base: 10, sm: 20, lg: 20 }}
+        py={{ base: 5, sm: 10, lg: 10 }}
       >
         <Stack spacing={{ base: 10, md: 20 }}>
           <Heading
             lineHeight={1.1}
             fontSize={{ base: "3xl", sm: "4xl", md: "5xl", lg: "6xl" }}
-            color={"gray.50"}
+            color={"#171717"}
           >
             Hệ thống quản trị đơn hàng thông minh{" "}
             <Text
@@ -241,9 +250,9 @@ export default function Login() {
             <Text color={"gray.500"} fontSize={{ base: "sm", sm: "md" }}></Text>
           </Stack>
    
-          <Box as={"form"} mt={10} onSubmit={handleRegister}>
+          <Box as={"form"} mt={2} onSubmit={handleRegister}>
             <Stack spacing={4}>
-            <FormControl isInvalid={!!errors.firstName}>
+            {/* <FormControl isInvalid={!!errors.firstName}>
                 <Input
                   placeholder="Họ và tên"
                   bg={"#0a0a0a"}
@@ -274,23 +283,7 @@ export default function Login() {
                   onBlur={validateLastName}
                 />
                 <FormErrorMessage>{errors.lastName}</FormErrorMessage>
-              </FormControl>
-              <FormControl isInvalid={!!errors.username}>
-                <Input
-                  placeholder="Tên đăng nhập"
-                  bg={"#0a0a0a"}
-                  border={0}
-                  color={"white"}
-                  _placeholder={{
-                    color: "gray.500",
-                  }}
-                  type="text"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  onBlur={validateUsername}
-                />
-                <FormErrorMessage>{errors.username}</FormErrorMessage>
-              </FormControl>
+              </FormControl> */}
 
               <FormControl isInvalid={!!errors.email}>
                 <Input
@@ -307,6 +300,40 @@ export default function Login() {
                   onBlur={validateEmail}
                 />
                 <FormErrorMessage>{errors.email}</FormErrorMessage>
+              </FormControl>
+
+              <FormControl isInvalid={!!errors.phoneNumber}>
+                <Input
+                  placeholder="Số điện thoại"
+                  bg={"#0a0a0a"}
+                  border={0}
+                  color={"white"}
+                  _placeholder={{
+                    color: "gray.500",
+                  }}
+                  type="text"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                  onBlur={validatePhoneNumber}
+                />
+                <FormErrorMessage>{errors.phoneNumber}</FormErrorMessage>
+              </FormControl>
+
+              <FormControl isInvalid={!!errors.username}>
+                <Input
+                  placeholder="Tên đăng nhập"
+                  bg={"#0a0a0a"}
+                  border={0}
+                  color={"white"}
+                  _placeholder={{
+                    color: "gray.500",
+                  }}
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  onBlur={validateUsername}
+                />
+                <FormErrorMessage>{errors.username}</FormErrorMessage>
               </FormControl>
 
               <FormControl isInvalid={!!errors.password}>

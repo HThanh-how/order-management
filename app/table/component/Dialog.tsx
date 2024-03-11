@@ -125,10 +125,12 @@ export default function AddressSelect() {
 
   const onSubmit = async(data: FormData) => {
     const {village, district, city, ...sendData} = data;
+    let isSuccess: boolean = true;
     try {
       await addCustomer(sendData).unwrap();
       onClose();
     } catch (err) {
+      isSuccess = false;
       console.error('Failed to save customer: ', err)
       toast({
         title: 'Có lỗi khi thêm khách hàng mới',
@@ -137,6 +139,16 @@ export default function AddressSelect() {
         duration: 3000,
         isClosable: true,
       })
+    } finally {
+      if(isSuccess) {
+        toast({
+          title: 'Thêm khách hàng mới thành công',
+          position: 'top',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        })
+      }
     }
   }
 
