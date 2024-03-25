@@ -35,6 +35,7 @@ import {
   useToast,
   Select, 
   VStack,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useEffect, useState } from "react";
@@ -58,6 +59,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [removeProduct, {isLoading}] = useRemoveProductMutation();
   const toast = useToast();
+  const [isMobile] = useMediaQuery('(max-width: 768px)')
 
   
 
@@ -152,17 +154,21 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
   
 
   return (
-    <Box overflowX="auto" p={8}>
-      <Table variant="simple">
+    <Box overflowX={{base: 'scroll', md: "hidden"}} p={8}>
+      <Table variant="simple" size={{base: 'sm', md: 'md'}}>
         <Thead bgColor={"gray.50"} rounded={"xl"}>
           <Tr>
-            <Th width={"1vw"}>
+            <Th w={"1vw"}>
               <Checkbox
                 isChecked={checkedAll}
                 onChange={handleMasterCheckboxChange}
               />
             </Th>
-            <Th>Tên</Th>
+            {isMobile ?
+              <Th textAlign='center'>Tên</Th>
+            :
+              <Th>Tên</Th>
+            }
             {/* <Th>Giá</Th> */}
             <Th>Trạng thái</Th>
             <Th>Thông tin</Th>
@@ -191,14 +197,26 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
               </Td>
               <Td>
               <Flex>
-                <Image
-                  src={product.photoUrl}
-                  width={50}
-                  height={20}
-                  alt="product image"
-                />
-                
-                <VStack ml={4}>
+                {!isMobile ?
+                <>
+                  <Image
+                    src={product.photoUrl}
+                    width={50}
+                    height={20}
+                    alt="product image"
+                  />
+                  
+                  <VStack ml={4}>
+                    <Center>
+                      <strong>{product.name}</strong> 
+                    </Center>
+                    <Center>
+                      {formatMoney(product.price)} VNĐ
+                    </Center>
+                  </VStack>
+                </>
+                :
+                <VStack>
                   <Center>
                     <strong>{product.name}</strong> 
                   </Center>
@@ -206,6 +224,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
                     {formatMoney(product.price)} VNĐ
                   </Center>
                 </VStack>
+                }
               </Flex>
               </Td>
               {/* <Td>{product.price} VNĐ</Td> */}
@@ -260,7 +279,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
         selectedProduct={selectedProduct}
       />
 
-      <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered>
+      <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered size={{base: 'sm', md: 'md'}}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
@@ -307,14 +326,14 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
             25
           </Button>
         </ButtonGroup> */}
-        <Select w={'25%'} onChange={(e) => handleProductsPerPageChange(Number(e.target.value))}>
+        <Select ml={2} fontSize={{base: 10, md: 16}} w={{base: '15%', md:'20%'}} onChange={(e) => handleProductsPerPageChange(Number(e.target.value))}>
           <option defaultChecked value='5' >5 sản phẩm</option>
           <option value='10' >10 sản phẩm</option>
           <option value='15' >15 sản phẩm</option>
           <option value='20' >20 sản phẩm</option>
         </Select>
 
-        <Flex align="center">
+        <Flex ml={{base: 6}} align="center">
           <Text>{`Page `}</Text>
           <Input
             mx={2}

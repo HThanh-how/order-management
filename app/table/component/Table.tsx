@@ -127,8 +127,8 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
   const totalPages = Math.ceil(customers.length / customersPerPage);
 
   return (
-    <Box overflowX="auto" p={8}>
-      <Table variant="simple">
+    <Box overflowX={{base: 'scroll', md: "hidden"}} p={8}>
+      <Table variant="simple" size={{base: 'sm', md: 'md'}}>
         <Thead bgColor={"gray.50"} rounded={"xl"}>
           <Tr>
             <Th width={"1vw"}>
@@ -211,12 +211,12 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
         </Tbody>
       </Table>
 
-      <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered>
+      <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered size={{base: 'sm', md: 'md'}}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
           <ModalBody>
-              Bạn có chắc chắn xóa sản phẩm này?
+              Bạn có chắc chắn xóa khách hàng này?
           </ModalBody>
           <ModalFooter>
             <Button mr={3} onClick={() => handleDeleteClose()}>Đóng</Button>
@@ -258,14 +258,14 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
             25
           </Button>
         </ButtonGroup> */}
-        <Select w={'25%'} onChange={(e) => handleCustomersPerPageChange(Number(e.target.value))}>
+        <Select ml={2} fontSize={{base: 10, md: 16}} w={{base: '15%', md:'20%'}} onChange={(e) => handleCustomersPerPageChange(Number(e.target.value))}>
           <option defaultChecked value='5' >5 khách hàng</option>
           <option value='10' >10 khách hàng</option>
           <option value='15' >15 khách hàng</option>
           <option value='20' >20 khách hàng</option>
         </Select>
 
-        <Flex align="center">
+        <Flex ml={{base: 6}} align="center">
           <Text>{`Page `}</Text>
           <Input
             mx={2}

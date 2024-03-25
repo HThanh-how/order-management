@@ -279,7 +279,8 @@ export default function OrderForm() {
           )
           : (
             <FormControl isRequired isInvalid={Boolean(errors.store)}>
-              <Select mt={4} 
+              <Select
+                mt={4}
                 placeholder="Chọn cửa hàng" 
                 variant="filled" 
                 {...register('store', {
@@ -406,7 +407,7 @@ export default function OrderForm() {
               
             <Input 
               mt={4} 
-              w='25%' 
+              w={{base: '50%', md: '25%'}} 
               placeholder={"Số lượng "} 
               onChange={(e) => {
                 setQuantityItem([...quantityItem.slice(0, quantityItem.length-1), Number(e.target.value)]);
@@ -448,20 +449,16 @@ export default function OrderForm() {
 
         <Divider my={2} orientation="horizontal" color={"gray.800"} />
         <Text fontWeight={"500"}>Kích thước</Text>
-        <Flex>
-          <Input mt={4} placeholder={"Dài - cm"} {...register('length')}/>
-          <Input m={4} placeholder={"Rộng - cm"} {...register('width')}/>
-          <Input mt={4} placeholder={" Cao - cm"} {...register('height')}/>
-        </Flex>
-        <HStack columnGap={2}>
-          <Box>
-            <Checkbox m={2} colorScheme="orange" {...register('isDocument')}>Tài liệu/ Văn kiện </Checkbox>
-            <Checkbox m={2} colorScheme="orange" {...register('isValuable')}>Giá trị cao</Checkbox>
-          </Box>
-          <Box>
-            <Checkbox m={2} colorScheme="orange" {...register('isFragile')}>Dễ vỡ</Checkbox>
-            <Checkbox m={2} colorScheme="orange" {...register('isBulky')}>Quá khổ</Checkbox>
-          </Box>
+        <Stack direction={{base: 'column', md: 'row'}}>
+          <Input mt={{base: 2, md: 4}} placeholder={"Dài - cm"} {...register('length')}/>
+          <Input mt={{base: 2, md: 4}} placeholder={"Rộng - cm"} {...register('width')}/>
+          <Input mt={{base: 2, md: 4}} placeholder={" Cao - cm"} {...register('height')}/>
+        </Stack>
+        <HStack mt={{base: 2, md: 4}} justifyContent={'space-between'} >
+            <Checkbox colorScheme="orange" {...register('isDocument')}>Tài liệu/ Văn kiện </Checkbox>
+            <Checkbox colorScheme="orange" {...register('isValuable')}>Giá trị cao</Checkbox>
+            <Checkbox colorScheme="orange" {...register('isFragile')}>Dễ vỡ</Checkbox>
+            <Checkbox colorScheme="orange" {...register('isBulky')}>Quá khổ</Checkbox>
         </HStack>
       </Box>
       <Box mt={4} bg="gray.50" p={4}>
@@ -497,7 +494,7 @@ export default function OrderForm() {
           </FormControl>
           <FormControl isRequired isInvalid={Boolean(errors.delivery)}>
             <FormLabel>Lấy hàng</FormLabel>
-            <Select mt={2} 
+            <Select mt={{base: 8, md: 2}} 
               variant="filled" 
               {...register('delivery.layHang', {
                 required: 'This is required',

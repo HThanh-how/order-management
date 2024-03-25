@@ -92,6 +92,7 @@ export default function AddressSelect() {
         isOpen={isOpen}
         onClose={onClose}
         isCentered
+        size={{base: 'sm', md: 'md'}}
       >
         <ModalOverlay />
         <ModalContent>

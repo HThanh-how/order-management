@@ -48,6 +48,7 @@ import { IconType } from "react-icons";
 import { ReactText } from "react";
 import Stats from "./component/Stats";
 import MainChart from "./component/MainChart";
+import CustomerCard from "./component/CustomerCard";
 
 
 interface LinkItemProps {
@@ -90,9 +91,13 @@ export default function Sidebar() {
       </Drawer> */}
       {/* mobilenav */}
       {/* <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} /> */}
-      <Box ml={{ base: 0, md: 60 }} p={{base:2, md: 8}}>
+      <Box ml={{ base: 0, md: 60 }} p={{base: 2, md: 8}}>
         <Stats />
-        <MainChart/>
+        <Stack mt={4} spacing={8} direction= {{base: 'column', md: 'row'}} >
+          <MainChart/>
+          <CustomerCard/>
+        </Stack>
+        
       </Box>
     </Box>
   );
@@ -126,6 +131,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           key={link.name} 
           icon={link.icon}
           onClick={() => router.push(`${link.link}`)}
+          bgColor={link.name === "Tổng quan" ? "cyan.500" : ""}
+          color= {link.name === "Tổng quan" ? "white" : ""}
         >
           {link.name}
         </NavItem>
@@ -142,7 +149,6 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
   return (
     <Box
       as="a"
-
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
     >

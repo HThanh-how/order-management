@@ -61,7 +61,7 @@ const baseQueryWithRefresh: BaseQueryFn<
       const tmp = await refreshResult.json();
       console.log(tmp);
       const { accessToken, refreshToken } = tmp;
-      // store the new token in the store or wherever you keep it
+      
       localStorage.setItem("accessToken", accessToken);
       localStorage.setItem("refreshToken", refreshToken);
       const createdAt = new Date().toISOString();
@@ -73,7 +73,7 @@ const baseQueryWithRefresh: BaseQueryFn<
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("createdAt");
-      localStorage.removeItem("userId");
+      // localStorage.removeItem("userId");
       // window.location.href =  '/login';
     }
   }
@@ -94,7 +94,7 @@ export const apiSlice = createApi({
   //     return headers;
   //   }
   // }),
-  tagTypes: ["Product", "Customer", "Store", "Order", "Staff", "Request"],
+  tagTypes: ["Product", "Customer", "Store", "Order", "Staff", "Request", "UserInfo"],
   // The "endpoints" represent operations and requests for this server
   endpoints: (builder) => ({
     // The `getPosts` endpoint is a "query" operation that returns data
@@ -246,11 +246,27 @@ export const apiSlice = createApi({
       providesTags: ["Request"],
     }),
 
-    getEmployeesRequest: builder.query<any, void>({
+    getEmployeesRequest: builder.query({
       // The URL for the request is '/fakeApi/posts'
       query: () => ({
         url: "/empl-mngt/employee/get-all?status=PENDING",
       }),
+    }),
+
+    getUserInfo: builder.query<any, string | null>({
+      // The URL for the request is '/fakeApi/posts'
+      query: (id) => ({
+        url: `/user/${id}`,
+      }),
+      providesTags: ["UserInfo"],
+    }),
+    editUserInfo: builder.mutation({
+      query: ({ newUserInfo, id }) => ({
+        url: `/user/${id}/update`,
+        method: "PATCH",
+        body: newUserInfo,
+      }),
+      invalidatesTags: ["UserInfo"],
     }),
 
     approveEmployeeRequest: builder.mutation({
@@ -293,4 +309,6 @@ export const {
   useApproveEmployeeRequestMutation,
   useRejectEmployeeRequestMutation,
   useGetAllRequestOfOwnerQuery,
+  useGetUserInfoQuery,
+  useEditUserInfoMutation,
 } = apiSlice;

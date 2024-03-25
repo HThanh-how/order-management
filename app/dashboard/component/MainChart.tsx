@@ -20,12 +20,13 @@ const series :Array<seri> = [
   {
     name: "Đơn hàng",
     type: "column",
-    data: [30, 40, 45, 20, 10],
+    data: [30, 40, 45, 20, 10, 16, 24, 26, 22, 30, 32, 38],
   },
   {
     name: "Doanh thu",
     type: "line",
-    data: [10000, 15000, 20000, 12000, 5000],
+    data: [1000000, 1500000, 2000000, 1200000, 500000, 
+           530000, 800000, 1200000, 1500000, 1650000, 1800000, 2200000],
   },
 ];
 
@@ -34,9 +35,33 @@ const ActivityChart = () => {
     chart: {
       id: "mixed-chart",
       stacked: false,
+      height: 350,
+      width: 800,
+      zoom: {
+        type: 'x',
+        enabled: true,
+        autoScaleYaxis: true
+      },
+      toolbar: {
+        autoSelected: 'zoom'
+      }
+    },
+    stroke: {
+      width: [0, 4]
+    },
+    markers: {
+      size: 4,
+    },
+    // dataLabels: {
+    //   enabled: true,
+    //   enabledOnSeries: [1]
+    // },
+    title: {
+      text: 'Report',
+      align: 'left'
     },
     xaxis: {
-      categories: ["Week 1", "Week 2", "Week 3", "Week 4", "Week 5"],
+      categories: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
     },
     yaxis: [
       {
@@ -78,49 +103,35 @@ const ActivityChart = () => {
           style: {
             color: "#00E396",
           },
-        },
-        
+        }, 
       },
     ],
     tooltip: {
       shared: true,
     },
+    responsive: [
+      {
+        breakpoint: 768,
+        options: {
+          chart: {
+            width: '100%',
+          }
+        }
+      }
+    ]
   };
 
   return (
-    <Flex mt={4} justify="space-between">
-      <Box p={4} h="40vh" maxW="50%"  borderRadius="xl">
-        {/* <ApexCharts
-          options={chartSettings}
-          series={series}
-          type="line"
-          height={400}
-          width={1400}
-        /> */}
+    <Flex mt={4} width={{md:1000}}>
+      <Box bgColor={'white'} p={{base: 0, md:4}} width={'100%'} borderRadius="xl">
         <Chart
           options={options}
           series={series}
           type="line"
-          height={400}
-          width={1000}
-          
+          width={'100%'}
+          height={350}
         />
-        {/* <FirstChart/> */}
       </Box>
-      {/* <Box
-        p={4}
-        h="40vh"
-        w="35%"
-        ml={4}
-        bgColor="white"
-        borderRadius="xl"
-        justifyContent={"center"}
-        display="flex"
-      >
-        <Box w="40vh" h="40vh" mt={4}>
-          <SecondChart />
-        </Box>
-      </Box> */}
     </Flex>
   );
 };

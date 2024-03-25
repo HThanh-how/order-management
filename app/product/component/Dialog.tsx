@@ -114,7 +114,7 @@ export default function Dialog() {
         })
       }
     }
-}
+  }
 
   return (
     <>
@@ -126,6 +126,7 @@ export default function Dialog() {
         isOpen={isOpen}
         onClose={onClose}
         isCentered
+        size={{base: 'sm', md: 'md'}}
       >
         <ModalOverlay />
         <ModalContent>
@@ -181,7 +182,7 @@ export default function Dialog() {
                 {errors.status && errors.status.message}
               </FormErrorMessage>
             </FormControl>
-            <HStack spacing='16px' mt={4}>
+            <HStack spacing={{base: 8, md: 12}} mt={4}>
               <FormControl>
                 <FormLabel>Dài (cm)</FormLabel>
                 <Input type='text' {...register('length')} />

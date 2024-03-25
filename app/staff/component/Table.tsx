@@ -23,6 +23,7 @@ import {
   MenuOptionGroup,
   MenuDivider,
   Select,
+  AspectRatio
 } from "@chakra-ui/react";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useState } from "react";
@@ -42,7 +43,7 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
     setCheckedAll(!checkedAll);
 
     if (!checkedAll) {
-      const allStaffIds = staffs.map((staff) => staff.id);
+      const allStaffIds = staffs.map((staff) => staff.employeeId);
       setStaffSelections(allStaffIds);
     } else {
       setStaffSelections([]);
@@ -86,8 +87,9 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
   const totalPages = Math.ceil(staffs.length / staffsPerPage);
 
   return (
-    <Box overflowX="auto" p={8}>
-      <Table variant="simple">
+    
+    <Box overflowX={{base: 'scroll', md: "hidden"}} p={8}>
+      <Table variant="simple" size={{base: 'sm', md: 'md'}}>
         <Thead bgColor={"gray.50"} rounded={"xl"}>
           <Tr>
             <Th width={"1vw"}>
@@ -115,11 +117,11 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
         </Thead>
         <Tbody>
           {paginateStaffs().map((staff) => (
-            <Tr key={staff.id}>
+            <Tr key={staff.employeeId}>
               <Td>
                 <Checkbox
-                  isChecked={staffSelections.includes(staff.id)}
-                  onChange={() => handleCheckboxChange(staff.id)}
+                  isChecked={staffSelections.includes(staff.employeeId)}
+                  onChange={() => handleCheckboxChange(staff.employeeId)}
                 />
               </Td>
               <Td>{staff.email}</Td>
@@ -174,14 +176,14 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
       </Table>
 
       <Flex justify="space-between" mt={4}>
-        <Select w={'25%'} onChange={(e) => handleStaffsPerPageChange(Number(e.target.value))}>
+        <Select ml={2} fontSize={{base: 10, md: 16}} w={{base: '15%', md:'20%'}} onChange={(e) => handleStaffsPerPageChange(Number(e.target.value))}>
           <option defaultChecked value='5' >5 nhân viên</option>
           <option value='10' >10 nhân viên</option>
           <option value='15' >15 nhân viên</option>
           <option value='20' >20 nhân viên</option>
         </Select>
 
-        <Flex align="center">
+        <Flex ml={{base: 6}} align="center">
           <Text>{`Page `}</Text>
           <Input
             mx={2}

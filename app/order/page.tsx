@@ -88,7 +88,7 @@ export default function Sidebar() {
       </Drawer> */}
       {/* mobilenav */}
       {/* <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} /> */}
-      <Box ml={{ base: 0, md: 60 }} p={8}>
+      <Box ml={{ base: 0, md: 60 }} p={{ base: 2, md: 8 }}>
         <OrderTable/>
       </Box>
     </Box>
@@ -123,6 +123,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           key={link.name} 
           icon={link.icon}
           onClick={() => router.push(`${link.link}`)}
+          bgColor={link.name === "Đơn hàng" ? "cyan.500" : ""}
+          color= {link.name === "Đơn hàng" ? "white" : ""}
         >
           {link.name}
         </NavItem>

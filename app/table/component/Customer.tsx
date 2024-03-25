@@ -35,6 +35,7 @@ import CustomerList from "./Table";
 import { useGetCustomersQuery } from "@/app/_lib/features/api/apiSlice"
 import { Customer } from "@/app/type";
 
+//Hiển thị thêm số đơn, số tiền khách đã đặt
 
 export default function CustomerTable() {
   const [searchInput, setSearchInput] = useState("");

@@ -82,6 +82,7 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
         isOpen={isOpen}
         onClose={onClose}
         isCentered
+        size={{base: 'sm', md: 'md'}}
       >
         <ModalOverlay />
         <ModalContent>

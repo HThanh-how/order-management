@@ -31,7 +31,8 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Spinner
+  Spinner,
+  Select,
 } from "@chakra-ui/react";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useEffect, useState } from "react";
@@ -149,8 +150,8 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
   
 
   return (
-    <Box overflowX="auto" p={8}>
-      <Table variant="simple">
+    <Box overflowX={{base: 'scroll', md: "hidden"}} p={8}>
+      <Table variant="simple" size={{base: 'sm', md: 'md'}}>
         <Thead bgColor={"gray.50"} rounded={"xl"}>
           <Tr>
             <Th width={"1vw"}>
@@ -159,7 +160,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
                 onChange={handleMasterCheckboxChange}
               />
             </Th>
-            {/* <Th>Mã đơn</Th> */}
+            <Th>Mã đơn</Th>
             <Th>Thành tiền</Th>
             <Th>Địa chỉ</Th>
             {/* <Th>Thời gian cập nhật</Th> */}
@@ -183,30 +184,31 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
                   onChange={() => handleCheckboxChange(order.id)}
                 />
               </Td>
-              {/* <Td>
-                <Center>
-                  <strong>{order.code}</strong>
-                </Center>
-              </Td> */}
+              <Td> <strong>{order.code}</strong> </Td>
               <Td>{order.price.collectionCharge} VNĐ</Td>
               
               <Td>{`${order.receiver.detailedAddress}, ${order.receiver.address}`},</Td>
               <Td> 
-                {order.orderStatus === "AVAILABLE" && (
+                {order.orderStatus === "DELIVERED" && (
                   <Badge mr={2} colorScheme="green">
-                    CÒN HÀNG
+                    ĐÃ GIAO
                   </Badge>
                 )}
 
-                {order.orderStatus === "OUT_OF_STOCK" && (
+                {order.orderStatus === "CANCELLED" && (
                   <Badge mr={2} colorScheme="red">
-                    HẾT HÀNG
+                    BỊ HỦY
                   </Badge>
                 )}
 
-                {order.orderStatus === "BACK_ORDER" && (
+                {order.orderStatus === "PROCESSING" && (
                   <Badge mr={2} colorScheme="blue">
-                    DỰ TRỮ
+                    ĐANG XỬ LÝ
+                  </Badge>
+                )}
+                {order.orderStatus === "CREATED" && (
+                  <Badge mr={2} colorScheme="gray">
+                    ĐÃ TẠO
                   </Badge>
                 )}
               </Td>
@@ -250,7 +252,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
       </Modal> */}
                
       <Flex justify="space-between" mt={4}>
-        <ButtonGroup>
+        {/* <ButtonGroup>
           <Button
             onClick={() => handleOrdersPerPageChange(5)}
             colorScheme={ordersPerPage === 5 ? "orange" : "gray"}
@@ -281,9 +283,16 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
           >
             25
           </Button>
-        </ButtonGroup>
+        </ButtonGroup> */}
 
-        <Flex align="center">
+        <Select ml={2} fontSize={{base: 10, md: 16}} w={{base: '15%', md:'20%'}} onChange={(e) => handleOrdersPerPageChange(Number(e.target.value))}>
+          <option defaultChecked value='5' >5 đơn hàng</option>
+          <option value='10' >10 đơn hàng</option>
+          <option value='15' >15 đơn hàng</option>
+          <option value='20' >20 đơn hàng</option>
+        </Select>
+
+        <Flex ml={{base: 6}} align="center">
           <Text>{`Page `}</Text>
           <Input
             mx={2}

@@ -38,7 +38,7 @@ import {
 } from "@chakra-ui/react";
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import { Staff } from "@/app/type";
-import { useGetAllRequestOfOwnerQuery } from "@/app/_lib/features/api/apiSlice";
+import { useGetAllRequestOfOwnerQuery, useGetUserInfoQuery } from "@/app/_lib/features/api/apiSlice";
 
 export default function CustomerTable() {
   const [searchInput, setSearchInput] = useState("");
@@ -46,14 +46,15 @@ export default function CustomerTable() {
 
   const {
     data: requests,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
+    isLoading: isLoadingR,
+    isSuccess: isSuccessR,
+    isError: isErrorR,
+    error: errorR,
   } = useGetAllRequestOfOwnerQuery() 
 
+
   const getRequests = useMemo (() => {
-    if(isSuccess) return requests.data
+    if(isSuccessR) return requests.data
   }, [requests])
 
   // const handleSearchInputChange = (event: { target: { value: any } }) => {
@@ -130,7 +131,7 @@ export default function CustomerTable() {
 
         <CardBody>
           
-          {isLoading ? (
+          {isLoadingR ? (
             <Flex
             alignItems="center"
             justify="center"
@@ -138,7 +139,7 @@ export default function CustomerTable() {
             >
               <Spinner size='lg' color='orange.500' />
             </Flex>
-          ) : isError ? (
+          ) : isErrorR ? (
             <Flex
             alignItems="center"
             justify="center"
@@ -162,7 +163,7 @@ export default function CustomerTable() {
                     Summary
                   </Heading>
                   <Text pt='2' fontSize='sm' style={{ display: 'flex', flexWrap: 'wrap' }}>
-                    Quyền: {req.permissions.map((tag: any, index: any) => (
+                    Quyền: {req.permissions.map((tag: any, index: any  ) => (
                     <div key={index}>
                       {tag === "VIEW_ONLY" && (
                         <Badge ml={2} colorScheme="gray">

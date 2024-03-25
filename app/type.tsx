@@ -35,10 +35,20 @@ export type Store = {
   };
 
 export type Staff = {
-  id: string;
+  employeeId: string;
   phone: string;
   email: string;
   permissions: string[];
+}
+
+export type UserProfile = {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  dateOfBirth: string;
+  
 }
 
 export type Order = {
@@ -47,11 +57,11 @@ export type Order = {
   height: number,
   width: number,
   length: number,
-  items: [{
+  items: {
     quantity: number,
     price: number,
     product: Product,
-  }],
+  }[],
   store: Store,
   receiver: Customer,
   price: {

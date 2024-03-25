@@ -74,7 +74,7 @@ export default function Sidebar() {
       </Drawer>
       
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} /> */}
-      <Box ml={{ base: 0, md: 60 }} p="8">
+      <Box ml={{ base: 0, md: 60 }} p={{ base: 4, md: 8 }}>
         <OrderForm />        
       </Box>
     </Box>

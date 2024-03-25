@@ -54,7 +54,8 @@ import {
 } from "react-icons/fi";
 import { IconType } from "react-icons";
 import { ReactText, useMemo } from "react";
-import { useGetEmployeesRequestQuery, useApproveEmployeeRequestMutation, useRejectEmployeeRequestMutation } from "@/app/_lib/features/api/apiSlice";
+import getFromLocalStorage from "@/app/_lib/getFromLocalStorage";
+import { useGetEmployeesRequestQuery, useApproveEmployeeRequestMutation, useRejectEmployeeRequestMutation, useGetUserInfoQuery } from "@/app/_lib/features/api/apiSlice";
 
 interface Props {
   children: React.ReactNode;
@@ -106,19 +107,35 @@ export default function NavBar() {
   const notification = useDisclosure();
   const toast = useToast();
   const pathname = usePathname();
+  let condition = !isLogin;
+
+  const {
+    data: user,
+    isLoading: isLoadingU,
+    isSuccess: isSuccessU,
+    isError: isErrorU,
+    error: errorU,
+  } = useGetUserInfoQuery(getFromLocalStorage('userId'), {skip: !isLogin})
+
   const {
     data: employeeRequests,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = useGetEmployeesRequestQuery() 
+    isLoading: isLoadingR,
+    isSuccess: isSuccessR,
+    isError: isErrorR,
+    error: errorR,
+  } = useGetEmployeesRequestQuery(1, {skip: !isLogin})
+
   const [approveEmployeeRequest] = useApproveEmployeeRequestMutation();
   const [rejectEmployeeRequest] = useRejectEmployeeRequestMutation();
 
   const getEmployeeRequests = useMemo (() => {
-    if(isSuccess) return employeeRequests.data
+    if(isSuccessR) return employeeRequests.data
   }, [employeeRequests])
+
+  const getUser = useMemo (() => {
+    if(isSuccessU) return user.data
+  }, [user])
+  
 
   const createdAt = new Date().toISOString();
 
@@ -261,20 +278,20 @@ export default function NavBar() {
           </DrawerContent>
         </Drawer>
         <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
-        <HStack spacing={8} alignItems={"center"}>
-          <Box ml={8} fontSize='20px' onClick={() => router.push("/")} cursor={"pointer"}>
+        <HStack spacing={{base: 4, md: 8}} alignItems={"center"}>
+          <Box ml={{base: 0, md: 8}} fontSize='20px' onClick={() => router.push("/")} cursor={"pointer"}>
             <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
               OrList
             </Text>
           </Box>
           {isLogin&&
             <Box
-              px={2}
+              px={{base:1, md:2}}
               py={1}
               rounded={"md"}
               _hover={{
                 textDecoration: "none",
-                bg: useColorModeValue("gray.800", "gray.700"),
+                // bg: useColorModeValue("gray.800", "gray.700"),
               }}
               onClick={() => router.push("/dashboard")}
               cursor={"pointer"}
@@ -333,7 +350,7 @@ export default function NavBar() {
                 <AvatarBadge boxSize='1.25em' bg='green.500'>1</AvatarBadge>
               </FiBell> */}
               <Avatar size='sm' bgColor='#171717' icon={<FiBell size="20px" color="white"/>}  onClick={notification.onOpen}>
-                {isSuccess && getEmployeeRequests.length !== 0 && (
+                {isSuccessR && getEmployeeRequests.length !== 0 && (
                   <AvatarBadge boxSize='1.25em' bg='red'>{getEmployeeRequests.length}</AvatarBadge>
                 )}
               </Avatar>
@@ -348,7 +365,7 @@ export default function NavBar() {
                   <DrawerHeader>Notifications</DrawerHeader>
                   <DrawerBody>
                     
-                    {isLoading ? (
+                    {isLoadingR ? (
                       <Flex
                       alignItems="center"
                       justify="center"
@@ -356,7 +373,7 @@ export default function NavBar() {
                       >
                         <Spinner size='lg' color='orange.500' />
                       </Flex>
-                    ) : isError ? (
+                    ) : isErrorR ? (
                       <Flex
                       alignItems="center"
                       justify="center"
@@ -421,7 +438,7 @@ export default function NavBar() {
               >
                 <Avatar
                   size={"sm"}
-                  src={
+                  src={getUser?.avatar ? getUser.avatar :
                     "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
                   }
                 />
@@ -475,6 +492,8 @@ interface SidebarProps extends BoxProps {
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   const router = useRouter();
+  const pathname = usePathname();
+  
   return (
     <Box
       bg={useColorModeValue("white", "gray.900")}
@@ -510,6 +529,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             onClose();
             router.push(`${link.link}`)
           }}
+          bgColor={link.link === pathname ? "cyan.500" : ""}
+          color= {link.link === pathname ? "white" : ""}
         >
           {link.name}
         </NavItem>
@@ -566,7 +587,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
-      px={{ base: 4, md: 24 }}
+      px={{ base: 0, md: 24 }}
       height="20"
       alignItems="center"
       // bg={useColorModeValue("white", "gray.900")}
