@@ -74,7 +74,7 @@ const baseQueryWithRefresh: BaseQueryFn<
       localStorage.removeItem("refreshToken");
       localStorage.removeItem("createdAt");
       // localStorage.removeItem("userId");
-      // window.location.href =  '/login';
+      window.location.href =  '/login';
     }
   }
   return result;
@@ -94,7 +94,7 @@ export const apiSlice = createApi({
   //     return headers;
   //   }
   // }),
-  tagTypes: ["Product", "Customer", "Store", "Order", "Staff", "Request", "UserInfo"],
+  tagTypes: ["Product", "Customer", "Store", "Order", "Staff", "Request", "UserInfo", "Notification"],
   // The "endpoints" represent operations and requests for this server
   endpoints: (builder) => ({
     // The `getPosts` endpoint is a "query" operation that returns data
@@ -149,10 +149,30 @@ export const apiSlice = createApi({
       invalidatesTags: ["Product"],
     }),
 
-    getCustomers: builder.query<any, void>({
+    getCustomers: builder.query({
       // The URL for the request is '/fakeApi/posts'
       query: () => ({
         url: "/receivers",
+        headers: {
+          userId: `${getFromLocalStorage("userId")}`,
+        },
+      }),
+      providesTags: ["Customer"],
+    }),
+    getTopCustomers: builder.query({
+      // The URL for the request is '/fakeApi/posts'
+      query: () => ({
+        url: "order/top-receiver",
+        headers: {
+          userId: `${getFromLocalStorage("userId")}`,
+        },
+      }),
+      providesTags: ["Customer"],
+    }),
+    getCustomersForEmployee: builder.query({
+      // The URL for the request is '/fakeApi/posts'
+      query: () => ({
+        url: "/receivers/owner/getall",
         headers: {
           userId: `${getFromLocalStorage("userId")}`,
         },
@@ -169,6 +189,17 @@ export const apiSlice = createApi({
         body: newReceiver,
       }),
       invalidatesTags: ["Customer"],
+    }),
+    editCustomer: builder.mutation({
+      query: (newCustomer) => ({
+        url: `/receivers/${newCustomer.id}`,
+        method: "PUT",
+        headers: {
+          userId: `${getFromLocalStorage("userId")}`,
+        },
+        body: newCustomer,
+      }),
+      invalidatesTags: ["Customer", "Order"],
     }),
     removeCustomer: builder.mutation({
       query: (id) => ({
@@ -197,6 +228,7 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Store"],
     }),
+    
     removeStore: builder.mutation({
       query: (id) => ({
         url: `/stores/${id}`,
@@ -205,10 +237,31 @@ export const apiSlice = createApi({
       invalidatesTags: ["Store"],
     }),
 
-    getOrders: builder.query<any, void>({
+    getOrders: builder.query({
       // The URL for the request is '/fakeApi/posts'
       query: () => ({
         url: "/order",
+      }),
+      providesTags: ["Order"],
+    }),
+    getOrdersForEmployee: builder.query({
+      // The URL for the request is '/fakeApi/posts'
+      query: () => ({
+        url: "/order/owner",
+      }),
+      providesTags: ["Order"],
+    }),
+    getOrderDetail: builder.query<any, number | null>({
+      // The URL for the request is '/fakeApi/posts'
+      query: (id) => ({
+        url: `/order/${id}`,
+      }),
+      providesTags: ["Order"],
+    }),
+    getOrderDetailForEmployee: builder.query<any, number | null>({
+      // The URL for the request is '/fakeApi/posts'
+      query: (id) => ({
+        url: `/order/${id}/owner`,
       }),
       providesTags: ["Order"],
     }),
@@ -218,6 +271,33 @@ export const apiSlice = createApi({
         method: "POST",
         body: newOrder,
       }),
+      invalidatesTags: ["Order"],
+    }),
+    addOrderForEmployee: builder.mutation({
+      query: (newOrder) => ({
+        url: "/order/owner",
+        method: "POST",
+        body: newOrder,
+      }),
+      invalidatesTags: ["Order"],
+    }),
+    editOrderStatus: builder.mutation({
+      query: ({newStatus, id}) => ({
+        url: `/order/${id}/status`,
+        method: "PATCH",
+        headers: {
+          userId: `${getFromLocalStorage("userId")}`,
+        },
+        body: newStatus,
+      }),
+      invalidatesTags: ["Order"],
+    }),
+    removeOrder: builder.mutation({
+      query: (id) => ({
+        url: `/order/${id}`,
+        method: "DELETE",
+      }),
+
       invalidatesTags: ["Order"],
     }),
 
@@ -285,6 +365,30 @@ export const apiSlice = createApi({
         responseHandler: (response) => response.text(),
       }),
     }),
+    getNotifications: builder.query({
+      // The URL for the request is '/fakeApi/posts'
+      query: () => ({
+        url: `/notification`,
+      }),
+      providesTags: ["Notification"],
+    }),
+    setNotiIsRead: builder.mutation({
+      query: (id) => ({
+        url: `/notification/${id}`,
+        method: "PUT",
+        headers: {
+          userId: `${getFromLocalStorage("userId")}`,
+        },
+      }),
+      invalidatesTags: ["Notification"],
+    }),
+    getStatistic: builder.query({
+      // The URL for the request is '/fakeApi/posts'
+      query: () => ({
+        url: `order/statistic`,
+      }),
+      
+    }),
   }),
 });
 
@@ -295,13 +399,22 @@ export const {
   useEditProductMutation,
   useRemoveProductMutation,
   useGetCustomersQuery,
+  useGetTopCustomersQuery,
+  useGetCustomersForEmployeeQuery,
   useAddCustomerMutation,
+  useEditCustomerMutation,
   useRemoveCustomerMutation,
   useGetStoresQuery,
   useAddStoreMutation,
   useRemoveStoreMutation,
   useGetOrdersQuery,
+  useGetOrdersForEmployeeQuery,
+  useGetOrderDetailQuery,
+  useGetOrderDetailForEmployeeQuery,
   useAddOrderMutation,
+  useAddOrderForEmployeeMutation,
+  useEditOrderStatusMutation,
+  useRemoveOrderMutation,
   useGetRefreshTokenMutation,
   useGetEmployeesQuery,
   useSendEmployeeRequestMutation,
@@ -311,4 +424,7 @@ export const {
   useGetAllRequestOfOwnerQuery,
   useGetUserInfoQuery,
   useEditUserInfoMutation,
+  useGetNotificationsQuery,
+  useSetNotiIsReadMutation,
+  useGetStatisticQuery,
 } = apiSlice;

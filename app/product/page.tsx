@@ -91,7 +91,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       h="full"
       {...rest}
     >
-      <Flex display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="8" justifyContent="right">
+      <Flex display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="10" justifyContent="right">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           OrList
         </Text>
@@ -103,7 +103,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           key={link.name} 
           icon={link.icon}
           onClick={() => router.push(`${link.link}`)}
-          bgColor={link.name === "Sản phẩm" ? "cyan.500" : ""}
+          bgColor={link.name === "Sản phẩm" ? "orange.500" : ""}
           color= {link.name === "Sản phẩm" ? "white" : ""}
         >
           {link.name}
@@ -128,12 +128,12 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
       <Flex
         align="center"
         p="4"
-        mx="4"
+        m="4"
         borderRadius="lg"
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "cyan.400",
+          bg: "orange.400",
           color: "white",
         }}
         {...rest}

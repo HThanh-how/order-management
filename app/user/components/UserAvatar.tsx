@@ -104,7 +104,7 @@ export default function UserAvatar({ user }: UserAvatarProps) {
       onClose();
     } catch (err) {
       isSuccess = false;
-      console.error('Failed to save product: ', err)
+      console.error('Failed to edit user info: ', err)
       toast({
         title: 'Có lỗi khi cập nhật thông tin',
         position: 'top',

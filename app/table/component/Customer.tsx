@@ -32,21 +32,24 @@ import {
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
 import CustomerList from "./Table";
-import { useGetCustomersQuery } from "@/app/_lib/features/api/apiSlice"
+import { useGetCustomersQuery, useGetCustomersForEmployeeQuery } from "@/app/_lib/features/api/apiSlice"
 import { Customer } from "@/app/type";
+import { useAppSelector } from "@/app/_lib/hooks";
 
 //Hiển thị thêm số đơn, số tiền khách đã đặt
 
 export default function CustomerTable() {
   const [searchInput, setSearchInput] = useState("");
+  const role = useAppSelector((state) => state.role.value);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
+  
   const {
     data: customers,
     isLoading,
     isSuccess,
     isError,
     error,
-  } = useGetCustomersQuery()
+  } = useGetCustomersQuery(1);
 
   const getCustomers = useMemo (() => {
     if(isSuccess) return customers.data
@@ -81,7 +84,7 @@ export default function CustomerTable() {
           alignItems={"flex-start"}
           maxW={{ base: "80vw", md: "full" }}
         >
-          <Text fontSize={{ base: "xl", md: "3xl" }} fontWeight={700}>
+          <Text fontSize={{ base: "xl", md: "3xl" }} color={'blue.500'} fontWeight={700}>
             Khách hàng
           </Text>
           <Text color={"gray"}>Tuần này bạn có thêm 20 khách hàng mới</Text>

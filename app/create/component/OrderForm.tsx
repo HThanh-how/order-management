@@ -23,12 +23,15 @@ import {
   Alert, 
   AlertIcon,
   useToast,
+  StackDivider,
 } from "@chakra-ui/react";
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form"
 import ProductDialog from "@/app/product/component/Dialog";
 import ReceiverDialog from "../../table/component/Dialog";
-import {  useGetProductsQuery, useGetCustomersQuery, useGetStoresQuery, useAddOrderMutation  } from "@/app/_lib/features/api/apiSlice"
+import {  useGetProductsQuery, useGetCustomersQuery, useGetStoresQuery, useAddOrderMutation, useAddOrderForEmployeeMutation  } from "@/app/_lib/features/api/apiSlice"
+import { useAppSelector } from "@/app/_lib/hooks";
 import { Product, Customer, Store } from "@/app/type";
 
 type OrderItem = {
@@ -76,6 +79,8 @@ export default function OrderForm() {
   const [productSuggestions, setProductSuggestions] = useState<Product[]>([]);
   const [quantityItem, setQuantityItem] = useState<number[]>([]);
   const [priceItem, setPriceItem] = useState<number[]>([]);
+  const [totalPriceItems, setTotalPriceItems] = useState<number>(0);
+  const [shippingFee, setShippingFee] = useState<number>(0);
 
   const [selectedStore, setSelectedStore] = useState<any>(null);
   //only 1 checkbox of receiver box be checked
@@ -83,10 +88,15 @@ export default function OrderForm() {
   const [checkbox2Checked, setCheckbox2Checked] = useState(false);
 
   const [selectedReceiver, setSelectedReceiver] = useState<any>(null);
+  const [receiverValue, setReceiverValue] = useState<string>("");
   const [receiverSuggestions, setReceiverSuggestions] = useState<Customer[]>([]);
 
-  const [addOrder, {isLoading}] = useAddOrderMutation();
+  const [addOrder] = useAddOrderMutation();
+  const [addOrderForEmployee] = useAddOrderForEmployeeMutation();
   const toast = useToast()
+  const router = useRouter();
+  const role = useAppSelector((state) => state.role.value);
+
 
   const {
     data: products,
@@ -102,7 +112,7 @@ export default function OrderForm() {
     isSuccess: isSuccessR,
     isError: isErrorR,
     error: errorR,
-  } = useGetCustomersQuery()
+  } = useGetCustomersQuery(1)
 
   const {
     data: stores,
@@ -133,29 +143,33 @@ export default function OrderForm() {
     formState: { errors, isSubmitSuccessful, isSubmitting },
   } = useForm<FormData>() 
 
+
   useEffect(() => {
-    if(isSubmitSuccessful) {
-      //TODO Khi tạo đơn hàng thành công -> page tạo đơn hàng thành công (hiển thị chi tiết đơn hàng và có nút tạo tiếp đơn hàng mới)
-      setTimeout(() => window.location.reload(), 3000);
-      toast({
-        title: 'Tạo đơn hàng thành công.',
-        position: 'top',
-        status: 'success',
-        duration: 3000,
-        isClosable: true,
-      })
-    }
-  },[isSubmitSuccessful])
+    setTotalPriceItems(priceItem.reduce((acc, currentValue) => acc + currentValue, 0))
+    // console.log(totalPriceItems);
+  }, [priceItem])
 
   const onSubmit = async(data: FormData) => {
+    let isSuccess: boolean = true;
     try {
       data.items.map((item, index) => {
         item.price = priceItem[index];
         item.quantity = quantityItem[index];
       })
+      data.price = {
+        itemsPrice: 0,
+        shippingFee: 0,
+        collectionCharge: 0,
+      };
+      data.price.itemsPrice = totalPriceItems;
+      data.price.shippingFee = shippingFee;
+      data.price.collectionCharge = totalPriceItems + shippingFee;
       data.store = {...selectedStore};
-      await addOrder(data).unwrap();
+      if(role === "ROLE_USER")
+        await addOrder(data).unwrap();
+      else await addOrderForEmployee(data).unwrap();
     } catch (err) {
+      isSuccess = false;
       console.error('Failed to create order: ', err)
       toast({
         title: 'Có lỗi khi tạo đơn hàng mới',
@@ -164,7 +178,17 @@ export default function OrderForm() {
         duration: 3000,
         isClosable: true,
       })
-    } 
+    } finally {
+      if(isSuccess) 
+        toast({
+          title: 'Tạo đơn hàng thành công.',
+          position: 'top',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        })
+        setTimeout(() => router.push("/order"), 1000);
+    }
      
   }
 
@@ -204,6 +228,24 @@ export default function OrderForm() {
     }
   };
 
+  const updatePriceItem = (index: any, newValue: number) => {
+    // Create a copy of the array
+    const newArray = [...priceItem];
+    // Update the value at the specified index
+    newArray[index] = newValue;
+    // Set the state with the updated array
+    setPriceItem(newArray);
+  };
+
+  const updateQuantityItem = (index: any, newValue: number) => {
+    // Create a copy of the array
+    const newArray = [...quantityItem];
+    // Update the value at the specified index
+    newArray[index] = newValue;
+    // Set the state with the updated array
+    setQuantityItem(newArray);
+  };
+
   const addItem = () => {
     setItems([...items, items.length]);
   };
@@ -216,8 +258,9 @@ export default function OrderForm() {
   };
 
   const renderProductSuggestions = () => productSuggestions.map((suggestion): any => (
-    <div
+    <option
       key={suggestion.id}
+      style={{cursor: 'pointer'}}
       onClick={() => {
         setSelectedItems([...selectedItems, { product: suggestion,
                                               price: 0,
@@ -233,21 +276,23 @@ export default function OrderForm() {
         setProductSuggestions([]);
       }}
     >
-      {suggestion.name}
-    </div>
+      {suggestion.name}  ({suggestion.price} VNĐ)
+    </option>
   ));
   
   const renderReceiverSuggestions = () => receiverSuggestions.map((suggestion): any => (
-    <div
+    <option
       key={suggestion.id}
+      style={{cursor: 'pointer'}}
       onClick={() => {
+        setReceiverValue(suggestion.phoneNumber);
         setSelectedReceiver(suggestion);
         setValue('receiver', suggestion);
         setReceiverSuggestions([]);
       }}
     >
       {suggestion.phoneNumber}
-    </div>
+    </option>
   ));
 
   return (
@@ -290,7 +335,7 @@ export default function OrderForm() {
 
               >
                 {getStores.map((store: any) => (
-                <option key={store.id} value={selectedStore?.name}>
+                <option key={store.id} value={store.name}>
                   {store.name}
                 </option>
                 ))}
@@ -309,59 +354,7 @@ export default function OrderForm() {
             )}
          
       </Box>
-      <Box p={4} bg="gray.50" mt={4}>
-        <Text color="orange.500" fontWeight={"bold"} fontSize="20px">Người nhận</Text>
-        <FormControl isRequired isInvalid={Boolean(errors.receiver)}>
-          <div>
-          <Input 
-            mt={4} 
-            placeholder={"Số điện thoại"} 
-            value={selectedReceiver?.phoneNumber}
-            {...register('receiver', {
-              required: 'Người nhận không được bỏ trống',
-            })}
-            onChange={(e) => {
-              handleReceiverInputChange(e.target.value);
-            }}
-          />
-          {receiverSuggestions.length > 0 && <div>{renderReceiverSuggestions()}</div>}
-          </div>
-          <FormErrorMessage>
-            {errors.receiver && errors.receiver.message}
-          </FormErrorMessage>
-        </FormControl>
-        {selectedReceiver && (
-        <>
-          <Input mt={4} value={selectedReceiver?.name} placeholder={"Họ và tên"} readOnly />
-          <Input mt={4} value={selectedReceiver?.address} placeholder={"Địa chỉ"} readOnly/>
-          <Input mt={4} value={selectedReceiver?.detailedAddress} placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} readOnly/>
-          <Checkbox 
-            id="checkbox1" 
-            m={4} 
-            colorScheme="orange" 
-            isChecked={checkbox1Checked} 
-            {...register('receiver.receiveAtPost')} 
-            onChange={() => handleCheckboxChange('checkbox1')}
-          >
-            Nhận tại bưu cục
-          </Checkbox>
-          <Checkbox 
-            id="checkbox2" 
-            m={4} 
-            colorScheme="orange" 
-            isChecked={checkbox2Checked} 
-            {...register('receiver.callBeforeSend')} 
-            onChange={() => handleCheckboxChange('checkbox2')}
-          >
-            Liên hệ trước khi gửi
-          </Checkbox>
-        </>
-        )}
-        <ReceiverDialog />
-      </Box>
-    </Box>    
-    <Box w={{ base: "80wv", lg: "50%" }}>
-      <Box bg="gray.50" p={4}>
+      <Box bg="gray.50" p={4} mt={4}>
         <Text color="orange.500" fontWeight={"bold"} fontSize="20px">Thông tin hàng hoá</Text>
         {items.map((item, index) => (
           <Box key={index}>  
@@ -384,7 +377,15 @@ export default function OrderForm() {
                           field.onChange(e.target.value); // important to update the form state
                         }}     
                       /> 
-                      {productSuggestions.length > 0 && index === selectedItems.length && <div>{renderProductSuggestions()}</div>}
+                      {productSuggestions.length > 0 && index === selectedItems.length && (
+                      <VStack
+                        alignItems={'flex-start'}
+                        divider={<StackDivider borderColor='gray.200' />}
+                        spacing={2}
+                      >
+                        {renderProductSuggestions()}
+                      </VStack>
+              )}
                     </div>
                     <FormErrorMessage>
                         Tên sản phẩm không được bỏ trống
@@ -410,8 +411,10 @@ export default function OrderForm() {
               w={{base: '50%', md: '25%'}} 
               placeholder={"Số lượng "} 
               onChange={(e) => {
-                setQuantityItem([...quantityItem.slice(0, quantityItem.length-1), Number(e.target.value)]);
-                setPriceItem([...priceItem.slice(0, priceItem.length-1), selectedItems[index]?.product.price * Number(e.target.value)]);
+                // setQuantityItem([...quantityItem.slice(0, quantityItem.length-1), Number(e.target.value)]);
+                // setPriceItem([...priceItem.slice(0, priceItem.length-1), selectedItems[index]?.product.price * Number(e.target.value)]);
+                updateQuantityItem(index, Number(e.target.value));
+                updatePriceItem(index, selectedItems[index]?.product.price * Number(e.target.value))
               }} 
             />
               {/* <FormControl isRequired isInvalid={Boolean(errors.depth)}>
@@ -460,7 +463,72 @@ export default function OrderForm() {
             <Checkbox colorScheme="orange" {...register('isFragile')}>Dễ vỡ</Checkbox>
             <Checkbox colorScheme="orange" {...register('isBulky')}>Quá khổ</Checkbox>
         </HStack>
+        <Flex my={4}>
+          <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Tổng tiền hàng: {totalPriceItems} VNĐ</Text>
+        </Flex>
       </Box>
+    </Box>    
+    <Box w={{ base: "80wv", lg: "50%" }}>
+      <Box p={4} bg="gray.50">
+        <Text color="orange.500" fontWeight={"bold"} fontSize="20px">Người nhận</Text>
+        <FormControl isRequired isInvalid={Boolean(errors.receiver)}>
+          <div>
+          <Input 
+            mt={4} 
+            placeholder={"Số điện thoại"} 
+            value={receiverValue}
+            {...register('receiver', {
+              required: 'Người nhận không được bỏ trống',
+            })}
+            onChange={(e) => {
+              handleReceiverInputChange(e.target.value);
+              setReceiverValue(e.target.value)
+            }}
+          />
+          {receiverSuggestions.length > 0 && (
+            <VStack
+              alignItems={'flex-start'}
+              divider={<StackDivider borderColor='gray.200' />}
+              spacing={2}
+            >
+              {renderReceiverSuggestions()}
+            </VStack>
+          )}
+          </div>
+          <FormErrorMessage>
+            {errors.receiver && errors.receiver.message}
+          </FormErrorMessage>
+        </FormControl>
+        {selectedReceiver && (
+        <>
+          <Input mt={4} value={selectedReceiver?.name} placeholder={"Họ và tên"} readOnly />
+          <Input mt={4} value={selectedReceiver?.address} placeholder={"Địa chỉ"} readOnly/>
+          <Input mt={4} value={selectedReceiver?.detailedAddress} placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} readOnly/>
+          <Checkbox 
+            id="checkbox1" 
+            m={4} 
+            colorScheme="orange" 
+            isChecked={checkbox1Checked} 
+            {...register('receiver.receiveAtPost')} 
+            onChange={() => handleCheckboxChange('checkbox1')}
+          >
+            Nhận tại bưu cục
+          </Checkbox>
+          <Checkbox 
+            id="checkbox2" 
+            m={4} 
+            colorScheme="orange" 
+            isChecked={checkbox2Checked} 
+            {...register('receiver.callBeforeSend')} 
+            onChange={() => handleCheckboxChange('checkbox2')}
+          >
+            Liên hệ trước khi gửi
+          </Checkbox>
+        </>
+        )}
+        <ReceiverDialog />
+      </Box>
+      
       <Box mt={4} bg="gray.50" p={4}>
         <Text color="orange.500" fontWeight={"bold"} fontSize="20px">Vận chuyển</Text>
         <RadioGroup defaultValue="RECEIVER" m={4}>
@@ -546,15 +614,12 @@ export default function OrderForm() {
         <Text mx={4} my={2} fontWeight={"500"}>Ghi chú </Text>
         <Textarea ml={4} mb={4} placeholder='Ghi chú' w={"95%"} {...register('delivery.note')}/>
         <Flex m={4}>
-          <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Thành tiền</Text>
-          <InputGroup>
-            <InputLeftElement
-              pointerEvents="none"
-              color="teal.400"
-              fontSize="1.2em"
-            >$</InputLeftElement>
-            <Input {...register('price.collectionCharge')} placeholder="Tiền thu hộ" />
-          </InputGroup>
+          <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Phí ship: {shippingFee} VNĐ</Text>
+          
+        </Flex>
+        <Flex m={4}>
+          <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Thành tiền: {totalPriceItems + shippingFee} VNĐ</Text>
+          
         </Flex>
         <Flex justifyContent={"right"} m={4}>
         <Button colorScheme='gray' m={2} >Lưu nháp</Button>

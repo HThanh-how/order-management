@@ -14,7 +14,7 @@ import {
     AlertIcon,
 } from '@chakra-ui/react'
 import { useMemo } from 'react';
-import { useGetCustomersQuery } from '@/app/_lib/features/api/apiSlice';
+import { useGetTopCustomersQuery } from '@/app/_lib/features/api/apiSlice';
 
 function CustomerCard() {
     const {
@@ -23,7 +23,7 @@ function CustomerCard() {
         isSuccess,
         isError,
         error,
-      } = useGetCustomersQuery()
+      } = useGetTopCustomersQuery(1)
     
       const getCustomers = useMemo (() => {
         if(isSuccess) return customers.data
@@ -46,13 +46,13 @@ function CustomerCard() {
             direction={{ base: "column", md: "row" }}
             m={4}
             >
-              <Alert w='25%' status='error'>
+              <Alert w='50%' status='error'>
                 <AlertIcon />
                 Can not fetch data from server
               </Alert>
             </Flex>
           ) : (
-            <Card mt={4}>
+            <Card mt={4} w={{base: '100%', md: '40%'}}>
                 {/* Làm nút xem thêm
                 Chỉ hiển thị 5 khách gần nhất */}
                 <CardHeader>
@@ -62,14 +62,14 @@ function CustomerCard() {
                 <CardBody>
                     <Stack divider={<StackDivider />} spacing='4'>
                     {getCustomers.map((customer: any) => (
-                        <Box key={customer.id}>
+                        <Flex  alignItems="flex-end" justify="space-between" key={customer.id}>
                             <Heading size='xs' textTransform='uppercase'>
                                 {customer.name}
                             </Heading>
-                            <Text pt='2' fontSize='sm'>
-                                {customer.address}
+                            <Text>
+                                {customer.totalAmount} VNĐ
                             </Text>
-                        </Box>
+                        </Flex>
                     ))}
                     {/* <Box>
                         <Heading size='xs' textTransform='uppercase'>

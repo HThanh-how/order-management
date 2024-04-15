@@ -117,7 +117,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       h="full"
       {...rest}
     >
-      <Flex display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="8" justifyContent="right">
+      <Flex display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="10" justifyContent="right">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           OrList
         </Text>
@@ -152,7 +152,7 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
       <Flex
         align="center"
         p="4"
-        mx="4"
+        m="4"
         borderRadius="lg"
         role="group"
         cursor="pointer"
