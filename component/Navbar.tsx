@@ -617,7 +617,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       h="full"
       {...rest}
     >
-      <Flex  display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="8" justifyContent="space-between">
+      <Flex  display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="10" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           OrList
         </Text>
@@ -642,7 +642,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             onClose();
             router.push(`${link.link}`)
           }}
-          bgColor={link.link === pathname ? "cyan.500" : ""}
+          bgColor={link.link === pathname ? "orange.500" : ""}
           color= {link.link === pathname ? "white" : ""}
         >
           {link.name}
@@ -667,12 +667,12 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
       <Flex
         align="center"
         p="4"
-        mx="4"
+        m="4"
         borderRadius="lg"
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "cyan.400",
+          bg: "orange.400",
           color: "white",
         }}
         {...rest}
@@ -713,7 +713,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         variant="filled"
         onClick={onOpen}
         aria-label="open menu"
-        color='white'
+        color='black'
         icon={<FiMenu />}
       />
 
