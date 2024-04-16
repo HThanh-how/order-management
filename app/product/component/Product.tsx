@@ -34,11 +34,11 @@ import Dialog from "./Dialog";
 import ProductTable from "./Table";
 
 import { useGetProductsQuery }  from "@/app/_lib/features/api/apiSlice"
-import { Product } from "@/app/type";
+// import { Product } from "@/app/type";
 
 export default function Product() {
   const [searchInput, setSearchInput] = useState("");
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   
   const {
     data: products,
@@ -80,7 +80,7 @@ export default function Product() {
           alignItems={"flex-start"}
           maxW={{ base: "80vw", md: "full" }}
         >
-          <Text fontSize={{ base: "xl", md: "3xl" }} fontWeight={700}>
+          <Text fontSize={{ base: "xl", md: "3xl" }} color={'blue.500'} fontWeight={700}>
             Sản phẩm
           </Text>
           <Text color={"gray"}>Bạn bán hơn 60 sản phẩm mỗi ngày</Text>

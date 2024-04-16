@@ -36,6 +36,7 @@ import { SlOptionsVertical } from "react-icons/sl";
 import { useState } from "react";
 import { useRemoveCustomerMutation } from "@/app/_lib/features/api/apiSlice"
 import { Customer } from "@/app/type";
+import { useAppSelector } from "@/app/_lib/hooks";
 
 interface CustomerTableProps {
   customers: Customer[];
@@ -51,6 +52,9 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
 
   const [removeCustomer, {isLoading}] = useRemoveCustomerMutation();
   const toast = useToast();
+  const role = useAppSelector((state) => state.role.value);
+  const isEmployee: boolean = role === 'ROLE_EMPLOYEE' ? true : false;
+
 
   const handleDeleteClose = async () => {
     setDeleteOpen(false);
@@ -137,7 +141,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
                 onChange={handleMasterCheckboxChange}
               />
             </Th>
-            <Th>Name</Th>
+            <Th>Tên</Th>
             {/* <Th>Trạng thái</Th>
             <Th>Tags</Th> */}
             <Th>Số điện thoại</Th>

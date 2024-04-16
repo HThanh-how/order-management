@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { productSlice } from './features/product/productSlice'
 import { apiSlice } from './features/api/apiSlice'
+import { roleSlice } from './features/roles/roleSlice'
 
 export const store = configureStore({
   reducer: {
     product: productSlice.reducer,
+    role: roleSlice.reducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: getDefaultMiddleware =>

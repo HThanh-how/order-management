@@ -17,14 +17,15 @@ interface StatItemProps {
   Num: number;
   type: number;
   percentage: number;
+  background: string;
 }
 
 function StatItem(props: StatItemProps) {
-  const { Label, Num, type, percentage } = props;
+  const { Label, Num, type, percentage, background } = props;
   return (
-    <StatGroup bgColor={"white"} p={4} borderRadius={"md"}>
+    <StatGroup bgColor={background} p={4} borderRadius={"md"}>
       <Stat>
-        <Flex alignItems={"center"} justify={"space-between"}>
+        <Flex textColor={'white'} alignItems={"center"} justify={"space-between"}>
           <Box>
             <StatLabel>{Label}</StatLabel>
             <StatNumber>{Num}</StatNumber>
@@ -46,10 +47,10 @@ function Stats() {
       columns={{ base: 2, md: 4 }}
       spacing={{ base: 2, md: 10 }}
     >
-      <StatItem Label="Đơn mới hôm nay" Num={134} type={1} percentage={54.89} />
-      <StatItem Label="Đã giao hôm nay" Num={34} type={1} percentage={22.45} />
-      <StatItem Label="Doanh thu" Num={8535000} type={0} percentage={10.92} />
-      <StatItem Label="Đã nhận về" Num={4560000} type={0} percentage={14.22} />
+      <StatItem Label="Đơn mới hôm nay" Num={134} type={1} percentage={54.89} background="blue.500" />
+      <StatItem Label="Đã giao hôm nay" Num={34} type={1} percentage={22.45} background="red.500"/>
+      <StatItem Label="Doanh thu" Num={8535000} type={0} percentage={10.92} background="green.500"/>
+      <StatItem Label="Đã nhận về" Num={4560000} type={0} percentage={14.22} background="gray"/>
     </SimpleGrid>
   );
 }

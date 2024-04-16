@@ -34,12 +34,15 @@ import {
   useToast,
   AvatarBadge,
   Divider,
+  Tag,
+  TagLabel
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { FiBell } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, createContext } from "react";
 import { usePathname } from "next/navigation";
+import { BellIcon, CheckCircleIcon } from '@chakra-ui/icons'
 // import { searchResults } from "./SearchBar";
 import {
   FiHome,
@@ -55,7 +58,16 @@ import {
 import { IconType } from "react-icons";
 import { ReactText, useMemo } from "react";
 import getFromLocalStorage from "@/app/_lib/getFromLocalStorage";
-import { useGetEmployeesRequestQuery, useApproveEmployeeRequestMutation, useRejectEmployeeRequestMutation, useGetUserInfoQuery } from "@/app/_lib/features/api/apiSlice";
+import { 
+  useGetEmployeesRequestQuery, 
+  useApproveEmployeeRequestMutation, 
+  useRejectEmployeeRequestMutation, 
+  useGetUserInfoQuery,
+  useGetNotificationsQuery,
+  useSetNotiIsReadMutation,
+} from "@/app/_lib/features/api/apiSlice";
+import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
+import { getRole } from "@/app/_lib/features/roles/roleSlice";
 
 interface Props {
   children: React.ReactNode;
@@ -107,7 +119,11 @@ export default function NavBar() {
   const notification = useDisclosure();
   const toast = useToast();
   const pathname = usePathname();
-  let condition = !isLogin;
+  const role = useAppSelector((state) => state.role.value);
+  const dispatch = useAppDispatch();
+  const [prevNotifications, setPrevNotifications] = useState<any[]>([]);
+
+  if(getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE")) dispatch(getRole("ROLE_EMPLOYEE"));
 
   const {
     data: user,
@@ -125,8 +141,17 @@ export default function NavBar() {
     error: errorR,
   } = useGetEmployeesRequestQuery(1, {skip: !isLogin})
 
+  const {
+    data: notifications,
+    isLoading: isLoadingN,
+    isSuccess: isSuccessN,
+    isError: isErrorN,
+    error: errorN,
+  } = useGetNotificationsQuery(1, {pollingInterval: 15000, skip: !isLogin})
+
   const [approveEmployeeRequest] = useApproveEmployeeRequestMutation();
   const [rejectEmployeeRequest] = useRejectEmployeeRequestMutation();
+  const [setNotiIsRead] = useSetNotiIsReadMutation();
 
   const getEmployeeRequests = useMemo (() => {
     if(isSuccessR) return employeeRequests.data
@@ -135,9 +160,66 @@ export default function NavBar() {
   const getUser = useMemo (() => {
     if(isSuccessU) return user.data
   }, [user])
-  
+
+  const getNotifications = useMemo (() => {
+    if(isSuccessN) {
+      const tmp: any[] = [...notifications.data];
+      const readNoti = tmp.filter((noti) => noti.read === true);
+      const notReadNoti = tmp.filter((noti) => noti.read === false).reverse();
+      return notReadNoti.concat(readNoti);
+    }
+  }, [notifications])
+
+  const checkForNewNotifications = (newNotifications: any[] | undefined) => {
+    if (newNotifications === undefined) return;
+    if (prevNotifications.length === 0) {
+      setPrevNotifications(newNotifications);
+      return;
+    }
+
+    const newNotificationCount = newNotifications.length - prevNotifications.length;
+    if (newNotificationCount > 0) {
+      toast({
+        title: `Bạn có ${newNotificationCount} thông báo mới`,
+        position: 'top-right',
+        status: 'info',
+        duration: 3000,
+        isClosable: true,
+      })
+    }
+
+    setPrevNotifications(newNotifications);
+  };
 
   const createdAt = new Date().toISOString();
+
+  function convertISOToCustomFormat(isoDateString: string) {
+    // Create a Date object from the ISO date string
+    const date = new Date(isoDateString);
+
+    // Get day, month, year, hours, and minutes
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Months are zero-indexed
+    const year = date.getFullYear();
+    let hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    // Convert hours to 12-hour format and determine AM/PM
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // 0 should be converted to 12
+
+    // Format day, month, hours, and minutes with leading zeros if needed
+    const formattedDay = day < 10 ? '0' + day : day;
+    const formattedMonth = month < 10 ? '0' + month : month;
+    const formattedHours = hours < 10 ? '0' + hours : hours;
+    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+
+    // Construct the final formatted string
+    const formattedString = `${formattedDay}/${formattedMonth}/${year} ${formattedHours}:${formattedMinutes} ${ampm}`;
+
+    return formattedString;
+}
 
   const handleApproveRequest = async (request: any) => {
     try {
@@ -241,11 +323,18 @@ export default function NavBar() {
     }
   }, [pathname, isLogin]);
 
+  useEffect(() => {
+    if(isSuccessN)
+      checkForNewNotifications(getNotifications)
+    return;
+  }, [getNotifications])
+
   function handleLogout(): void {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("createdAt");
     localStorage.removeItem("userId");
+    localStorage.removeItem("roles");
     setIsLogin(false);
     router.replace("/login");
   }
@@ -253,9 +342,9 @@ export default function NavBar() {
   return (
     <IsLoginContext.Provider value={isLogin}>
     <Box
-      bg={useColorModeValue("#171717", "gray.900")}
+      bg={useColorModeValue("white.100", "#171717")}
       px={4}
-      textColor={"white"}
+      textColor={"black"}
     >
       <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
         {/* <IconButton
@@ -299,73 +388,30 @@ export default function NavBar() {
               QUẢN LÝ
             </Box>
           }
-          {/* <HStack as={"nav"} spacing={4} display={{ base: "none", md: "flex" }}>
-            <Box
-              px={2}
-              py={1}
-              rounded={"md"}
-              _hover={{
-                textDecoration: "none",
-                bg: useColorModeValue("gray.800", "gray.700"),
-              }}
-              onClick={() => router.push("/cart")}
-              cursor={"pointer"}
-            >
-              CART
-            </Box>
-            <Box
-              px={2}
-              py={1}
-              rounded={"md"}
-              _hover={{
-                textDecoration: "none",
-                bg: useColorModeValue("gray.800", "gray.700"),
-              }}
-              onClick={() => router.push("/wishlist")}
-              cursor={"pointer"}
-            >
-              WISHLIST
-            </Box>
-            <Box
-              px={2}
-              py={1}
-              rounded={"md"}
-              _hover={{
-                textDecoration: "none",
-                bg: useColorModeValue("gray.800", "gray.700"),
-              }}
-              onClick={() => router.push("/games")}
-              cursor={"pointer"}
-            >
-              GAMES
-            </Box>
-          </HStack> */}
         </HStack> 
-        {/* TODO: Refresh token navbar */}
+        
         <Flex alignItems={"center"} color="#171717">
           {isLogin ? (
             <>
             <Menu>
-              {/* <FiBell size="20px" color="white" onClick={notification.onOpen}>
-                <AvatarBadge boxSize='1.25em' bg='green.500'>1</AvatarBadge>
-              </FiBell> */}
-              <Avatar size='sm' bgColor='#171717' icon={<FiBell size="20px" color="white"/>}  onClick={notification.onOpen}>
-                {isSuccessR && getEmployeeRequests.length !== 0 && (
-                  <AvatarBadge boxSize='1.25em' bg='red'>{getEmployeeRequests.length}</AvatarBadge>
+              <Avatar size='sm' bgColor={'white'} cursor={"pointer"} icon={<BellIcon boxSize={7} color="orange"/>}  onClick={notification.onOpen}>
+                {isSuccessN && getNotifications?.filter((noti) => noti.read === false).length !== 0 && (
+                  <AvatarBadge boxSize='1.5em' bg='red'>{getNotifications?.filter((noti) => noti.read === false).length}</AvatarBadge>
                 )}
               </Avatar>
               <Drawer
                 isOpen={notification.isOpen}
                 placement='right'
+                size={{base:'sm', md:'md'}}
                 onClose={notification.onClose}  
               >
                 <DrawerOverlay />
                 <DrawerContent>
                   <DrawerCloseButton />
-                  <DrawerHeader>Notifications</DrawerHeader>
+                  <DrawerHeader>Thông báo</DrawerHeader>
                   <DrawerBody>
                     
-                    {isLoadingR ? (
+                    {/* {isLoadingR ? (
                       <Flex
                       alignItems="center"
                       justify="center"
@@ -416,6 +462,50 @@ export default function NavBar() {
                           ))
                         )}
                       </>
+                    )} */}
+
+                    {isLoadingN ? (
+                      <Flex
+                      alignItems="center"
+                      justify="center"
+                      direction={{ base: "column", md: "row" }}
+                      >
+                        <Spinner size='lg' color='orange.500' />
+                      </Flex>
+                    ) : isErrorN ? (
+                      <Flex
+                      alignItems="center"
+                      justify="center"
+                      direction={{ base: "column", md: "row" }}
+                      m={4}
+                      >
+                        <Alert w='50%' status='error'>
+                          <AlertIcon />
+                          Can not fetch data from server
+                        </Alert>
+                      </Flex>
+                    ) : (
+                      <>
+                        {getNotifications?.length === 0 && (
+                          <p>Không có thông báo nào</p>
+                        )}
+                        {getNotifications?.length !== 0 && (
+                          getNotifications?.map((noti: any) => (
+                            <VStack align={'start'} justifyContent={'flex-start'} mb={4} key={noti.id} cursor={'pointer'} onClick={async () => await setNotiIsRead(noti.id).unwrap()}>
+                              <Flex  gap={2}>
+                                {noti.read === false && (
+                                  <CheckCircleIcon mt={2} color={'orange.500'}/>
+                                )} 
+                                <VStack align={'start'} justifyContent={'flex-start'}>
+                                  <Text>{noti.message}</Text>
+                                  <Text color={'gray.400'}>{convertISOToCustomFormat(noti.createdAt)}</Text>
+                                </VStack>                      
+                              </Flex>
+                              <Divider />
+                            </VStack>
+                          ))
+                        )}
+                      </>
                     )}
                   </DrawerBody>
 
@@ -436,21 +526,44 @@ export default function NavBar() {
                 minW={0}
                 ml={6}
               >
+              {getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE") && role === "ROLE_EMPLOYEE" ? (
+                <Tag size='lg' colorScheme='red' borderRadius='full'>
+                  <Avatar
+                    size={"xs"}
+                    src={getUser?.avatar ? getUser.avatar :
+                      "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
+                    }
+                  />
+                  <TagLabel>Nhân viên</TagLabel>
+                </Tag>
+                )
+              : (
                 <Avatar
                   size={"sm"}
                   src={getUser?.avatar ? getUser.avatar :
                     "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
                   }
                 />
+                )
+              }
               </MenuButton>
               <MenuList>
                 <MenuItem onClick={() => router.push("/user")}>
                   Cá nhân
                 </MenuItem>
                 <MenuItem onClick={() => router.push("/user")}>Order</MenuItem>
-                <MenuItem onClick={() => router.push("/user")}>
-                  Thanh toán
-                </MenuItem>
+                {/* {getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE") && role === "ROLE_USER" && (
+                  <MenuItem onClick={() => dispatch(getRole("ROLE_EMPLOYEE"))}>
+                    Chuyển giao diện <br/> nhân viên
+                  </MenuItem>
+                )}  
+
+                {getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE") && role === "ROLE_EMPLOYEE" && (
+                  <MenuItem onClick={() => dispatch(getRole("ROLE_USER"))}>
+                    Chuyển giao diện <br/> người dùng
+                  </MenuItem>
+                )} */}
+                
                 <MenuItem onClick={() => router.push("/user")}>
                   Cài đặt
                 </MenuItem>
@@ -504,7 +617,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       h="full"
       {...rest}
     >
-      <Flex  display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="8" justifyContent="space-between">
+      <Flex  display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="10" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           OrList
         </Text>
@@ -529,7 +642,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             onClose();
             router.push(`${link.link}`)
           }}
-          bgColor={link.link === pathname ? "cyan.500" : ""}
+          bgColor={link.link === pathname ? "orange.500" : ""}
           color= {link.link === pathname ? "white" : ""}
         >
           {link.name}
@@ -554,12 +667,12 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
       <Flex
         align="center"
         p="4"
-        mx="4"
+        m="4"
         borderRadius="lg"
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "cyan.400",
+          bg: "orange.400",
           color: "white",
         }}
         {...rest}
@@ -600,7 +713,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         variant="filled"
         onClick={onOpen}
         aria-label="open menu"
-        color='white'
+        color='black'
         icon={<FiMenu />}
       />
 

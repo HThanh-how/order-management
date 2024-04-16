@@ -47,10 +47,10 @@ const handleLogin = async () => {
       if(processedData.accessToken === undefined) {
         throw new Error('Sai tên đăng nhập hoặc mật khẩu');
       }
-      console.log(processedData);
       localStorage.setItem('accessToken', processedData.accessToken);
       localStorage.setItem('userId', processedData.userId);
       localStorage.setItem('refreshToken', processedData.refreshToken);
+      localStorage.setItem('roles', processedData.roles);
       window.location.href =  '/dashboard'
     })
     .catch ((error) => {

@@ -46,7 +46,8 @@ import {
 } from "react-icons/fi";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
-import CustomerTable from "./component/Staff";
+import CustomerTable from "./component/orderInfo";
+
 // import Location from "./Location";
 // import ProductInfor from "./ProductInfor";
 
@@ -68,9 +69,10 @@ const LinkItems: Array<LinkItemProps> = [
 
 export default function Sidebar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
-          <title>Nhân viên</title>
+          <title>Chi tiết đơn hàng</title>
       <SidebarContent
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
@@ -89,8 +91,8 @@ export default function Sidebar() {
       </Drawer> */}
       {/* mobilenav */}
       {/* <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} /> */}
-      <Box ml={{ base: 0, md: 60 }} p={{ base: 2, md: 8 }}>
-        <CustomerTable/>
+      <Box ml={{ base: 0, md: 60 }} p={8}>
+        <CustomerTable />
       </Box>
     </Box>
   );
@@ -124,8 +126,6 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           key={link.name} 
           icon={link.icon}
           onClick={() => router.push(`${link.link}`)}
-          bgColor={link.name === "Nhân sự" ? "orange.500" : ""}
-          color= {link.name === "Nhân sự" ? "white" : ""}
         >
           {link.name}
         </NavItem>
@@ -154,7 +154,7 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "orange.400",
+          bg: "cyan.400",
           color: "white",
         }}
         {...rest}

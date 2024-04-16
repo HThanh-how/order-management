@@ -79,7 +79,7 @@ export default function CustomerTable() {
           alignItems={"flex-start"}
           maxW={{ base: "80vw", md: "full" }}
         >
-          <Text fontSize={{ base: "xl", md: "3xl" }} fontWeight={700}>
+          <Text fontSize={{ base: "xl", md: "3xl" }} color={'blue.500'} fontWeight={700}>
             Nhân viên
           </Text>
           <Text color={"gray"}>Tuần này bạn có thêm 20 nhân viên mới</Text>

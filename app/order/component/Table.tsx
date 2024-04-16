@@ -33,17 +33,22 @@ import {
   ModalCloseButton,
   Spinner,
   Select,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  useToast,
 } from "@chakra-ui/react";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useEffect, useState } from "react";
-import Image from 'next/image';
-import EditDialog from "./EditDialog";
-import { useAppSelector, useAppDispatch } from '../../_lib/hooks'
-import { useRemoveProductMutation } from "@/app/_lib/features/api/apiSlice"
+import { useAppSelector, useAppDispatch } from "../../_lib/hooks";
+import { useRemoveOrderMutation } from "@/app/_lib/features/api/apiSlice";
 import { Order } from "@/app/type";
+import { useRouter } from "next/navigation";
 
 interface OrderTableProps {
-  orders: Order[];
+  orders: any[];
 }
 
 const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
@@ -55,50 +60,43 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
   const [selectedOrder, setSelectedOrder] = useState<any>({});
   const [deleteOpen, setDeleteOpen] = useState(false);
   const dispatch = useAppDispatch();
-  //const [removeProduct, {isLoading}] = useRemoveProductMutation();
+  const [filteredOrders, setFilteredOrders] = useState(orders);
+  const toast = useToast();
+  const [removeOrder, {isLoading}] = useRemoveOrderMutation();
+  const router = useRouter();
+  const [tabIndex, setTabIndex] = useState(0)
 
-  
 
-  // const handleDeleteClose = async () => {
-  //   setDeleteOpen(false);
-  //   setSelectedOrder({});
-  // }
-  // const handleDeleteOpen = async (id: any) => {
-  //   const p = orders.find((tmp) => tmp.id === id);
-  //   setSelectedOrder({...p});
-  //   setDeleteOpen(true);
-  // }
+  useEffect(() => {
+    setFilteredOrders(orders);
+  }, [orders])
+  const handleDeleteClose = async () => {
+    setDeleteOpen(false);
+    setSelectedOrder({});
+  }
+  const handleDeleteOpen = async (id: any) => {
+    const p = orders.find((tmp) => tmp.id === id);
+    setSelectedOrder({...p});
+    setDeleteOpen(true);
+  }
 
-  // const handleUpdate = async (id: any) => {
-  //   const p = orders.find((tmp) => tmp.id === id);
-  //   setSelectedOrder({...p});
-  //   onOpen();
-  // }
+  const handleDelete = async (id: any) => {
+    try {
+      await removeOrder(id).unwrap();
+      handleTabChange(0);
+      handleDeleteClose();
+    } catch (err) {
+      console.error('Failed to delete order: ', err)
+      toast({
+        title: 'Có lỗi khi xóa đơn hàng này',
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    }
 
-  // const handleDelete = async (id: any) => {
-    // await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/products/${id}`, 
-    //             {
-    //               method: 'DELETE',
-    //               headers: {
-    //                 "Content-Type": "application/json",
-    //                 "Authorization": `Bearer ${localStorage.getItem("accessToken")}`,
-    //                 //"userId": `${localStorage.getItem("userId")}`,
-    //               }
-                
-    //             })
-    // .then(data => data.json())
-    // .then(processedData => console.log(processedData.data))
-    // .catch(error => console.log(error))
-
-    //getProducts();
-  //   try {
-  //     await removeProduct(id).unwrap();
-  //     handleDeleteClose();
-  //   } catch (err) {
-  //     console.error('Failed to delete product: ', err)
-  //   }
-    
-  // }
+  }
 
   const handleMasterCheckboxChange = () => {
     setCheckedAll(!checkedAll);
@@ -124,8 +122,8 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
 
   const paginateOrders = () => {
     const startingIndex = (currentPage - 1) * ordersPerPage;
-    const endingIndex = Math.min(startingIndex + ordersPerPage, orders.length);
-    return orders.slice(startingIndex, endingIndex);
+    const endingIndex = Math.min(startingIndex + ordersPerPage, filteredOrders.length);
+    return filteredOrders.slice(startingIndex, endingIndex);
   };
 
   const handlePageChange = (pageNumber: number) => {
@@ -145,13 +143,41 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
     setOrderSelections([]);
   };
 
+  const handleTabChange = (index: number) => {
+    setTabIndex(index);
+    if(index === 0) setFilteredOrders(orders);
+    if(index === 1) setFilteredOrders(orders.filter((order) => order.orderStatus === "DELIVERED"));
+    if(index === 2) setFilteredOrders(orders.filter((order) => order.orderStatus === "PROCESSING"));
+    if(index === 3) setFilteredOrders(orders.filter((order) => order.orderStatus === "CREATED"));
+    if(index === 4) setFilteredOrders(orders.filter((order) => order.orderStatus === "CANCELLED"));
+  }
+
   const totalPages = Math.ceil(orders.length / ordersPerPage);
 
+  function formatDate(date: Date): string {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
   
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+  }
 
   return (
-    <Box overflowX={{base: 'scroll', md: "hidden"}} p={8}>
-      <Table variant="simple" size={{base: 'sm', md: 'md'}}>
+    <Box overflowX={{ base: "scroll", md: "hidden" }} p={8} pt={0}>
+      <Tabs index={tabIndex} isFitted variant="enclosed" colorScheme="orange" mb={2} onChange={(index) => handleTabChange(index)}>
+        <TabList>
+          <Tab>Tất cả</Tab>
+          <Tab>Thành công</Tab>
+          <Tab>Đang giao</Tab>
+          {/* <Tab>Đang vận chuyển</Tab> */}
+          <Tab>Chờ lấy hàng</Tab>
+          <Tab>Bị hủy</Tab>
+        </TabList>
+      </Tabs>
+      <Table variant="simple" size={{ base: "sm", md: "md" }}>
         <Thead bgColor={"gray.50"} rounded={"xl"}>
           <Tr>
             <Th width={"1vw"}>
@@ -163,32 +189,40 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
             <Th>Mã đơn</Th>
             <Th>Thành tiền</Th>
             <Th>Địa chỉ</Th>
-            {/* <Th>Thời gian cập nhật</Th> */}
+            <Th>Cập nhật lần cuối</Th>
             <Th>Trạng thái</Th>
-            
-            {/* <Th w={"1vw"}>
+
+            <Th w={"1vw"}>
               <Menu>
                 <MenuButton>
                   <Icon as={SlOptionsVertical} />
                 </MenuButton>
               </Menu>
-            </Th> */}
+            </Th>
           </Tr>
         </Thead>
         <Tbody>
           {paginateOrders().map((order) => (
-            <Tr key={order.id}>
+            <Tr 
+              key={order.id} 
+              style={{cursor: "pointer"}} 
+            >
               <Td>
                 <Checkbox
                   isChecked={orderSelections.includes(order.id)}
                   onChange={() => handleCheckboxChange(order.id)}
                 />
               </Td>
-              <Td> <strong>{order.code}</strong> </Td>
-              <Td>{order.price.collectionCharge} VNĐ</Td>
-              
-              <Td>{`${order.receiver.detailedAddress}, ${order.receiver.address}`},</Td>
-              <Td> 
+              <Td onClick={() => router.push(`/order-details?id=${order.id}`)}>
+                <strong>{order.code}</strong>
+              </Td>
+              <Td onClick={() => router.push(`/order-details?id=${order.id}`)}>{order.price?.collectionCharge} VNĐ</Td>
+
+              <Td onClick={() => router.push(`/order-details?id=${order.id}`)}>
+                {order.receiverDto.address}
+              </Td>
+              <Td onClick={() => router.push(`/order-details?id=${order.id}`)}>{order.lastUpdatedBy}</Td>
+              <Td onClick={() => router.push(`/order-details?id=${order.id}`)}>
                 {order.orderStatus === "DELIVERED" && (
                   <Badge mr={2} colorScheme="green">
                     ĐÃ GIAO
@@ -212,87 +246,55 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
                   </Badge>
                 )}
               </Td>
-              
-              {/* <Td>
+
+              <Td>
                 <Menu>
                   <MenuButton>
                     <Icon as={SlOptionsVertical} color={"gray"} />
                   </MenuButton>
                   <MenuList>
-                    <MenuItem onClick={() => handleUpdate(order.id)}>Sửa</MenuItem>
+                    <MenuItem onClick={() => router.push(`/order-details?id=${order.id}`)}>Sửa</MenuItem>
                     <MenuItem onClick={() => handleDeleteOpen(order.id)}>Xoá</MenuItem>
                   </MenuList>
                 </Menu>
                 
-              </Td> */}
+              </Td>
             </Tr>
           ))}
         </Tbody>
       </Table>
 
-      {/* <EditDialog 
-        isOpen={isOpen}
-        onOpen={onOpen}
-        onClose={onClose}
-        selectedOrder={selectedOrder}
-      /> */}
-
-      {/* <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered>
+      <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
           <ModalBody>
-              Bạn có chắc chắn xóa sản phẩm này?
+              Bạn có chắc chắn xóa đơn hàng này?
           </ModalBody>
           <ModalFooter>
             <Button mr={3} onClick={() => handleDeleteClose()}>Đóng</Button>
             <Button colorScheme='orange' onClick={() => handleDelete(selectedOrder.id)}>Xác nhận</Button>
           </ModalFooter>
         </ModalContent>
-      </Modal> */}
-               
-      <Flex justify="space-between" mt={4}>
-        {/* <ButtonGroup>
-          <Button
-            onClick={() => handleOrdersPerPageChange(5)}
-            colorScheme={ordersPerPage === 5 ? "orange" : "gray"}
-          >
-            5
-          </Button>
-          <Button
-            onClick={() => handleOrdersPerPageChange(10)}
-            colorScheme={ordersPerPage === 10 ? "orange" : "gray"}
-          >
-            10
-          </Button>
-          <Button
-            onClick={() => handleOrdersPerPageChange(15)}
-            colorScheme={ordersPerPage === 15 ? "orange" : "gray"}
-          >
-            15
-          </Button>
-          <Button
-            onClick={() => handleOrdersPerPageChange(20)}
-            colorScheme={ordersPerPage === 20 ? "orange" : "gray"}
-          >
-            20
-          </Button>
-          <Button
-            onClick={() => handleOrdersPerPageChange(25)}
-            colorScheme={ordersPerPage === 25 ? "orange" : "gray"}
-          >
-            25
-          </Button>
-        </ButtonGroup> */}
+      </Modal>
 
-        <Select ml={2} fontSize={{base: 10, md: 16}} w={{base: '15%', md:'20%'}} onChange={(e) => handleOrdersPerPageChange(Number(e.target.value))}>
-          <option defaultChecked value='5' >5 đơn hàng</option>
-          <option value='10' >10 đơn hàng</option>
-          <option value='15' >15 đơn hàng</option>
-          <option value='20' >20 đơn hàng</option>
+      <Flex justify="space-between" mt={4}>
+
+        <Select
+          ml={2}
+          fontSize={{ base: 10, md: 16 }}
+          w={{ base: "15%", md: "20%" }}
+          onChange={(e) => handleOrdersPerPageChange(Number(e.target.value))}
+        >
+          <option defaultChecked value="5">
+            5 đơn hàng
+          </option>
+          <option value="10">10 đơn hàng</option>
+          <option value="15">15 đơn hàng</option>
+          <option value="20">20 đơn hàng</option>
         </Select>
 
-        <Flex ml={{base: 6}} align="center">
+        <Flex ml={{ base: 6 }} align="center">
           <Text>{`Page `}</Text>
           <Input
             mx={2}
