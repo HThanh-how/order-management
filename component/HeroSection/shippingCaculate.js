@@ -1,6 +1,3 @@
-
-
-
 function costCalculator(weight, cost) {
     if (weight <= 300) {
 
