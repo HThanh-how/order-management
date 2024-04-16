@@ -2,19 +2,31 @@
 import { Box, Button, Flex, Input, Select, SimpleGrid, Text, VStack } from "@chakra-ui/react";
 
 import data from "@/public/province.json";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { cityData, City, District, Ward } from "./CityData";
+import {calculateShippingCost} from "./shippingCaculate"
 
 export default function AddressSelect() {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
-
-
+  const [RecievedCity, setRecievedCity] = useState("");
+  const [RecievedDistrict, setRecievedDistrict] = useState("");
   const [cost, setCost] = useState(0);
+  const [sendProvinceCode, setSendProvinceCode] = useState<number | null>(null);
+  const [sendDistrictCode, setSendDistrictCode] = useState<number | null>(null);
+  const [receiveProvinceCode, setReceiveProvinceCode] = useState<number | null>(null);
+  const [receiveDistrictCode, setReceiveDistrictCode] = useState<number | null>(null);
+  const [weight, setWeight] = useState(0);
+
+
 
   const handleButtonClick = () => {
-    setCost(20000);
+    const costCal = calculateShippingCost(sendProvinceCode, sendDistrictCode, receiveProvinceCode, receiveDistrictCode, weight);
+    console.log(sendProvinceCode, sendProvinceCode, receiveProvinceCode, receiveDistrictCode, weight, costCal)
+    setCost(costCal)
   };
+
+  
 
   const handleCityChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedCity(event.target.value);
@@ -24,16 +36,6 @@ export default function AddressSelect() {
   const handleDistrictChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedDistrict(event.target.value);
   };
-  const selectedCityData = cityData.find(
-    (city) => city.codename === selectedCity
-  );
-  const selectedDistrictData = selectedCityData?.districts.find(
-    (district) => district.codename === selectedDistrict
-  );
-
-  const [RecievedCity, setRecievedCity] = useState("");
-  const [RecievedDistrict, setRecievedDistrict] = useState("");
-
   const RecieveCityChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setRecievedCity(event.target.value);
     setRecievedDistrict("");
@@ -42,13 +44,44 @@ export default function AddressSelect() {
   const RecieveDistrictChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setRecievedDistrict(event.target.value);
   };
+  const selectedCityData = cityData.find(
+    (city) => city.codename === selectedCity
+  );
+  const selectedDistrictData = selectedCityData?.districts.find(
+    (district) => district.codename === selectedDistrict
+  );
+
+  const getProvinceCode = (cityCodename: string) => {
+    const city = cityData.find(city => city.codename === cityCodename);
+    return city ? city.code : null;
+  };
+  
+  // Function to get district code
+  const getDistrictCode = (cityCodename: string, districtCodename: string) => {
+    const city = cityData.find(city => city.codename === cityCodename);
+    if (city) {
+      const district = city.districts.find(district => district.codename === districtCodename);
+      return district ? district.code : null;
+    }
+    return null;
+  };
+
+
   const RecievedCityData = cityData.find(
     (city) => city.codename === RecievedCity
   );
   const RecievedDistrictData = RecievedCityData?.districts.find(
     (district) => district.codename === RecievedDistrict
   );
+  useEffect(() => {
+    setSendProvinceCode(getProvinceCode(selectedCity));
+    setSendDistrictCode(getDistrictCode(selectedCity, selectedDistrict));
+  
+    setReceiveProvinceCode(getProvinceCode(RecievedCity));
+    setReceiveDistrictCode(getDistrictCode(RecievedCity, RecievedDistrict));
+  }, [selectedCity, selectedDistrict, RecievedCity, RecievedDistrict]);
 
+  
   return (
     <SimpleGrid columns={{ base: 1, md: 2 }}>
       <Box w={"20vw"} mt={4}>
@@ -167,14 +200,15 @@ export default function AddressSelect() {
           ))}
         </Select>
       </Box>
-      <Box  display="flex" flexDirection="column">
+      <Box  display="flex" >
         
-        <Input m={4} placeholder="Khối lượng (g)" bgColor="gray.50" w="20vw" />
-        <Button  m={4} colorScheme="green" w="5vw" onClick={handleButtonClick}>
+        <Input m={4} placeholder="Khối lượng (g)" bgColor="gray.50" w="20vw"  onChange={(e)=>setWeight(Number(e.target.value))}/>
+        <Button  m={4} ml={4} colorScheme="green" w="8vw" onClick={handleButtonClick}>
         Ước tính
       </Button>
-      {cost !== 0 && <Flex  m={4} fontSize="xl" fontWeight={600} color="gray.800">Chi phí:  <Text mx={2} color="green">{" "} {cost} {" "}</Text>  đồng</Flex>}
+      
       </Box>
+      <Box>{cost !== 0 && <Flex  m={4} fontSize="xl" fontWeight={600} color="gray.800">Chi phí:  <Text mx={2} color="green">{" "} {cost} {" "}</Text>  đồng</Flex>}</Box>
     </SimpleGrid>
   );
 }
