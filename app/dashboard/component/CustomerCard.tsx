@@ -52,7 +52,7 @@ function CustomerCard() {
               </Alert>
             </Flex>
           ) : (
-            <Card mt={4} w={{base: '100%', md: '40%'}}>
+            <Card  mt={4} w={{base: '100%', md: '40%'}}>
                 {/* Làm nút xem thêm
                 Chỉ hiển thị 5 khách gần nhất */}
                 <CardHeader>

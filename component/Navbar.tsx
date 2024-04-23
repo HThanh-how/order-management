@@ -345,6 +345,7 @@ export default function NavBar() {
       bg={useColorModeValue("white.100", "#171717")}
       px={4}
       textColor={"black"}
+      borderBottom={'1px'}
     >
       <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
         {/* <IconButton
@@ -373,21 +374,6 @@ export default function NavBar() {
               OrList
             </Text>
           </Box>
-          {isLogin&&
-            <Box
-              px={{base:1, md:2}}
-              py={1}
-              rounded={"md"}
-              _hover={{
-                textDecoration: "none",
-                // bg: useColorModeValue("gray.800", "gray.700"),
-              }}
-              onClick={() => router.push("/dashboard")}
-              cursor={"pointer"}
-            >
-              QUẢN LÝ
-            </Box>
-          }
         </HStack> 
         
         <Flex alignItems={"center"} color="#171717">

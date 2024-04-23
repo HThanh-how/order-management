@@ -265,9 +265,10 @@ export default function CustomerTable() {
             <CardHeader>
               <Flex justify={'space-between'}>
                 <Heading size='md' color="orange.500">Vận chuyển từ</Heading>
-                {getOrder.orderStatus !== 'CANCELLED' && (
-                <EditIcon color="orange.500" boxSize={6} style={{cursor: 'pointer'}} />
+               {/* {getOrder.orderStatus !== 'CANCELLED' && (
+                // <EditIcon color="orange.500" boxSize={6} style={{cursor: 'pointer'}} />
                 )}
+                */}
               </Flex>
             </CardHeader>
             <CardBody>

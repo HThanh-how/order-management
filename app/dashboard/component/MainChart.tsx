@@ -56,12 +56,13 @@ const ActivityChart = () => {
     },
   ];
 
+  let seriesLength = isSuccess ? getData.length : 0;
+  const optimalColumnWidthPercent = 20 + (60 / (1 + 30*Math.exp(-seriesLength /3)));
+
   const options: ApexOptions = {
     chart: {
       id: "mixed-chart",   
-      stacked: false,
-      height: 350,
-      width: 800,
+      // stacked: false,
       zoom: {
         type: 'x',
         enabled: true,
@@ -77,10 +78,7 @@ const ActivityChart = () => {
     markers: {
       size: 4,
     },
-    // dataLabels: {
-    //   enabled: true,
-    //   enabledOnSeries: [1]
-    // },
+    
     title: {
       text: 'Report',
       align: 'left'
@@ -97,16 +95,8 @@ const ActivityChart = () => {
         axisBorder: {
           show: true,
         },
-        // labels: {
-        //   style: {
-        //     colors: "#eb9234",
-        //   },
-        // },
         title: {
           text: "Số lượng đơn",
-          // style: {
-          //   fontWeight: ''
-          // },
         },
         
       },
@@ -119,23 +109,18 @@ const ActivityChart = () => {
         axisBorder: {
           show: true,
         },
-        // labels: {
-        //   style: {
-        //     colors: "#3480eb",
-        //   },
-        // },
+        
         title: {
           text: "Tổng doanh thu",
-          // style: {
-          //   fontFamily: "Open sans",
-          //   fontWeight: 900,
-          // },
         }, 
       },
     ],
-    tooltip: {
-      shared: true,
-    },
+    // plotOptions: {
+    //   bar: {
+    //     borderRadius: 8,
+    //     columnWidth: isSuccess ? optimalColumnWidthPercent.toString() + "%" : "0%",
+    //   },
+    // },
     responsive: [
       {
         breakpoint: 768,
@@ -171,7 +156,7 @@ const ActivityChart = () => {
             </Alert>
           </Flex>
         ) : (
-          <Flex mt={4} width={{md:'100%'}}>
+          <Flex mt={4} width={{md:'80%'}}>
             <Box bgColor={'white'} p={{base: 0, md: 4}} width={'100%'} borderRadius="xl">
               <Chart
                 options={options}
