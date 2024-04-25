@@ -84,7 +84,7 @@ export default function AddressSelect() {
   
   return (
     <SimpleGrid columns={{ base: 1, md: 2 }}>
-      <Box w={"20vw"} mt={4}>
+      <Box w={{base: "60vw", md: "20vw"}} mt={4}>
         {/* Dropdown chọn thành phố */}
         <Text fontSize="xl">Địa chỉ nơi gửi</Text>
         <Select
@@ -142,7 +142,7 @@ export default function AddressSelect() {
           ))}
         </Select>
       </Box>
-      <Box w={"20vw"} mt={4}>
+      <Box w={{base: "60vw", md: "20vw"}} mt={4}>
         {/* Dropdown chọn thành phố */}
         <Text fontSize={"xl"}>Địa chỉ nơi nhận</Text>
         <Select
@@ -200,15 +200,13 @@ export default function AddressSelect() {
           ))}
         </Select>
       </Box>
-      <Box  display="flex" >
-        
-        <Input m={4} placeholder="Khối lượng (g)" bgColor="gray.50" w="20vw"  onChange={(e)=>setWeight(Number(e.target.value))}/>
-        <Button  m={4} ml={4} colorScheme="green" w="8vw" onClick={handleButtonClick}>
-        Ước tính
-      </Button>
       
-      </Box>
-      <Box>{cost !== 0 && <Flex  m={4} fontSize="xl" fontWeight={600} color="gray.800">Chi phí:  <Text mx={2} color="green">{" "} {cost} {" "}</Text>  đồng</Flex>}</Box>
+      <Input m={4} placeholder="Khối lượng (g)" bgColor="gray.50" w={{base: "60vw", md: "20vw"}}  onChange={(e)=>setWeight(Number(e.target.value))}/>
+      
+      <Button  m={4} ml={4} colorScheme="orange" w={{base: '80%', md: '40%'}} size={{base:'sm', md: 'md'}} onClick={handleButtonClick}>
+          Ước tính
+      </Button>
+      <Box>{cost !== 0 && <Flex  m={4} fontSize="xl" fontWeight={600} color="gray.800">Chi phí:  <Text mx={2} color="orange">{" "} {cost} {" "}</Text>  đồng</Flex>}</Box>
     </SimpleGrid>
   );
 }

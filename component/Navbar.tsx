@@ -564,6 +564,7 @@ export default function NavBar() {
               colorScheme="orange"
               variant='outline'
               mx={2}
+              size={{base:'sm', md:'md'}}
               onClick={() => (window.location.href = "/register")}
             >
               Đăng ký
@@ -572,6 +573,7 @@ export default function NavBar() {
               colorScheme="orange"
               onClick={() => (window.location.href = "/login")}
               mx={2}
+              size={{base:'sm', md:'md'}}
             >
               Đăng nhập
             </Button>

@@ -33,6 +33,7 @@ import ReceiverDialog from "../../table/component/Dialog";
 import {  useGetProductsQuery, useGetCustomersQuery, useGetStoresQuery, useAddOrderMutation, useAddOrderForEmployeeMutation  } from "@/app/_lib/features/api/apiSlice"
 import { useAppSelector } from "@/app/_lib/hooks";
 import { Product, Customer, Store } from "@/app/type";
+import { M_PLUS_1 } from "next/font/google";
 
 type OrderItem = {
   quantity: number,
@@ -81,6 +82,7 @@ export default function OrderForm() {
   const [priceItem, setPriceItem] = useState<number[]>([]);
   const [totalPriceItems, setTotalPriceItems] = useState<number>(0);
   const [shippingFee, setShippingFee] = useState<number>(0);
+  const [optionFee, setOptionFee] = useState<number>(0);
 
   const [selectedStore, setSelectedStore] = useState<any>(null);
   //only 1 checkbox of receiver box be checked
@@ -91,8 +93,8 @@ export default function OrderForm() {
   const [receiverValue, setReceiverValue] = useState<string>("");
   const [receiverSuggestions, setReceiverSuggestions] = useState<Customer[]>([]);
 
-  const [addOrder] = useAddOrderMutation();
-  const [addOrderForEmployee] = useAddOrderForEmployeeMutation();
+  const [addOrder, {error: errorU}] = useAddOrderMutation();
+  const [addOrderForEmployee, {error: errorE}] = useAddOrderForEmployeeMutation();
   const toast = useToast()
   const router = useRouter();
   const role = useAppSelector((state) => state.role.value);
@@ -149,8 +151,15 @@ export default function OrderForm() {
     // console.log(totalPriceItems);
   }, [priceItem])
 
+
   const onSubmit = async(data: FormData) => {
     let isSuccess: boolean = true;
+    //handle option fee
+    if(data.isDocument === true) setOptionFee(optionFee + 4000);
+    if(data.isBulky=== true) setOptionFee(optionFee + 2000);
+    if(data.isFragile === true) setOptionFee(optionFee + 1000);
+    if(data.isValuable === true) setOptionFee(optionFee + 3000);
+
     try {
       data.items.map((item, index) => {
         item.price = priceItem[index];
@@ -161,25 +170,35 @@ export default function OrderForm() {
         shippingFee: 0,
         collectionCharge: 0,
       };
+      console.log(optionFee);
       data.price.itemsPrice = totalPriceItems;
-      data.price.shippingFee = shippingFee;
-      data.price.collectionCharge = totalPriceItems + shippingFee;
+      data.price.shippingFee = shippingFee + optionFee;
+      data.price.collectionCharge = totalPriceItems + shippingFee + optionFee;
       data.store = {...selectedStore};
       if(role === "ROLE_USER")
         await addOrder(data).unwrap();
       else await addOrderForEmployee(data).unwrap();
-    } catch (err) {
+    } catch (err: any) {
       isSuccess = false;
       console.error('Failed to create order: ', err)
-      toast({
-        title: 'Có lỗi khi tạo đơn hàng mới',
-        position: 'top',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
+      if(err?.data?.message === 'Access is denied')
+        toast({
+          title: 'Bạn không có quyền tạo đơn hàng mới',
+          position: 'top',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        })
+      else
+        toast({
+          title: 'Có lỗi khi tạo đơn hàng mới',
+          position: 'top',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        })
     } finally {
-      if(isSuccess) 
+      if(isSuccess) {
         toast({
           title: 'Tạo đơn hàng thành công.',
           position: 'top',
@@ -188,6 +207,7 @@ export default function OrderForm() {
           isClosable: true,
         })
         setTimeout(() => router.push("/order"), 1000);
+      }
     }
      
   }
@@ -458,10 +478,18 @@ export default function OrderForm() {
           <Input mt={{base: 2, md: 4}} placeholder={" Cao - cm"} {...register('height')}/>
         </Stack>
         <HStack mt={{base: 2, md: 4}} justifyContent={'space-between'} >
-            <Checkbox colorScheme="orange" {...register('isDocument')}>Tài liệu/ Văn kiện </Checkbox>
-            <Checkbox colorScheme="orange" {...register('isValuable')}>Giá trị cao</Checkbox>
-            <Checkbox colorScheme="orange" {...register('isFragile')}>Dễ vỡ</Checkbox>
-            <Checkbox colorScheme="orange" {...register('isBulky')}>Quá khổ</Checkbox>
+            <Checkbox colorScheme="orange" {...register('isDocument')}>
+              Tài liệu/ Văn kiện 
+            </Checkbox>
+            <Checkbox colorScheme="orange" {...register('isValuable')}>
+              Giá trị cao
+            </Checkbox>
+            <Checkbox colorScheme="orange" {...register('isFragile')}>
+              Dễ vỡ
+            </Checkbox>
+            <Checkbox colorScheme="orange" {...register('isBulky')}>
+              Quá khổ
+            </Checkbox>
         </HStack>
         <Flex my={4}>
           <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Tổng tiền hàng: {totalPriceItems} VNĐ</Text>
@@ -614,11 +642,11 @@ export default function OrderForm() {
         <Text mx={4} my={2} fontWeight={"500"}>Ghi chú </Text>
         <Textarea ml={4} mb={4} placeholder='Ghi chú' w={"95%"} {...register('delivery.note')}/>
         <Flex m={4}>
-          <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Phí ship: {shippingFee} VNĐ</Text>
+          <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Phí ship: {shippingFee} {optionFee !== 0 ? `+ ${optionFee} (phí tuỳ chọn)` : ""} VNĐ</Text>
           
         </Flex>
         <Flex m={4}>
-          <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Thành tiền: {totalPriceItems + shippingFee} VNĐ</Text>
+          <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Thành tiền: {totalPriceItems + shippingFee + optionFee} VNĐ</Text>
           
         </Flex>
         <Flex justifyContent={"right"} m={4}>

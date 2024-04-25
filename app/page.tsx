@@ -11,15 +11,11 @@ export default function WithSubnavigation() {
     <>
     <title>OrList</title>
     <meta name="description" content="Tổng quan"></meta>
-    
       <HeroSection />
-
-
-
-      <Container p={0} maxW={{ base: "90%", lg: "75%" }} my={10}>
+      {/* <Container p={0} maxW={{ base: "90%", lg: "75%" }} my={10}>
         <Flex>
         </Flex>
-      </Container>
+      </Container> */}
     </>
   );
 }
