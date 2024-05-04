@@ -155,11 +155,7 @@ export default function OrderForm() {
   const onSubmit = async(data: FormData) => {
     let isSuccess: boolean = true;
     //handle option fee
-    if(data.isDocument === true) setOptionFee(optionFee + 4000);
-    if(data.isBulky=== true) setOptionFee(optionFee + 2000);
-    if(data.isFragile === true) setOptionFee(optionFee + 1000);
-    if(data.isValuable === true) setOptionFee(optionFee + 3000);
-
+    let result: any;
     try {
       data.items.map((item, index) => {
         item.price = priceItem[index];
@@ -170,14 +166,17 @@ export default function OrderForm() {
         shippingFee: 0,
         collectionCharge: 0,
       };
-      console.log(optionFee);
+      
       data.price.itemsPrice = totalPriceItems;
       data.price.shippingFee = shippingFee + optionFee;
       data.price.collectionCharge = totalPriceItems + shippingFee + optionFee;
       data.store = {...selectedStore};
-      if(role === "ROLE_USER")
-        await addOrder(data).unwrap();
-      else await addOrderForEmployee(data).unwrap();
+      if(role === "ROLE_USER") {
+        result = await addOrder(data).unwrap();
+      }
+      else {
+        result = await addOrderForEmployee(data).unwrap();
+      }
     } catch (err: any) {
       isSuccess = false;
       console.error('Failed to create order: ', err)
@@ -206,7 +205,7 @@ export default function OrderForm() {
           duration: 3000,
           isClosable: true,
         })
-        setTimeout(() => router.push("/order"), 1000);
+        setTimeout(() => router.push(`/order-details?id=${result?.data?.id}`), 1000);
       }
     }
      
@@ -456,8 +455,8 @@ export default function OrderForm() {
             </Flex>
           </Box>
         ))}
+        { role === 'ROLE_USER' && (
         <Flex>
-          
           <Button
             onClick={addItem}
             colorScheme="teal"
@@ -469,9 +468,22 @@ export default function OrderForm() {
           </Button>
           <ProductDialog />
         </Flex>
+        )}
+
+        { role === 'ROLE_EMPLOYEE' && (
+        <Button
+          onClick={addItem}
+          colorScheme="teal"
+          variant="outline"
+          alignSelf={"center"}
+          alignItems={"center"}
+        >
+          Thêm hàng hoá
+        </Button>
+        )}
 
         <Divider my={2} orientation="horizontal" color={"gray.800"} />
-        <Text fontWeight={"500"}>Kích thước</Text>
+        <Text fontWeight={"500"} color="orange.500">Kích thước</Text>
         <Stack direction={{base: 'column', md: 'row'}}>
           <Input mt={{base: 2, md: 4}} placeholder={"Dài - cm"} {...register('length')}/>
           <Input mt={{base: 2, md: 4}} placeholder={"Rộng - cm"} {...register('width')}/>
@@ -554,7 +566,9 @@ export default function OrderForm() {
           </Checkbox>
         </>
         )}
-        <ReceiverDialog />
+        { role === 'ROLE_USER' && (
+          <ReceiverDialog />
+        )}
       </Box>
       
       <Box mt={4} bg="gray.50" p={4}>

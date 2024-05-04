@@ -1,4 +1,4 @@
-import {
+ import {
   Box,
   Select,
   Input,
@@ -35,14 +35,38 @@ import {
   Heading,
   StackDivider,
   Badge,
+  useToast,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import { Staff } from "@/app/type";
-import { useGetAllRequestOfOwnerQuery, useGetUserInfoQuery } from "@/app/_lib/features/api/apiSlice";
+import { 
+  useGetAllRequestOfOwnerQuery, 
+  useGetEmployeesRequestQuery,
+  useApproveEmployeeRequestMutation,
+  useRejectEmployeeRequestMutation,
+} from "@/app/_lib/features/api/apiSlice";
+import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
+import { getRole } from "@/app/_lib/features/roles/roleSlice";
+import { useRouter } from "next/navigation";
+
 
 export default function CustomerTable() {
-  const [searchInput, setSearchInput] = useState("");
-  const [filteredStaffs, setFilteredStaffs] = useState<Staff[]>([]);
+  const role = useAppSelector((state: any) => state.role.value);
+  const dispatch = useAppDispatch();
+  const [approveEmployeeRequest] = useApproveEmployeeRequestMutation();
+  const [rejectEmployeeRequest] = useRejectEmployeeRequestMutation();
+  const toast = useToast();
+  const [selectedReq, setSelectedReq] = useState<any>({});
+  const {onOpen, onClose, isOpen} = useDisclosure();
+  const router = useRouter();
 
   const {
     data: requests,
@@ -50,88 +74,91 @@ export default function CustomerTable() {
     isSuccess: isSuccessR,
     isError: isErrorR,
     error: errorR,
-  } = useGetAllRequestOfOwnerQuery() 
+  } = useGetAllRequestOfOwnerQuery(1, {skip: role === "ROLE_EMPLOYEE"}) 
+
+  const {
+    data: requestsE,
+    isLoading: isLoadingE,
+    isSuccess: isSuccessE,
+    isError: isErrorE,
+    error: errorE,
+  } = useGetEmployeesRequestQuery(1) 
 
 
   const getRequests = useMemo (() => {
-    if(isSuccessR) return requests.data
-  }, [requests])
+    let result: any = []
+    if (isSuccessR) result = result.concat(requests.data)
+    if (isSuccessE) result = result.concat(requestsE.data);
+    return result;
+  }, [requests, requestsE])
 
-  // const handleSearchInputChange = (event: { target: { value: any } }) => {
-  //   const inputValue = event.target.value;
-  //   setSearchInput(inputValue);
+  const handleApproveRequest = async (request: any) => {
+    try {
+      await approveEmployeeRequest({
+        id: request.id, 
+        request: {
+          employeeId: request.employeeId,
+          permissions: request.permissions,
+        }
+        })
+      .unwrap();
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("createdAt");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("roles");
+      router.replace("/login");
+    } catch (err) {
+      console.error('Failed to send request: ', err)
+      toast({
+        title: 'Có lỗi khi gửi yêu cầu',
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    } 
+  }
 
-  //   if(isSuccess) {
-  //     const filteredResults = getRequests.filter(
-  //       (staff: any) =>
-  //         staff.email.toLowerCase().includes(inputValue.toLowerCase())
-  //     );
-  //     setFilteredStaffs(filteredResults);
-  //   }
-  // };
-  // useEffect(() => {
-  //   handleSearchInputChange({ target: { value: '' } });
-  // }, [staffs]);
+  const handleRejectRequest = async (request: any) => {
+    try {
+      const res = await rejectEmployeeRequest({
+        id: request.id, 
+        request: {
+          employeeId: request.employeeId,
+          permissions: request.permissions,
+        }
+        })
+      .unwrap();
+      window.location.reload();
+    } catch (err) {
+      console.error('Failed to send request: ', err)
+      toast({
+        title: 'Có lỗi khi gửi yêu cầu',
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+    } 
+  }
+
+  const handleOpen = async (req: any) => {
+    setSelectedReq(req);
+    onOpen();
+  }
 
   return (
     <TableContainer bgColor={"white"} rounded={"2xl"}>
-      {/* <Flex
-        alignItems="center"
-        justify="space-between"
-        direction={{ base: "column", md: "row" }}
-      >
-        <VStack
-          m={{ base: 2, md: 8 }}
-          alignItems={"flex-start"}
-          maxW={{ base: "80vw", md: "full" }}
-        >
-          <Text fontSize={{ base: "xl", md: "3xl" }} fontWeight={700}>
-            Nhân viên
-          </Text>
-          <Text color={"gray"}>Tuần này bạn có thêm 20 nhân viên mới</Text>
-        </VStack>
-        <Flex>
-          <Input
-            m={{ base: 2, md: 8 }}
-            variant="filled"
-            placeholder="Tìm nhân viên"
-            w={{ base: "70vw", md: "30vw" }}
-            onChange={handleSearchInputChange}
-          />
-        </Flex>
-        
-      </Flex>
-      {isLoading ? (
-        <Flex
-        alignItems="center"
-        justify="center"
-        direction={{ base: "column", md: "row" }}
-        >
-          <Spinner size='lg' color='orange.500' />
-        </Flex>
-      ) : isError ? (
-        <Flex
-        alignItems="center"
-        justify="center"
-        direction={{ base: "column", md: "row" }}
-        m={4}
-        >
-          <Alert w='25%' status='error'>
-            <AlertIcon />
-            Can not fetch data from server
-          </Alert>
-        </Flex>
-      ) : (
-        <CustomerList staffs={filteredStaffs} />
-      )} */}
+      
       <Card>
         <CardHeader>
-          <Heading size='md'>Lịch sử yêu cầu</Heading>
+          <Heading size='md'>Danh sách yêu cầu</Heading>
         </CardHeader>
 
         <CardBody>
           
-          {isLoadingR ? (
+          {isLoadingR || isLoadingE ? (
             <Flex
             alignItems="center"
             justify="center"
@@ -139,19 +166,7 @@ export default function CustomerTable() {
             >
               <Spinner size='lg' color='orange.500' />
             </Flex>
-          ) : isErrorR ? (
-            <Flex
-            alignItems="center"
-            justify="center"
-            direction={{ base: "column", md: "row" }}
-            m={4}
-            >
-              <Alert w='25%' status='error'>
-                <AlertIcon />
-                Can not fetch data from server
-              </Alert>
-            </Flex>
-          ) : (
+          ) : isSuccessR || isSuccessE ?(
             <Stack divider={<StackDivider />} spacing='4'>
               {getRequests.length === 0 && (
                 <p>Không có yêu cầu nào</p>
@@ -211,29 +226,67 @@ export default function CustomerTable() {
                       </Badge>
                     )}
                   </Text>
+                  {req.status === "PENDING" && (
+                    <HStack mt={4} justifyContent={'flex-end'}>
+                    <Button
+                      colorScheme="orange"
+                      variant='outline'
+                      mx={2}
+                      size={'sm'}
+                      onClick={() => handleRejectRequest(req)}
+                    >
+                      Từ chối
+                    </Button>
+                    <Button
+                      colorScheme="orange"
+                      onClick={() => handleOpen(req)}
+                      mx={2}
+                      size={'sm'}
+                    >
+                      Chấp nhận
+                    </Button>
+                  </HStack>
+                  )}
                   
                   
                 </Box>
                 ))
               )}
+              <Modal onClose={onClose} isOpen={isOpen} isCentered size={{base: 'sm', md: 'md'}}>
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalCloseButton />
+                  <ModalBody>
+                      Để chấp nhận hệ thống sẽ đăng xuất, bạn vui lòng đăng nhập lại để tiếp tục.
+                  </ModalBody>
+                  <ModalFooter>
+                    <Button 
+                      mr={3} 
+                      onClick={() => {
+                        setSelectedReq({});
+                        onClose();
+                      }}
+                    >
+                      Đóng
+                    </Button>
+                    <Button colorScheme='orange' onClick={() => handleApproveRequest(selectedReq)}>Xác nhận</Button>
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
             </Stack>
+          ) : (
+            <Flex
+            alignItems="center"
+            justify="center"
+            direction={{ base: "column", md: "row" }}
+            m={4}
+            >
+              <Alert w='25%' status='error'>
+                <AlertIcon />
+                Can not fetch data from server
+              </Alert>
+            </Flex>
           )}
-            {/* <Box>
-              <Heading size='xs' textTransform='uppercase'>
-                Overview
-              </Heading>
-              <Text pt='2' fontSize='sm'>
-                Check out the overview of your clients.
-              </Text>
-            </Box>
-            <Box>
-              <Heading size='xs' textTransform='uppercase'>
-                Analysis
-              </Heading>
-              <Text pt='2' fontSize='sm'>
-                See a detailed analysis of all your business clients.
-              </Text>
-            </Box> */}
           
         </CardBody>
       </Card>

@@ -45,10 +45,10 @@ import {
   FiShoppingCart
 } from "react-icons/fi";
 import { IconType } from "react-icons";
-import { ReactText } from "react";
+import { ReactText, useState, useEffect } from "react";
 import CustomerTable from "./component/Staff";
-// import Location from "./Location";
-// import ProductInfor from "./ProductInfor";
+import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
+import { getRole } from "@/app/_lib/features/roles/roleSlice";
 
 
 interface LinkItemProps {
@@ -56,14 +56,21 @@ interface LinkItemProps {
   icon: IconType;
   link: string;
 }
-const LinkItems: Array<LinkItemProps> = [
+const LinkItemsU: Array<LinkItemProps> = [
   { name: "Tổng quan", icon: FiHome, link: "/dashboard" },
   { name: "Đơn hàng", icon: FiShoppingCart, link: "/order" },
   { name: "Nhân sự", icon: FiUser, link: "/staff" },
   { name: "Cửa hàng", icon: FiAirplay, link: "/store" },
   { name: "Sản phẩm", icon: FiShoppingBag, link: "/product" },
   { name: "Khách hàng", icon: FiStar, link: "/table" },
-  
+];
+
+const LinkItemsE: Array<LinkItemProps> = [
+  { name: "Tổng quan", icon: FiHome, link: "/dashboard" },
+  { name: "Đơn hàng", icon: FiShoppingCart, link: "/order" },
+  { name: "Cửa hàng", icon: FiAirplay, link: "/store" },
+  { name: "Sản phẩm", icon: FiShoppingBag, link: "/product" },
+  { name: "Khách hàng", icon: FiStar, link: "/table" },
 ];
 
 export default function Sidebar() {
@@ -102,6 +109,13 @@ interface SidebarProps extends BoxProps {
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   const router = useRouter();
+  const role = useAppSelector((state: any) => state.role.value);
+  const [linkItems, setLinkItems] = useState<Array<LinkItemProps>>([]);
+  // const LinkItems: Array<LinkItemProps> = role == "ROLE_USER" ? LinkItemsU : LinkItemsE;
+  useEffect (() => {
+    setLinkItems(role == "ROLE_USER" ? LinkItemsU : LinkItemsE)
+  }, [role])
+
   return (
     <Box
       bg={useColorModeValue("white", "gray.900")}
@@ -119,7 +133,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         <CloseButton  onClick={onClose} />
       </Flex>
       <Button onClick={()=>router.push("/create")}  ml={8} mt={6} mb={2} w="50%" colorScheme="orange">+ Tạo đơn </Button>
-      {LinkItems.map((link) => (
+      {linkItems.map((link) => (
         <NavItem  
           key={link.name} 
           icon={link.icon}

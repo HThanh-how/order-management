@@ -36,6 +36,7 @@ import { SlOptionsVertical } from "react-icons/sl";
 import { useState } from "react";
 import { useRemoveStoreMutation } from "@/app/_lib/features/api/apiSlice"
 import { Store } from "@/app/type";
+import { useAppSelector } from "@/app/_lib/hooks";
 
 interface StoreTableProps {
   stores: Store[];
@@ -48,7 +49,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
   const [storesPerPage, setStoresPerPage] = useState(5);
   const [selectedStore, setSelectedStore] = useState<any>({});
   const [deleteOpen, setDeleteOpen] = useState(false);
-
+  const role = useAppSelector((state: any) => state.role.value)
   const [removeStore, {isLoading}] = useRemoveStoreMutation();
   const toast = useToast();
 
@@ -143,6 +144,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
             <Th>Số điện thoại</Th>
             <Th>Địa chỉ</Th>
             <Th>Ghi chú</Th>
+            { role === 'ROLE_USER' && (
             <Th w={"1vw"}>
               <Menu>
                 <MenuButton>
@@ -154,6 +156,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
                 </MenuList> */}
               </Menu>
             </Th>
+            )}
           </Tr>
         </Thead>
         <Tbody>
@@ -195,6 +198,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
               <Td>{store.phoneNumber}</Td>
               <Td>{store.detailedAddress}, {store.address}</Td>
               <Td>{store.description}</Td>
+              { role === 'ROLE_USER' && (
               <Td>
                 <Menu>
                   <MenuButton>
@@ -206,6 +210,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
                   </MenuList>
                 </Menu>
               </Td>
+              )}
             </Tr>
           ))}
         </Tbody>

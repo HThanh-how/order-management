@@ -1,5 +1,5 @@
 "use client";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   IconButton,
@@ -45,18 +45,18 @@ import {
   FiShoppingCart
 } from "react-icons/fi";
 import { IconType } from "react-icons";
-import { ReactText } from "react";
+import { ReactText, useState } from "react";
 import CustomerTable from "./component/Request";
-// import Location from "./Location";
-// import ProductInfor from "./ProductInfor";
-
+import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
+import { getRole } from "@/app/_lib/features/roles/roleSlice";
+import dynamic from "next/dynamic";
 
 interface LinkItemProps {
   name: string;
   icon: IconType;
   link: string;
 }
-const LinkItems: Array<LinkItemProps> = [
+const LinkItemsU: Array<LinkItemProps> = [
   { name: "Tổng quan", icon: FiHome, link: "/dashboard" },
   { name: "Đơn hàng", icon: FiShoppingCart, link: "/order" },
   { name: "Nhân sự", icon: FiUser, link: "/staff" },
@@ -66,11 +66,19 @@ const LinkItems: Array<LinkItemProps> = [
   
 ];
 
+const LinkItemsE: Array<LinkItemProps> = [
+  { name: "Tổng quan", icon: FiHome, link: "/dashboard" },
+  { name: "Đơn hàng", icon: FiShoppingCart, link: "/order" },
+  { name: "Cửa hàng", icon: FiAirplay, link: "/store" },
+  { name: "Sản phẩm", icon: FiShoppingBag, link: "/product" },
+  { name: "Khách hàng", icon: FiStar, link: "/table" },
+];
+
 export default function Sidebar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
-          <title>Nhân viên</title>
+      <title>Yêu cầu</title>
       <SidebarContent
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
@@ -89,7 +97,7 @@ export default function Sidebar() {
       </Drawer> */}
       {/* mobilenav */}
       {/* <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} /> */}
-      <Box ml={{ base: 0, md: 60 }} p={8}>
+      <Box ml={{ base: 0, md: 60 }} p={{ base: 2, md: 8 }}>
         <CustomerTable/>
       </Box>
     </Box>
@@ -102,6 +110,12 @@ interface SidebarProps extends BoxProps {
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   const router = useRouter();
+  const role = useAppSelector((state: any) => state.role.value);
+  const [linkItems, setLinkItems] = useState<Array<LinkItemProps>>([]);
+  // const LinkItems: Array<LinkItemProps> = role == "ROLE_USER" ? LinkItemsU : LinkItemsE;
+  useEffect (() => {
+    setLinkItems(role == "ROLE_USER" ? LinkItemsU : LinkItemsE)
+  }, [role])
   return (
     <Box
       bg={useColorModeValue("white", "gray.900")}
@@ -119,7 +133,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         <CloseButton  onClick={onClose} />
       </Flex>
       <Button onClick={()=>router.push("/create")}  ml={8} mt={6} mb={2} w="50%" colorScheme="orange">+ Tạo đơn </Button>
-      {LinkItems.map((link) => (
+      
+      {linkItems.map((link) => (
         <NavItem  
           key={link.name} 
           icon={link.icon}
@@ -131,6 +146,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
     </Box>
   );
 };
+
 
 interface NavItemProps extends FlexProps {
   icon: IconType;
@@ -152,7 +168,7 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "cyan.400",
+          bg: "orange.400",
           color: "white",
         }}
         {...rest}

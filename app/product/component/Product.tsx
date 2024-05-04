@@ -32,14 +32,14 @@ import {
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
 import ProductTable from "./Table";
-
+import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
 import { useGetProductsQuery }  from "@/app/_lib/features/api/apiSlice"
 // import { Product } from "@/app/type";
 
 export default function Product() {
   const [searchInput, setSearchInput] = useState("");
   const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
-  
+  const role = useAppSelector((state: any) => state.role.value);
   const {
     data: products,
     isLoading,
@@ -94,8 +94,10 @@ export default function Product() {
             onChange={handleSearchInputChange}
           />
         </Flex>
-        {/* <Dialog setProducts={setProducts}/> */}
-        <Dialog />
+        { role === "ROLE_USER" && (
+          <Dialog />
+        )}
+           
       </Flex>
       
         {isLoading ? (

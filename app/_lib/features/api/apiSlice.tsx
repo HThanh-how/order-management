@@ -318,7 +318,7 @@ export const apiSlice = createApi({
       invalidatesTags: ["Request"],
     }),
 
-    getAllRequestOfOwner: builder.query<any, void>({
+    getAllRequestOfOwner: builder.query({
       // The URL for the request is '/fakeApi/posts'
       query: () => ({
         url: "/empl-mngt/owner/get-all",

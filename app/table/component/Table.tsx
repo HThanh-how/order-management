@@ -142,22 +142,18 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
               />
             </Th>
             <Th>Tên</Th>
-            {/* <Th>Trạng thái</Th>
-            <Th>Tags</Th> */}
             <Th>Số điện thoại</Th>
             <Th>Địa chỉ</Th>
             <Th>Ghi chú</Th>
+            { role === 'ROLE_USER' && (
             <Th w={"1vw"}>
               <Menu>
                 <MenuButton>
                   <Icon as={SlOptionsVertical} />
                 </MenuButton>
-                {/* <MenuList>
-                  <MenuItem>Sửa</MenuItem>                  
-                  <MenuItem>Xoá</MenuItem>
-                </MenuList> */}
               </Menu>
             </Th>
+            )}
           </Tr>
         </Thead>
         <Tbody>
@@ -199,6 +195,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
               <Td>{customer.phoneNumber}</Td>
               <Td>{customer.detailedAddress}, {customer.address}</Td>
               <Td>{customer.note}</Td>
+              { role === 'ROLE_USER' && (
               <Td>
                 <Menu>
                   <MenuButton>
@@ -210,6 +207,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
                   </MenuList>
                 </Menu>
               </Td>
+              )}
             </Tr>
           ))}
         </Tbody>

@@ -34,10 +34,12 @@ import Dialog from "./Dialog";
 import CustomerList from "./Table";
 import { Staff } from "@/app/type";
 import { useGetEmployeesQuery } from "@/app/_lib/features/api/apiSlice";
+import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
 
 export default function CustomerTable() {
   const [searchInput, setSearchInput] = useState("");
   const [filteredStaffs, setFilteredStaffs] = useState<Staff[]>([]);
+  const role = useAppSelector((state: any) => state.role.value);
 
   const {
     data: staffs,
@@ -93,7 +95,10 @@ export default function CustomerTable() {
             onChange={handleSearchInputChange}
           />
         </Flex>
-        <Dialog />
+        { role === "ROLE_USER" && (
+          <Dialog />
+        )}
+        
       </Flex>
       {isLoading ? (
         <Flex

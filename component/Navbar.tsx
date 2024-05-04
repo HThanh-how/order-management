@@ -74,7 +74,6 @@ interface Props {
 }
 
 export const IsLoginContext = createContext<boolean | null>(null);
-//const Links = ["STORE", "SUPPORT", "CONTACT"];
 
 const NavLink = (props: Props) => {
   const router = useRouter();
@@ -149,8 +148,8 @@ export default function NavBar() {
     error: errorN,
   } = useGetNotificationsQuery(1, {pollingInterval: 15000, skip: !isLogin})
 
-  const [approveEmployeeRequest] = useApproveEmployeeRequestMutation();
-  const [rejectEmployeeRequest] = useRejectEmployeeRequestMutation();
+  // const [approveEmployeeRequest] = useApproveEmployeeRequestMutation();
+  // const [rejectEmployeeRequest] = useRejectEmployeeRequestMutation();
   const [setNotiIsRead] = useSetNotiIsReadMutation();
 
   const getEmployeeRequests = useMemo (() => {
@@ -221,100 +220,13 @@ export default function NavBar() {
     return formattedString;
 }
 
-  const handleApproveRequest = async (request: any) => {
-    try {
-      console.log(request);
-      await approveEmployeeRequest({
-        id: request.id, 
-        request: {
-          employeeId: request.employeeId,
-          permissions: request.permissions,
-        }
-        })
-      .unwrap();
-      notification.onClose();
-    } catch (err) {
-      console.error('Failed to send request: ', err)
-      toast({
-        title: 'Có lỗi khi gửi yêu cầu',
-        position: 'top',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
-    } 
-  }
-
-  const handleRejectRequest = async (request: any) => {
-    try {
-      const res = await rejectEmployeeRequest({
-        id: request.id, 
-        request: {
-          employeeId: request.employeeId,
-          permissions: request.permissions,
-        }
-        })
-      .unwrap();
-      notification.onClose();
-    } catch (err) {
-      console.error('Failed to send request: ', err)
-      toast({
-        title: 'Có lỗi khi gửi yêu cầu',
-        position: 'top',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
-    } 
-  }
-
   useEffect(() => {
     // const lastAccess = localStorage.getItem("createAt");
     if (localStorage.getItem("accessToken") === null) {
       setIsLogin(false);
     } else setIsLogin(true);
   }, []);
-  // useEffect(() => {
-  //   if (Date.now() - new Date(lastTimeAccess).getTime() > 1800000) {
-  //     setIsLogin(false);
-  //   } else {
-  //     setIsLogin(true);
-  //   }
-  // }, [lastTimeAccess, pathname]);
-
-  // useEffect(() => {
-  //   let intervalId: NodeJS.Timeout;
-
-  //   if (isLogin) {
-  //     intervalId = setInterval(() => {
-  //       fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}auth/refreshToken`, {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           refreshToken: localStorage.getItem("refreshToken"),
-  //         }),
-  //       })
-  //         .then((response) => response.json())
-  //         .then((data) => {
-  //           const { accessToken, refreshToken } = data;
-  //           localStorage.setItem("accessToken", accessToken);
-  //           localStorage.setItem("refreshToken", refreshToken);
-  //           console.log(data);
-  //           const createdAt = new Date().toISOString();
-  //           localStorage.setItem("createdAt", createdAt);
-  //         })
-  //         .catch((error) => {
-  //           console.error("Lỗi:", error);
-  //         });
-  //     }, 900000);
-  //   }
-
-  //   return () => {
-  //     clearInterval(intervalId);
-  //   };
-  // }, [isLogin]);
+ 
 
   useEffect(() => {
     if ((pathname === "/login" && isLogin) ||
@@ -395,60 +307,7 @@ export default function NavBar() {
                 <DrawerContent>
                   <DrawerCloseButton />
                   <DrawerHeader>Thông báo</DrawerHeader>
-                  <DrawerBody>
-                    
-                    {/* {isLoadingR ? (
-                      <Flex
-                      alignItems="center"
-                      justify="center"
-                      direction={{ base: "column", md: "row" }}
-                      >
-                        <Spinner size='lg' color='orange.500' />
-                      </Flex>
-                    ) : isErrorR ? (
-                      <Flex
-                      alignItems="center"
-                      justify="center"
-                      direction={{ base: "column", md: "row" }}
-                      m={4}
-                      >
-                        <Alert w='25%' status='error'>
-                          <AlertIcon />
-                          Can not fetch data from server
-                        </Alert>
-                      </Flex>
-                    ) : (
-                      <>
-                        {getEmployeeRequests.length === 0 && (
-                          <p>Không có thông báo nào</p>
-                        )}
-                        {getEmployeeRequests.length !== 0 && (
-                          getEmployeeRequests.map((req: any) => (
-                            <VStack mb={4} key={req.id}>
-                              <p>Bạn nhận được yêu cầu trở thành nhân viên</p>
-                              <HStack mb={2}>
-                                <Button
-                                  colorScheme="orange"
-                                  variant='outline'
-                                  mx={2}
-                                  onClick={() => handleRejectRequest(req)}
-                                >
-                                  Từ chối
-                                </Button>
-                                <Button
-                                  colorScheme="orange"
-                                  onClick={() => handleApproveRequest(req)}
-                                  mx={2}
-                                >
-                                  Chấp nhận
-                                </Button>
-                              </HStack>
-                              <Divider orientation='horizontal' />
-                            </VStack>
-                          ))
-                        )}
-                      </>
-                    )} */}
+                  <DrawerBody>                    
 
                     {isLoadingN ? (
                       <Flex
@@ -477,7 +336,14 @@ export default function NavBar() {
                         )}
                         {getNotifications?.length !== 0 && (
                           getNotifications?.map((noti: any) => (
-                            <VStack align={'start'} justifyContent={'flex-start'} mb={4} key={noti.id} cursor={'pointer'} onClick={async () => await setNotiIsRead(noti.id).unwrap()}>
+                            <VStack align={'start'} justifyContent={'flex-start'} mb={4} key={noti.id} cursor={'pointer'} 
+                            onClick={async () => {
+                              if (noti.read === false)
+                                await setNotiIsRead(noti.id).unwrap()
+                              if (noti.type === 'EMPLOYEE_REQUEST') router.push("/requests")
+                              if (noti.type === 'ORDER_INFO') router.push("/order")
+                              notification.onClose();
+                            }}>
                               <Flex  gap={2}>
                                 {noti.read === false && (
                                   <CheckCircleIcon mt={2} color={'orange.500'}/>
@@ -537,7 +403,7 @@ export default function NavBar() {
                 <MenuItem onClick={() => router.push("/user")}>
                   Cá nhân
                 </MenuItem>
-                <MenuItem onClick={() => router.push("/user")}>Order</MenuItem>
+                
                 {/* {getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE") && role === "ROLE_USER" && (
                   <MenuItem onClick={() => dispatch(getRole("ROLE_EMPLOYEE"))}>
                     Chuyển giao diện <br/> nhân viên
@@ -550,7 +416,7 @@ export default function NavBar() {
                   </MenuItem>
                 )} */}
                 
-                <MenuItem onClick={() => router.push("/user")}>
+                <MenuItem onClick={() => router.push("/dashboard")}>
                   Cài đặt
                 </MenuItem>
                 <MenuDivider />

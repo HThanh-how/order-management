@@ -34,11 +34,12 @@ import Dialog from "./Dialog";
 import StoreList from "./Table";
 import { useGetStoresQuery } from "@/app/_lib/features/api/apiSlice"
 import { Store } from "@/app/type";
+import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
 
 export default function StoreTable() {
   const [searchInput, setSearchInput] = useState("");
   const [filteredStores, setFilteredStores] = useState<Store[]>([]);
-
+  const role = useAppSelector((state: any) => state.role.value);
   const {
     data: stores,
     isLoading,
@@ -96,7 +97,9 @@ export default function StoreTable() {
             onChange={handleSearchInputChange}
           />
         </Flex>
-        <Dialog />
+        { role === "ROLE_USER" && (
+          <Dialog />
+        )}
       </Flex>
         {isLoading ? (
           <Flex

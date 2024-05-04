@@ -60,6 +60,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
   const [removeProduct, {isLoading}] = useRemoveProductMutation();
   const toast = useToast();
   const [isMobile] = useMediaQuery('(max-width: 768px)')
+  const role = useAppSelector((state: any) => state.role.value)
 
   
 
@@ -173,17 +174,20 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
             <Th>Trạng thái</Th>
             <Th>Thông tin</Th>
             
-            <Th w={"1vw"}>
-              <Menu>
-                <MenuButton>
-                  <Icon as={SlOptionsVertical} />
-                </MenuButton>
-                {/* <MenuList>
-                  <MenuItem>Sửa</MenuItem>
-                  <MenuItem>Xoá</MenuItem>
-                </MenuList> */}
-              </Menu>
-            </Th>
+            { role === "ROLE_USER" && (
+              <Th w={"1vw"}>
+                <Menu>
+                  <MenuButton>
+                    <Icon as={SlOptionsVertical} />
+                  </MenuButton>
+                  {/* <MenuList>
+                    <MenuItem>Sửa</MenuItem>
+                    <MenuItem>Xoá</MenuItem>
+                  </MenuList> */}
+                </Menu>
+              </Th>
+            )}
+            
           </Tr>
         </Thead>
         <Tbody>
@@ -254,18 +258,20 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
                 </Flex>
               </Td>
               
-              <Td>
-                <Menu>
-                  <MenuButton>
-                    <Icon as={SlOptionsVertical} color={"gray"} />
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem onClick={() => handleUpdate(product.id)}>Sửa</MenuItem>
-                    <MenuItem onClick={() => handleDeleteOpen(product.id)}>Xoá</MenuItem>
-                  </MenuList>
-                </Menu>
-                
-              </Td>
+              { role === " ROLE_USER" && (
+                <Td>
+                  <Menu>
+                    <MenuButton>
+                      <Icon as={SlOptionsVertical} color={"gray"} />
+                    </MenuButton>
+                    <MenuList>
+                      <MenuItem onClick={() => handleUpdate(product.id)}>Sửa</MenuItem>
+                      <MenuItem onClick={() => handleDeleteOpen(product.id)}>Xoá</MenuItem>
+                    </MenuList>
+                  </Menu>  
+                </Td>
+              )}
+              
             </Tr>
           ))}
         </Tbody>

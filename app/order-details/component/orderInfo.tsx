@@ -191,38 +191,57 @@ export default function CustomerTable() {
         
       </Flex>
 
-      <Card mt={4} bgColor={"white"} rounded={"2xl"}>
-      <CardHeader>
-        <Heading size='md' color="orange.500">Thông tin vận chuyển</Heading>
-      </CardHeader>
-      <CardBody>
-      {getOrder.orderStatus === 'CANCELLED' ? (
-        <Text color={'red.500'} fontWeight={600} fontSize={16}>Đơn hàng này đã bị huỷ</Text>
-      )
-      :
-      <Stepper colorScheme="orange" size={{base: 'sm', md: 'md'}} index={activeStep} >
-        {steps.map((step, index) => (
-          <Step key={index}>
-            <StepIndicator>
-              <StepStatus
-                complete={<StepIcon />}
-                incomplete={<StepNumber />}
-                active={<StepNumber />}
-              />
-            </StepIndicator>
+      <Flex
+        alignItems="flex-start"
+        justify="space-between"
+        direction={{ base: "column", md: "row" }}
+        gap={4}
+        mt={4}
+      >
+        <Card w={'100%'} mt={4} bgColor={"white"} rounded={"2xl"}>
+          <CardHeader>
+            <Flex justify={'space-between'}>
+              <Heading size='md' color="orange.500">Vận chuyển từ</Heading>
+              {/* {getOrder.orderStatus !== 'CANCELLED' && (
+              // <EditIcon color="orange.500" boxSize={6} style={{cursor: 'pointer'}} />
+              )}
+              */}
+            </Flex>
+          </CardHeader>
+          <CardBody>
+            <Text fontSize={'lg'} fontWeight={400}>Tên cửa hàng: {getOrder.storeDto.name}</Text>
+            <Text fontSize={'lg'} fontWeight={400}>SĐT: {getOrder.storeDto.phoneNumber}</Text>
+            <Text fontSize={'lg'} fontWeight={400}>Địa chỉ: {`${getOrder.storeDto.detailedAddress}, ${getOrder.storeDto.address}`}</Text>
+          </CardBody>
+        </Card>
 
-            <Box flexShrink='0'>
-              <StepTitle>{step.title}</StepTitle>
-              <StepDescription>{step.description}</StepDescription>
-            </Box>
+        <Card w={'100%'} mt={4} bgColor={"white"} rounded={"2xl"}>
+          <CardHeader>
+            <Flex justify={'space-between'}>
+              <Heading size='md' color="orange.500">Thông tin người nhận</Heading>
+              {getOrder.orderStatus !== 'CANCELLED' && (
+              <EditIcon color="orange.500" boxSize={6} style={{cursor: 'pointer'}} onClick={receiverDialog.onOpen}/>
+              )}
+            </Flex>
+          </CardHeader>
+          <CardBody>
+            <Text fontSize={'lg'} fontWeight={400}>Tên người nhận: {getOrder.receiverDto.name}</Text>
+            <Text fontSize={'lg'} fontWeight={400}>SĐT: {getOrder.receiverDto.phoneNumber}</Text>
+            <Text fontSize={'lg'} fontWeight={400}>Địa chỉ: {`${getOrder.receiverDto.detailedAddress}, ${getOrder.receiverDto.address}`}</Text>
+            <Text fontSize={'lg'} fontWeight={400}>Ghi chú: {getOrder.receiverDto.note}</Text>
+          </CardBody>
+        </Card>
 
-            <StepSeparator />
-          </Step>
-        ))}
-      </Stepper>
-      }
-      </CardBody>
-      </Card>
+        <ReceiverDialog 
+          isOpen={receiverDialog.isOpen}
+          onOpen={receiverDialog.onOpen}
+          onClose={receiverDialog.onClose}
+          selectedCustomer={receiver}
+        />
+
+      </Flex>
+
+      
 
       <Flex
         alignItems="flex-start"
@@ -231,6 +250,37 @@ export default function CustomerTable() {
         gap={4}
         mt={4}
       >
+        <Card w='75%' mt={4} bgColor={"white"} rounded={"2xl"}>
+          <CardHeader>
+            <Heading size='md' color="orange.500">Thông tin vận chuyển</Heading>
+          </CardHeader>
+          <CardBody>
+          {getOrder.orderStatus === 'CANCELLED' ? (
+            <Text color={'red.500'} fontWeight={600} fontSize={16}>Đơn hàng này đã bị huỷ</Text>
+          )
+          :
+          <Stepper colorScheme="orange" index={activeStep} orientation='vertical' >
+            {steps.map((step, index) => (
+              <Step key={index}>
+                <StepIndicator>
+                  <StepStatus
+                    complete={<StepIcon />}
+                    incomplete={<StepNumber />}
+                    active={<StepNumber />}
+                  />
+                </StepIndicator>
+
+                <Box flexShrink='0'>
+                  <StepTitle>{step.title}</StepTitle>
+                  <StepDescription>{step.description}</StepDescription>
+                </Box>
+                <StepSeparator />
+              </Step>
+            ))}
+          </Stepper>
+          }
+          </CardBody>
+        </Card>
         <VStack w={{base: '100%'}}>
           <Card w='100%' mt={4} bgColor={"white"} rounded={"2xl"}>
           <CardHeader>
@@ -260,49 +310,6 @@ export default function CustomerTable() {
             </Stack>
           </CardBody>
           </Card> 
-          
-          <Card w={'100%'} mt={4} bgColor={"white"} rounded={"2xl"}>
-            <CardHeader>
-              <Flex justify={'space-between'}>
-                <Heading size='md' color="orange.500">Vận chuyển từ</Heading>
-               {/* {getOrder.orderStatus !== 'CANCELLED' && (
-                // <EditIcon color="orange.500" boxSize={6} style={{cursor: 'pointer'}} />
-                )}
-                */}
-              </Flex>
-            </CardHeader>
-            <CardBody>
-              <Text fontSize={'lg'} fontWeight={400}>Tên cửa hàng: {getOrder.storeDto.name}</Text>
-              <Text fontSize={'lg'} fontWeight={400}>SĐT: {getOrder.storeDto.phoneNumber}</Text>
-              <Text fontSize={'lg'} fontWeight={400}>Địa chỉ: {`${getOrder.storeDto.detailedAddress}, ${getOrder.storeDto.address}`}</Text>
-            </CardBody>
-          </Card>
-
-        </VStack>
-        <VStack w={{base: '100%'}} alignItems={"flex-end"}>
-          <Card w={'100%'} mt={4} bgColor={"white"} rounded={"2xl"}>
-            <CardHeader>
-              <Flex justify={'space-between'}>
-                <Heading size='md' color="orange.500">Thông tin người nhận</Heading>
-                {getOrder.orderStatus !== 'CANCELLED' && (
-                <EditIcon color="orange.500" boxSize={6} style={{cursor: 'pointer'}} onClick={receiverDialog.onOpen}/>
-                )}
-              </Flex>
-            </CardHeader>
-            <CardBody>
-              <Text fontSize={'lg'} fontWeight={400}>Tên người nhận: {getOrder.receiverDto.name}</Text>
-              <Text fontSize={'lg'} fontWeight={400}>SĐT: {getOrder.receiverDto.phoneNumber}</Text>
-              <Text fontSize={'lg'} fontWeight={400}>Địa chỉ: {`${getOrder.receiverDto.detailedAddress}, ${getOrder.receiverDto.address}`}</Text>
-              <Text fontSize={'lg'} fontWeight={400}>Ghi chú: {getOrder.receiverDto.note}</Text>
-            </CardBody>
-          </Card>
-
-          <ReceiverDialog 
-            isOpen={receiverDialog.isOpen}
-            onOpen={receiverDialog.onOpen}
-            onClose={receiverDialog.onClose}
-            selectedCustomer={receiver}
-          />
 
           <Card mt={4}  w='100%' bgColor={"white"} rounded={"2xl"}>
             <CardHeader>
@@ -316,19 +323,15 @@ export default function CustomerTable() {
           </Card>
 
           {getOrder.orderStatus !== 'CANCELLED' && (
-          <Button mt={4} colorScheme='orange' variant='outline' onClick={onOpen}>
-            Huỷ đơn
-          </Button>
-        )}
+          <Flex mt={4} alignItems={'flex-start'} justifyContent={'flex-end'}>
+            <Button colorScheme='orange' variant='outline' onClick={onOpen}>
+              Huỷ đơn
+            </Button>
+          </Flex>
+          )}
+          
         </VStack>
       </Flex>
-      {/* {getOrder.orderStatus !== 'CANCELLED' && (
-      <Flex mt={4} alignItems={'flex-start'} justifyContent={'end'}>
-        <Button colorScheme='orange' variant='outline' onClick={onOpen}>
-          Huỷ đơn
-        </Button>
-      </Flex>
-      )} */}
       <AlertDialog
         isOpen={isOpen}
         leastDestructiveRef={cancelRef}

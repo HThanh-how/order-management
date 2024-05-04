@@ -98,7 +98,10 @@ export default function CustomerTable() {
             onChange={handleSearchInputChange}
           />
         </Flex>
-        <Dialog />
+        { role === "ROLE_USER" && (
+          <Dialog />
+        )}
+        
       </Flex>
 
         {isLoading ? (
