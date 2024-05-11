@@ -93,7 +93,7 @@ export default function CustomerTable() {
           <Input
             m={{ base: 2, md: 8 }}
             variant="filled"
-            placeholder="Tìm mã vận đơn"
+            placeholder="Tìm khách hàng"
             w={{ base: "70vw", md: "30vw" }}
             onChange={handleSearchInputChange}
           />
@@ -124,6 +124,15 @@ export default function CustomerTable() {
               Can not fetch data from server
             </Alert>
           </Flex>
+        ) : filteredCustomers.length === 0 ? (
+          <Flex
+            alignItems="center"
+            justify="center"
+            direction={{ base: "column", md: "row" }}
+          >
+            <Text color={'gray'} fontSize={20}>Chưa thêm khách hàng nào</Text>
+          </Flex>
+          
         ) : (
         <CustomerList customers={filteredCustomers} />
         )}

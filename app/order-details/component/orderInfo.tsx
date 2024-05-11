@@ -323,7 +323,7 @@ export default function CustomerTable() {
           </Card>
 
           {getOrder.orderStatus !== 'CANCELLED' && (
-          <Flex mt={4} alignItems={'flex-start'} justifyContent={'flex-end'}>
+          <Flex mt={4} alignItems={'center'} justifyContent={'flex-end'}>
             <Button colorScheme='orange' variant='outline' onClick={onOpen}>
               Huỷ đơn
             </Button>

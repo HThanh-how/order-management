@@ -127,6 +127,15 @@ export default function Order() {
             Can not fetch data from server
           </Alert>
         </Flex>
+      ) : filteredOrders.length === 0 ? (
+        <Flex
+          alignItems="center"
+          justify="center"
+          direction={{ base: "column", md: "row" }}
+        >
+          <Text color={'gray'} fontSize={20}>Chưa có đơn hàng nào</Text>
+        </Flex>
+        
       ) : (
         <OrderTable orders={filteredOrders} />
       )}

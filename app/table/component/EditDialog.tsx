@@ -287,10 +287,10 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
 
           <ModalFooter>
             <Button onClick={onClose} mr={3}>
-              Cancel
+              Huỷ
             </Button>
             <Button colorScheme="orange" onClick={handleSubmit(onSubmit)}>
-              Save
+              Lưu
             </Button>
             
           </ModalFooter>

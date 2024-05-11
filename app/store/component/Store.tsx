@@ -92,7 +92,7 @@ export default function StoreTable() {
           <Input
             m={{ base: 2, md: 8 }}
             variant="filled"
-            placeholder="Tìm mã vận đơn"
+            placeholder="Tìm cửa hàng"
             w={{ base: "70vw", md: "30vw" }}
             onChange={handleSearchInputChange}
           />
@@ -121,6 +121,15 @@ export default function StoreTable() {
               Can not fetch data from server
             </Alert>
           </Flex>
+        ) : filteredStores.length === 0 ? (
+          <Flex
+            alignItems="center"
+            justify="center"
+            direction={{ base: "column", md: "row" }}
+          >
+            <Text color={'gray'} fontSize={20}>Chưa thêm cửa hàng nào</Text>
+          </Flex>
+          
         ) : (
         <StoreList stores={filteredStores} />
         )}

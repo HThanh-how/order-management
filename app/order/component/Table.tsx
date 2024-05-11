@@ -166,7 +166,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
   }
 
   return (
-    <Box overflowX={{ base: "scroll", md: "hidden" }} p={8} pt={0}>
+    <Box overflowX={{ base: "scroll", md: "hidden" }} p={8} pt={0}>     
       <Tabs index={tabIndex} isFitted variant="enclosed" colorScheme="orange" mb={2} onChange={(index) => handleTabChange(index)}>
         <TabList>
           <Tab>Tất cả</Tab>
@@ -323,7 +323,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
         </ButtonGroup>
       </Flex>
     </Box>
-  );
+  )
 };
 
 export default OrderTable;

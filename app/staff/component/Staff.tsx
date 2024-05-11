@@ -120,6 +120,15 @@ export default function CustomerTable() {
             Can not fetch data from server
           </Alert>
         </Flex>
+      ) : filteredStaffs.length === 0 ? (
+        <Flex
+          alignItems="center"
+          justify="center"
+          direction={{ base: "column", md: "row" }}
+        >
+          <Text color={'gray'} fontSize={20}>Chưa có nhân viên nào</Text>
+        </Flex>
+        
       ) : (
         <CustomerList staffs={filteredStaffs} />
       )}

@@ -120,6 +120,15 @@ export default function Product() {
               Can not fetch data from server
             </Alert>
           </Flex>
+        ) : filteredProducts.length === 0 ? (
+          <Flex
+            alignItems="center"
+            justify="center"
+            direction={{ base: "column", md: "row" }}
+          >
+            <Text color={'gray'} fontSize={20}>Chưa thêm sản phẩm nào</Text>
+          </Flex>
+          
         ) : (
         <ProductTable products={filteredProducts} />
         )}

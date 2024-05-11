@@ -30,6 +30,7 @@ const baseQuery = fetchBaseQuery({
       "Authorization",
       `Bearer ${getFromLocalStorage("accessToken")}`
     );
+    headers.set('ngrok-skip-browser-warning', 'true');
     return headers;
   },
 });
@@ -111,6 +112,7 @@ export const apiSlice = createApi({
     getProducts: builder.query<any, void>({
       // The URL for the request is '/fakeApi/posts'
       query: () => ({
+        method: "GET",
         url: "/products",
         headers: {
           userId: `${getFromLocalStorage("userId")}`,
