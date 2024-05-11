@@ -11,7 +11,41 @@ export default function handler(req, res) {
     res.status(405).json({ message: 'Only POST requests are allowed' });
   }
 }
+// Khu vực 01:
+[1]
 
+// Khu vực 02:
+[2, 31, 22, 30, 33, 21, 25, 26]
+
+// Khu vực 03:
+[4, 6, 8, 20, 19, 24]
+
+// Khu vực 04:
+[11, 12, 14, 15, 17]
+
+// Khu vực 05:
+[5, 27, 226, 35]
+
+// Khu vực 06:
+[38, 40, 42, 44, 45, 46]
+
+// Khu vực 07:
+[48, 49, 51]
+
+// Khu vực 08:
+[52, 54, 56]
+
+// Khu vực 09:
+[62, 64, 66, 67, 68]
+
+// Khu vực 10:
+[58, 60, 70, 72, 74, 75, 77]
+
+// Khu vực 11:
+[80, 82, 83, 84, 86, 87, 89, 91, 92, 93, 94, 95, 96]
+
+// Khu vực 12:
+[79]
 function costCalculator(weight, cost) {
   if (weight <= 300) {
     return cost;
