@@ -391,6 +391,13 @@ export const apiSlice = createApi({
       }),
       
     }),
+    getStatistic2: builder.query({
+      // The URL for the request is '/fakeApi/posts'
+      query: () => ({
+        url: `order/statistic-completed`,
+      }),
+      
+    }),
   }),
 });
 
@@ -429,4 +436,5 @@ export const {
   useGetNotificationsQuery,
   useSetNotiIsReadMutation,
   useGetStatisticQuery,
+  useGetStatistic2Query,
 } = apiSlice;

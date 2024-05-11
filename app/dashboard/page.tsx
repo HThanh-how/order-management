@@ -150,6 +150,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           key={link.name} 
           icon={link.icon}
           onClick={() => router.push(`${link.link}`)}
+          bgColor={link.name === "Tổng quan" ? "orange.500" : ""}
+          color= {link.name === "Tổng quan" ? "white" : ""}
         >
           {link.name}
         </NavItem>
