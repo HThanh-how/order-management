@@ -75,13 +75,13 @@ export default function CustomerTable() {
   const router = useRouter();
   const role = useAppSelector((state: any) => state.role.value);
 
-  const {
+const {
     data: orderU,
     isLoading: isLoadingU,
     isSuccess: isSuccessU,
     isError: isErrorU,
     error: errorU,
-  } = useGetOrderDetailQuery(Number(params.get("id")), {skip: role === "ROLE_EMPLOYEE"});
+} = useGetOrderDetailQuery(Number(params?.get("id")), {skip: role === "ROLE_EMPLOYEE"});
 
   const {
     data: orderE,
@@ -89,7 +89,7 @@ export default function CustomerTable() {
     isSuccess: isSuccessE,
     isError: isErrorE,
     error: errorE,
-  } = useGetOrderDetailForEmployeeQuery(Number(params.get("id")), {skip: role !== "ROLE_EMPLOYEE"});
+  } = useGetOrderDetailForEmployeeQuery(Number(params?.get("id")), {skip: role !== "ROLE_EMPLOYEE"});
 
   const getOrder = useMemo (() => {
     if (isSuccessU) return orderU.data;
