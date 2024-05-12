@@ -87,6 +87,10 @@ const MyBox = () => {
           <TabPanels>
             <TabPanel>
               {/* Content of the first tab */}
+             
+        
+              {/* <Box m={4}> <div className="g-recaptcha" data-sitekey="YOUR_SITE_KEY" data-callback={handleCaptchaChange}></div></Box> */}
+              <Flex >
               <Input
                 m={4}
                 w={{base:"90%", md:"40%"}}
@@ -94,8 +98,6 @@ const MyBox = () => {
                 type="text"
                 placeholder="Nhập mã vận đơn"
               />
-              {/* <Box m={4}> <div className="g-recaptcha" data-sitekey="YOUR_SITE_KEY" data-callback={handleCaptchaChange}></div></Box> */}
-              <Flex justifyContent={"flex-end"} alignItems={"flex-end"}>
                 <Button my={{base: 2, md: 4}} mx={{base: 2,md: 4}} colorScheme="orange" onClick={onOpen}>
                   Tra cứu
                 </Button>
