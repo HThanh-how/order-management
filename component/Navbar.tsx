@@ -258,6 +258,9 @@ export default function NavBar() {
       px={4}
       textColor={"black"}
       borderBottom={'1px'}
+      borderBottomColor={useColorModeValue("gray.200", "gray.700")}
+      shadow={"2xl"}
+      // bgGradient={'linear-gradient(90deg, #ff8a00, #ffeb37)'}
     >
       <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
         {/* <IconButton
@@ -282,9 +285,9 @@ export default function NavBar() {
         <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
         <HStack spacing={{base: 4, md: 8}} alignItems={"center"}>
           <Box ml={{base: 0, md: 8}} fontSize='20px' onClick={() => router.push("/")} cursor={"pointer"}>
-            <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-              OrList
-            </Text>
+<Text fontSize="2xl" fontFamily="monospace" fontWeight="800" bgGradient="linear-gradient(135deg, #FF8C00, #8B0000)" backgroundClip="text" color="transparent">
+  OrList
+</Text>
           </Box>
         </HStack> 
         
