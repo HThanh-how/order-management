@@ -121,6 +121,7 @@ export default function UserAvatar({ user }: UserAvatarProps) {
           duration: 3000,
           isClosable: true,
         })
+        reset(data);
       }
     }
   }
