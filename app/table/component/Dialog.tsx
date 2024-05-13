@@ -54,14 +54,14 @@ interface City {
 }
 
 type FormData = {
-  name:string,
-  phoneNumber:string,
+  name: string,
+  phoneNumber: string,
   address: string,
   village: string,
   district: string,
   city: string,
   detailedAddress: string,
-  note:string,
+  note: string,
   callBeforeSend: boolean,
   receiveAtPost: boolean,
 }
@@ -75,8 +75,8 @@ export default function AddressSelect() {
   const [checkbox1Checked, setCheckbox1Checked] = useState(true);
   const [checkbox2Checked, setCheckbox2Checked] = useState(false);
   const toast = useToast();
- 
-  const [addCustomer, {isLoading}] = useAddCustomerMutation();
+
+  const [addCustomer, { isLoading }] = useAddCustomerMutation();
   const {
     register,
     setValue,
@@ -86,7 +86,7 @@ export default function AddressSelect() {
   } = useForm<FormData>()
 
   useEffect(() => {
-    if(isSubmitSuccessful) reset();
+    if (isSubmitSuccessful) reset();
   }, [isSubmitSuccessful, reset])
 
   const handleCityChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -123,8 +123,8 @@ export default function AddressSelect() {
     }
   };
 
-  const onSubmit = async(data: FormData) => {
-    const {village, district, city, ...sendData} = data;
+  const onSubmit = async (data: FormData) => {
+    const { village, district, city, ...sendData } = data;
     let isSuccess: boolean = true;
     try {
       await addCustomer(sendData).unwrap();
@@ -140,7 +140,7 @@ export default function AddressSelect() {
         isClosable: true,
       })
     } finally {
-      if(isSuccess) {
+      if (isSuccess) {
         toast({
           title: 'Thêm khách hàng mới thành công',
           position: 'top',
@@ -154,16 +154,24 @@ export default function AddressSelect() {
 
   return (
     <>
-      <Button m={{ base: 2, md: 8 }} colorScheme="orange" onClick={onOpen}>
+      <Button m={{ base: 2, md: 8 }} color="white"
+        backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+        sx={{
+          '@media (hover: hover)': {
+            _hover: {
+              backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+            }
+          }
+        }} onClick={onOpen}>
         Thêm người nhận
       </Button>
-      
+
       <Modal
         closeOnOverlayClick={false}
         isOpen={isOpen}
         onClose={onClose}
         isCentered
-        size={{base: 'sm', md: 'md'}}
+        size={{ base: 'sm', md: 'md' }}
       >
         <ModalOverlay />
         <ModalContent>
@@ -179,14 +187,14 @@ export default function AddressSelect() {
                 {errors.name && errors.name.message}
               </FormErrorMessage>
             </FormControl>
-            
+
             <FormControl mt={4} isRequired isInvalid={Boolean(errors.phoneNumber)}>
               <FormLabel>Số điện thoại</FormLabel>
               <Input type='text' {...register('phoneNumber', {
                 required: 'Trường này không được bỏ trống',
               })} />
             </FormControl>
-              {/* Dropdown chọn thành phố */}
+            {/* Dropdown chọn thành phố */}
             <FormControl mt={4} isRequired isInvalid={Boolean(errors.city)}>
               <FormLabel>Tỉnh/Thành phố</FormLabel>
               <Select
@@ -266,12 +274,12 @@ export default function AddressSelect() {
             </FormControl>
             <FormControl mt={4} isRequired isInvalid={Boolean(errors.detailedAddress)}>
               <FormLabel>Địa chỉ chi tiết</FormLabel>
-              <Input 
-                type="text" 
+              <Input
+                type="text"
                 placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
                 {...register('detailedAddress', {
                   required: 'Trường này không được bỏ trống',
-                })} 
+                })}
               />
               <FormErrorMessage>
                 {errors.detailedAddress && errors.detailedAddress.message}
@@ -279,16 +287,16 @@ export default function AddressSelect() {
             </FormControl>
             <FormControl mt={4}>
               <FormLabel>Ghi chú</FormLabel>
-              <Textarea placeholder={"Ghi chú"} {...register('note')}/>
+              <Textarea placeholder={"Ghi chú"} {...register('note')} />
             </FormControl>
-           
+
             <Checkbox id="checkbox1" colorScheme="orange" isChecked={checkbox1Checked} {...register('receiveAtPost')} onChange={() => handleCheckboxChange('checkbox1')}>
               Nhận tại bưu cục
-            </Checkbox> 
+            </Checkbox>
             <br />
             <Checkbox id="checkbox2" colorScheme="orange" isChecked={checkbox2Checked} {...register('callBeforeSend')} onChange={() => handleCheckboxChange('checkbox2')}>
               Liên hệ trước khi gửi
-            </Checkbox>  
+            </Checkbox>
           </ModalBody>
 
           <ModalFooter>

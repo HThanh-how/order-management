@@ -676,7 +676,15 @@ export default function OrderForm() {
         </Button>
         )
         : (
-        <Button type="submit" colorScheme="orange" m={2} onClick={handleSubmit(onSubmit)}>Tạo</Button>
+        <Button type="submit"  color="white"
+        backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+        sx={{
+          '@media (hover: hover)': {
+            _hover: {
+              backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+            }
+          }
+        }} m={2} onClick={handleSubmit(onSubmit)}>Tạo</Button>
         )}
         </Flex>
       </Box>

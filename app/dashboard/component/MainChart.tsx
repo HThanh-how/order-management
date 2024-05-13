@@ -61,6 +61,7 @@ const ActivityChart = () => {
 
   const options: ApexOptions = {
     chart: {
+      fontFamily: 'system-ui, sans-serif',
       id: "mixed-chart",   
       // stacked: false,
       zoom: {

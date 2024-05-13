@@ -83,7 +83,15 @@ export default function AddressSelect() {
 
   return (
     <>
-      <Button m={{ base: 2, md: 8 }} colorScheme="orange" onClick={onOpen}>
+      <Button m={{ base: 2, md: 8 }}  color="white"
+                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                  sx={{
+                    '@media (hover: hover)': {
+                      _hover: {
+                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                      }
+                    }
+                  }} onClick={onOpen}>
         Thêm nhân viên
       </Button>
       
@@ -148,7 +156,15 @@ export default function AddressSelect() {
             <Button onClick={onClose} mr={3}>
               Hủy
             </Button>
-            <Button colorScheme="orange" onClick={handleSubmit(onSubmit)}>
+            <Button  color="white"
+                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                  sx={{
+                    '@media (hover: hover)': {
+                      _hover: {
+                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                      }
+                    }
+                  }} onClick={handleSubmit(onSubmit)}>
               Gửi yêu cầu
             </Button>
           </ModalFooter>

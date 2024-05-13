@@ -143,7 +143,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           key={link.name} 
           icon={link.icon}
           onClick={() => router.push(`${link.link}`)}
-          bgColor={link.name === "Nhân sự" ? "orange.500" : ""}
+          bgGradient={link.name === "Nhân sự" ? "linear-gradient(90deg, #ff5e09, #ff0348)" : ""}
           color= {link.name === "Nhân sự" ? "white" : ""}
         >
           {link.name}
@@ -173,8 +173,8 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "orange.400",
-          color: "white",
+          bgGradient: "linear-gradient(90deg, #ff5e09, #ff0348)",
+          textColor: "white",
         }}
         {...rest}
       >

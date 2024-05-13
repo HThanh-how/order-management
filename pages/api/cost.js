@@ -83,7 +83,6 @@ function calculateShippingCost(sendProvinceCode, sendDistrictCode, receiveProvin
   }
 
   if (sendProvinceCode !== receiveProvinceCode) {
-    // const distance = Math.abs(sendProvinceCode - receiveProvinceCode + 1);
     const distanceCost = calculateDistanceCost(sendProvinceCode, receiveProvinceCode);
     return costCalculator(weight, baseCost + distanceCost);
   }

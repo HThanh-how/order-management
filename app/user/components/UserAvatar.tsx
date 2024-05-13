@@ -160,7 +160,15 @@ export default function UserAvatar({ user }: UserAvatarProps) {
           CEO of Apple
         </Text> */}
       </VStack>
-      <Button m={{ base: 2, md: 8 }} colorScheme="orange" onClick={onOpen}>
+      <Button m={{ base: 2, md: 8 }}  color="white"
+                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                  sx={{
+                    '@media (hover: hover)': {
+                      _hover: {
+                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                      }
+                    }
+                  }} onClick={onOpen}>
         Cập nhật thông tin
       </Button>
       <Modal
