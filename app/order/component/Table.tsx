@@ -169,12 +169,12 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
     <Box overflowX={{ base: "scroll", md: "hidden" }} p={8} pt={0}>     
       <Tabs index={tabIndex} isFitted variant="enclosed" colorScheme="orange" mb={2} onChange={(index) => handleTabChange(index)}>
         <TabList>
-          <Tab>Tất cả</Tab>
-          <Tab>Thành công</Tab>
-          <Tab>Đang giao</Tab>
+          <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} >Tất cả</Tab>
+          <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} >Thành công</Tab>
+          <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} >Đang giao</Tab>
           {/* <Tab>Đang vận chuyển</Tab> */}
-          <Tab>Chờ lấy hàng</Tab>
-          <Tab>Bị hủy</Tab>
+          <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} >Chờ lấy hàng</Tab>
+          <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} >Bị hủy</Tab>
         </TabList>
       </Tabs>
       <Table variant="simple" size={{ base: "sm", md: "md" }}>

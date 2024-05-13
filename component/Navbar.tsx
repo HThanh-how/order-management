@@ -434,12 +434,14 @@ export default function NavBar() {
             ) : (
               <>
                 <Button
-                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
-                  backgroundClip="text"
-                  color="transparent"
-                  borderColor={"#ff0348"}
+                
+              
                   variant='outline'
                   mx={2}
+                  borderColor={"#ff0348"}
+                    backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                  backgroundClip="text"
+                  color="transparent"
                   sx={{
                     transition: "all 0.3s",
                     '@media (hover: hover)': {

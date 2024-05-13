@@ -33,7 +33,7 @@ import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
 import ProductTable from "./Table";
 import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
-import { useGetProductsQuery }  from "@/app/_lib/features/api/apiSlice"
+import { useGetProductsQuery } from "@/app/_lib/features/api/apiSlice"
 // import { Product } from "@/app/type";
 
 export default function Product() {
@@ -48,14 +48,14 @@ export default function Product() {
     error,
   } = useGetProductsQuery()
 
-  const getProducts = useMemo (() => {
-    if(isSuccess) return products.data
+  const getProducts = useMemo(() => {
+    if (isSuccess) return products.data
   }, [products])
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
     const inputValue = event.target.value;
     setSearchInput(inputValue);
-    if(isSuccess) {
+    if (isSuccess) {
       const filteredResults = getProducts.filter(
         (product: any) =>
           product.name.toLowerCase().includes(inputValue.toLowerCase())
@@ -80,7 +80,9 @@ export default function Product() {
           alignItems={"flex-start"}
           maxW={{ base: "80vw", md: "full" }}
         >
-          <Text fontSize={{ base: "xl", md: "3xl" }} color={'blue.500'} fontWeight={700}>
+          <Text fontSize={{ base: "xl", md: "3xl" }} backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+            backgroundClip="text"
+            color="transparent" fontWeight={700}>
             Sản phẩm
           </Text>
           <Text color={"gray"}>Bạn bán hơn 60 sản phẩm mỗi ngày</Text>
@@ -94,45 +96,45 @@ export default function Product() {
             onChange={handleSearchInputChange}
           />
         </Flex>
-        { role === "ROLE_USER" && (
+        {role === "ROLE_USER" && (
           <Dialog />
         )}
-           
+
       </Flex>
-      
-        {isLoading ? (
-          <Flex
+
+      {isLoading ? (
+        <Flex
           alignItems="center"
           justify="center"
           direction={{ base: "column", md: "row" }}
-          >
-            <Spinner size='lg' color='orange.500' />
-          </Flex>
-        ) : isError ? (
-          <Flex
+        >
+          <Spinner size='lg' color='orange.500' />
+        </Flex>
+      ) : isError ? (
+        <Flex
           alignItems="center"
           justify="center"
           direction={{ base: "column", md: "row" }}
           m={4}
-          >
-            <Alert w='25%' status='error'>
-              <AlertIcon />
-              Can not fetch data from server
-            </Alert>
-          </Flex>
-        ) : filteredProducts.length === 0 ? (
-          <Flex
-            alignItems="center"
-            justify="center"
-            direction={{ base: "column", md: "row" }}
-          >
-            <Text color={'gray'} fontSize={20}>Chưa thêm sản phẩm nào</Text>
-          </Flex>
-          
-        ) : (
+        >
+          <Alert w='25%' status='error'>
+            <AlertIcon />
+            Can not fetch data from server
+          </Alert>
+        </Flex>
+      ) : filteredProducts.length === 0 ? (
+        <Flex
+          alignItems="center"
+          justify="center"
+          direction={{ base: "column", md: "row" }}
+        >
+          <Text color={'gray'} fontSize={20}>Chưa thêm sản phẩm nào</Text>
+        </Flex>
+
+      ) : (
         <ProductTable products={filteredProducts} />
-        )}
-        
+      )}
+
     </TableContainer>
   );
 }

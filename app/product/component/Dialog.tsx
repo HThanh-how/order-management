@@ -216,7 +216,12 @@ export default function Dialog() {
             <Button onClick={onClose} mr={3}>
               Huỷ 
             </Button>
-            <Button colorScheme="orange" onClick={handleSubmit(onSubmit)}>
+            <Button bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
+              color={"white"}
+              _hover={{
+                bgGradient: "linear-gradient(to right, #df5207, #d80740)",
+                boxShadow: "xl",
+              }} onClick={handleSubmit(onSubmit)}>
               Lưu
             </Button>
             

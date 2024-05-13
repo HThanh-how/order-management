@@ -459,7 +459,20 @@ export default function OrderForm() {
         <Flex>
           <Button
             onClick={addItem}
-            colorScheme="teal"
+            borderColor={"#ff0348"}
+                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                  backgroundClip="text"
+                  color="transparent"
+                  sx={{
+                    transition: "all 0.3s",
+                    '@media (hover: hover)': {
+                      _hover: {
+                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)",
+                        textColor: "white",
+                    
+                      }
+                    }
+                  }}
             variant="outline"
             alignSelf={"center"}
             alignItems={"center"}
@@ -473,7 +486,20 @@ export default function OrderForm() {
         { role === 'ROLE_EMPLOYEE' && (
         <Button
           onClick={addItem}
-          colorScheme="teal"
+          borderColor={"#ff0348"}
+                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                  backgroundClip="text"
+                  color="transparent"
+                  sx={{
+                    transition: "all 0.3s",
+                    '@media (hover: hover)': {
+                      _hover: {
+                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)",
+                        textColor: "white",
+                    
+                      }
+                    }
+                  }}
           variant="outline"
           alignSelf={"center"}
           alignItems={"center"}
