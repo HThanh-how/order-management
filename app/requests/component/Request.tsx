@@ -175,7 +175,7 @@ export default function CustomerTable() {
                 getRequests.map((req: any) => (
                 <Box key={req.id}>
                   <Heading size='xs' textTransform='uppercase'>
-                    Summary
+                    Tóm tắt
                   </Heading>
                   <Text pt='2' fontSize='sm' style={{ display: 'flex', flexWrap: 'wrap' }}>
                     Quyền: {req.permissions.map((tag: any, index: any  ) => (
