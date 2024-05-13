@@ -28,7 +28,7 @@ function StatItem(props: StatItemProps) {
   const { Label, Num, background } = props;
 
   // Định dạng Num thành chuỗi với dấu cách sau mỗi ba chữ số
-  const formattedNum = Num.toLocaleString('en-US', {useGrouping: true}).replace(/,/g, ' ');
+const formattedNum = Num ? Num.toLocaleString('en-US', {useGrouping: true}).replace(/,/g, ' ') : "0";
 
   return (
     <StatGroup bgGradient={background} p={4} borderRadius={"md"}>
@@ -95,7 +95,7 @@ function Stats() {
             Num={getData.totalRevenue}
             background="linear-gradient(135deg, #0086d1, #21fa93)"
           />
-          <StatItem Label="Đã nhận về" Num={4560000} background="linear-gradient(135deg, #d8bbf9, #d532a2, #4826d1)" />
+          <StatItem Label="Đã nhận về" Num={getData.totalRevenue*3/4} background="linear-gradient(135deg, #d8bbf9, #d532a2, #4826d1)" />
         </SimpleGrid>
       )}
     </>

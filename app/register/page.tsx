@@ -198,7 +198,12 @@ export default function Login() {
   };
 
   return (
-    <Box position={"relative"} bg="white" h="100%"> 
+    <Box position={"relative"} bg="white" h="100vh" style={{
+      backgroundImage: `url(/login.png)`,
+      backgroundPosition: 'center',
+      backgroundSize: 'cover',
+      backgroundRepeat: 'no-repeat'
+    }}>
           <title>Đăng ký</title>
       <Container
         as={SimpleGrid}
@@ -208,7 +213,7 @@ export default function Login() {
         py={{ base: 5, sm: 10, lg: 10 }}
       >
         <Stack spacing={{ base: 10, md: 20 }}>
-          <Heading
+          {/* <Heading
             lineHeight={1.1}
             fontSize={{ base: "3xl", sm: "4xl", md: "5xl", lg: "6xl" }}
             color={"#171717"}
@@ -222,7 +227,7 @@ export default function Login() {
               &
             </Text>{" "}
             Hiện đại
-          </Heading>
+          </Heading> */}
           <Stack direction={"row"} spacing={4} align={"center"}></Stack>
         </Stack>
         <Stack

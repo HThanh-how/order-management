@@ -572,7 +572,7 @@ export default function OrderForm() {
       </Box>
       
       <Box mt={4} bg="gray.50" p={4}>
-        <Text color="orange.500" fontWeight={"bold"} fontSize="20px">Vận chuyển</Text>
+        <Text color="f9a61a" fontWeight={"bold"} fontSize="20px">Vận chuyển</Text>
         <RadioGroup defaultValue="RECEIVER" m={4}>
           <Stack spacing={10} direction="row">
           <Text fontWeight={"500"}>Người trả cước</Text>

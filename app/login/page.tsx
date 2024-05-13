@@ -30,52 +30,57 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const toast = useToast()
 
-const handleLogin = async () => {
-    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}auth/login`, 
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password,
-      }), 
-    })
-    .then(data => data.json())
-    .then(processedData => {
-      if(processedData.accessToken === undefined) {
-        throw new Error('Sai tên đăng nhập hoặc mật khẩu');
-      }
-      localStorage.setItem('accessToken', processedData.accessToken);
-      localStorage.setItem('userId', processedData.userId);
-      localStorage.setItem('refreshToken', processedData.refreshToken);
-      localStorage.setItem('roles', processedData.roles);
-      window.location.href =  '/dashboard'
-    })
-    .catch ((error) => {
-      setUsername('');
-      setPassword('');
-      toast({
-        title: `Sai tên đăng nhập hoặc mật khẩu`,
-        status: 'error',
-        position: "top-right",
-        isClosable: true,
+  const handleLogin = async () => {
+    await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}auth/login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password,
+        }),
       })
-    })
-    
-    
+      .then(data => data.json())
+      .then(processedData => {
+        if (processedData.accessToken === undefined) {
+          throw new Error('Sai tên đăng nhập hoặc mật khẩu');
+        }
+        localStorage.setItem('accessToken', processedData.accessToken);
+        localStorage.setItem('userId', processedData.userId);
+        localStorage.setItem('refreshToken', processedData.refreshToken);
+        localStorage.setItem('roles', processedData.roles);
+        window.location.href = '/dashboard'
+      })
+      .catch((error) => {
+        setUsername('');
+        setPassword('');
+        toast({
+          title: `Sai tên đăng nhập hoặc mật khẩu`,
+          status: 'error',
+          position: "top-right",
+          isClosable: true,
+        })
+      })
+
+
     const createdAt = new Date().toISOString();
     localStorage.setItem('createdAt', createdAt);
     // document.cookie = `access_token=${access_token}; expires=Thu, 01 Jan 2022 00:00:00 UTC; path=/`;
-    
 
-  
-};
+
+
+  };
 
   return (
-    <Box position={"relative"} bg="white" h="100vh"> 
-          <title>Đăng nhập</title>
+    <Box position={"relative"} bg="white" h="100vh" style={{
+      backgroundImage: `url(/login.png)`,
+      backgroundPosition: 'center',
+      backgroundSize: 'cover',
+      backgroundRepeat: 'no-repeat'
+    }}>
+      <title>Đăng nhập</title>
       <Container
         as={SimpleGrid}
         maxW={"7xl"}
@@ -84,7 +89,7 @@ const handleLogin = async () => {
         py={{ base: 10, sm: 20, lg: 20 }}
       >
         <Stack spacing={{ base: 10, md: 20 }}>
-          <Heading
+          {/* <Heading
             lineHeight={1.1}
             fontSize={{ base: "3xl", sm: "4xl", md: "5xl", lg: "6xl" }}
             color={"#171717"}
@@ -99,7 +104,7 @@ const handleLogin = async () => {
             </Text>{" "}
             Hiện đại
           </Heading>
-          <Stack direction={"row"} spacing={4} align={"center"}></Stack>
+          <Stack direction={"row"} spacing={4} align={"center"}></Stack> */}
         </Stack>
         <Stack
           bg={"#171717"}
@@ -113,7 +118,7 @@ const handleLogin = async () => {
               color={"white"}
               lineHeight={1.1}
               fontSize={{ base: "2xl", sm: "3xl", md: "4xl" }}
-              
+
             >
               Đăng nhập ngay
               <Text

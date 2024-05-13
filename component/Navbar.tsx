@@ -35,7 +35,8 @@ import {
   AvatarBadge,
   Divider,
   Tag,
-  TagLabel
+  TagLabel,
+  Image
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { FiBell } from "react-icons/fi";
@@ -58,10 +59,10 @@ import {
 import { IconType } from "react-icons";
 import { ReactText, useMemo } from "react";
 import getFromLocalStorage from "@/app/_lib/getFromLocalStorage";
-import { 
-  useGetEmployeesRequestQuery, 
-  useApproveEmployeeRequestMutation, 
-  useRejectEmployeeRequestMutation, 
+import {
+  useGetEmployeesRequestQuery,
+  useApproveEmployeeRequestMutation,
+  useRejectEmployeeRequestMutation,
   useGetUserInfoQuery,
   useGetNotificationsQuery,
   useSetNotiIsReadMutation,
@@ -122,7 +123,7 @@ export default function NavBar() {
   const dispatch = useAppDispatch();
   const [prevNotifications, setPrevNotifications] = useState<any[]>([]);
 
-  if(getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE")) dispatch(getRole("ROLE_EMPLOYEE"));
+  if (getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE")) dispatch(getRole("ROLE_EMPLOYEE"));
 
   const {
     data: user,
@@ -130,7 +131,7 @@ export default function NavBar() {
     isSuccess: isSuccessU,
     isError: isErrorU,
     error: errorU,
-  } = useGetUserInfoQuery(getFromLocalStorage('userId'), {skip: !isLogin})
+  } = useGetUserInfoQuery(getFromLocalStorage('userId'), { skip: !isLogin })
 
   const {
     data: employeeRequests,
@@ -138,7 +139,7 @@ export default function NavBar() {
     isSuccess: isSuccessR,
     isError: isErrorR,
     error: errorR,
-  } = useGetEmployeesRequestQuery(1, {skip: !isLogin})
+  } = useGetEmployeesRequestQuery(1, { skip: !isLogin })
 
   const {
     data: notifications,
@@ -146,22 +147,22 @@ export default function NavBar() {
     isSuccess: isSuccessN,
     isError: isErrorN,
     error: errorN,
-  } = useGetNotificationsQuery(1, {pollingInterval: 15000, skip: !isLogin})
+  } = useGetNotificationsQuery(1, { pollingInterval: 15000, skip: !isLogin })
 
   // const [approveEmployeeRequest] = useApproveEmployeeRequestMutation();
   // const [rejectEmployeeRequest] = useRejectEmployeeRequestMutation();
   const [setNotiIsRead] = useSetNotiIsReadMutation();
 
-  const getEmployeeRequests = useMemo (() => {
-    if(isSuccessR) return employeeRequests.data
+  const getEmployeeRequests = useMemo(() => {
+    if (isSuccessR) return employeeRequests.data
   }, [employeeRequests])
 
-  const getUser = useMemo (() => {
-    if(isSuccessU) return user.data
+  const getUser = useMemo(() => {
+    if (isSuccessU) return user.data
   }, [user])
 
-  const getNotifications = useMemo (() => {
-    if(isSuccessN) {
+  const getNotifications = useMemo(() => {
+    if (isSuccessN) {
       const tmp: any[] = [...notifications.data];
       const readNoti = tmp.filter((noti) => noti.read === true);
       const notReadNoti = tmp.filter((noti) => noti.read === false).reverse();
@@ -218,7 +219,7 @@ export default function NavBar() {
     const formattedString = `${formattedDay}/${formattedMonth}/${year} ${formattedHours}:${formattedMinutes} ${ampm}`;
 
     return formattedString;
-}
+  }
 
   useEffect(() => {
     // const lastAccess = localStorage.getItem("createAt");
@@ -226,7 +227,7 @@ export default function NavBar() {
       setIsLogin(false);
     } else setIsLogin(true);
   }, []);
- 
+
 
   useEffect(() => {
     if ((pathname === "/login" && isLogin) ||
@@ -236,7 +237,7 @@ export default function NavBar() {
   }, [pathname, isLogin]);
 
   useEffect(() => {
-    if(isSuccessN)
+    if (isSuccessN)
       checkForNewNotifications(getNotifications)
     return;
   }, [getNotifications])
@@ -253,161 +254,164 @@ export default function NavBar() {
 
   return (
     <IsLoginContext.Provider value={isLogin}>
-    <Box
-      bg={useColorModeValue("white.100", "#171717")}
-      px={4}
-      textColor={"black"}
-      borderBottom={'1px'}
-      borderBottomColor={useColorModeValue("gray.200", "gray.700")}
-      shadow={"2xl"}
+      <Box
+        bg={useColorModeValue("white.100", "#171717")}
+        px={4}
+        textColor={"black"}
+        borderBottom={'1px'}
+        borderBottomColor={useColorModeValue("gray.200", "gray.700")}
+        shadow={"2xl"}
       // bgGradient={'linear-gradient(90deg, #ff8a00, #ffeb37)'}
-    >
-      <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
-        {/* <IconButton
+      >
+        <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
+          {/* <IconButton
           size={"md"}
           icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
           aria-label={"Open Menu"}
           display={{ md: "none" }}
           onClick={isOpen ? onClose : onOpen}
         /> */}
-        <Drawer
-          isOpen={isOpen}
-          placement="left"
-          onClose={onClose}
-          returnFocusOnClose={false}
-          onOverlayClick={onClose}
-          size="full"
-        >
-          <DrawerContent>
-            <SidebarContent onClose={onClose} />
-          </DrawerContent>
-        </Drawer>
-        <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
-        <HStack spacing={{base: 4, md: 8}} alignItems={"center"}>
-          <Box ml={{base: 0, md: 8}} fontSize='20px' onClick={() => router.push("/")} cursor={"pointer"}>
-<Text fontSize="2xl" fontFamily="monospace" fontWeight="800" bgGradient="linear-gradient(135deg, #FF8C00, #8B0000)" backgroundClip="text" color="transparent">
-  OrList
-</Text>
-          </Box>
-        </HStack> 
-        
-        <Flex alignItems={"center"} color="#171717">
-          {isLogin ? (
-            <>
-            <Menu>
-              <Avatar size='sm' bgColor={'white'} cursor={"pointer"} icon={<BellIcon boxSize={7} color="orange"/>}  onClick={notification.onOpen}>
-                {isSuccessN && getNotifications?.filter((noti) => noti.read === false).length !== 0 && (
-                  <AvatarBadge boxSize='1.5em' bg='red'>{getNotifications?.filter((noti) => noti.read === false).length}</AvatarBadge>
-                )}
-              </Avatar>
-              <Drawer
-                isOpen={notification.isOpen}
-                placement='right'
-                size={{base:'sm', md:'md'}}
-                onClose={notification.onClose}  
-              >
-                <DrawerOverlay />
-                <DrawerContent>
-                  <DrawerCloseButton />
-                  <DrawerHeader>Thông báo</DrawerHeader>
-                  <DrawerBody>                    
+          <Drawer
+            isOpen={isOpen}
+            placement="left"
+            onClose={onClose}
+            returnFocusOnClose={false}
+            onOverlayClick={onClose}
+            size="full"
+          >
+            <DrawerContent>
+              <SidebarContent onClose={onClose} />
+            </DrawerContent>
+          </Drawer>
+          <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
+          <HStack spacing={{ base: 4, md: 8 }} alignItems={"center"}>
+<Box ml={{ base: 0, md: 8 }}  onClick={() => router.push("/")} cursor={"pointer"} backgroundImage={"/logo.png"}>
+  <Image 
+    src="/logo.png" 
+    alt="OrList" 
+    objectFit="cover" // or "contain"
+    height={'50px'}
+  />
+</Box>
+          </HStack>
 
-                    {isLoadingN ? (
-                      <Flex
-                      alignItems="center"
-                      justify="center"
-                      direction={{ base: "column", md: "row" }}
-                      >
-                        <Spinner size='lg' color='orange.500' />
-                      </Flex>
-                    ) : isErrorN ? (
-                      <Flex
-                      alignItems="center"
-                      justify="center"
-                      direction={{ base: "column", md: "row" }}
-                      m={4}
-                      >
-                        <Alert w='50%' status='error'>
-                          <AlertIcon />
-                          Can not fetch data from server
-                        </Alert>
-                      </Flex>
-                    ) : (
-                      <>
-                        {getNotifications?.length === 0 && (
-                          <p>Không có thông báo nào</p>
-                        )}
-                        {getNotifications?.length !== 0 && (
-                          getNotifications?.map((noti: any) => (
-                            <VStack align={'start'} justifyContent={'flex-start'} mb={4} key={noti.id} cursor={'pointer'} 
-                            onClick={async () => {
-                              if (noti.read === false)
-                                await setNotiIsRead(noti.id).unwrap()
-                              if (noti.type === 'EMPLOYEE_REQUEST') router.push("/requests")
-                              if (noti.type === 'ORDER_INFO') router.push("/order")
-                              notification.onClose();
-                            }}>
-                              <Flex  gap={2}>
-                                {noti.read === false && (
-                                  <CheckCircleIcon mt={2} color={'orange.500'}/>
-                                )} 
-                                <VStack align={'start'} justifyContent={'flex-start'}>
-                                  <Text>{noti.message}</Text>
-                                  <Text color={'gray.400'}>{convertISOToCustomFormat(noti.createdAt)}</Text>
-                                </VStack>                      
-                              </Flex>
-                              <Divider />
-                            </VStack>
-                          ))
-                        )}
-                      </>
+          <Flex alignItems={"center"} color="#171717">
+            {isLogin ? (
+              <>
+                <Menu>
+                  <Avatar size='sm' bgColor={'white'} cursor={"pointer"} icon={<BellIcon boxSize={7} color="orange" />} onClick={notification.onOpen}>
+                    {isSuccessN && getNotifications?.filter((noti) => noti.read === false).length !== 0 && (
+                      <AvatarBadge boxSize='1.5em' bg='red'>{getNotifications?.filter((noti) => noti.read === false).length}</AvatarBadge>
                     )}
-                  </DrawerBody>
+                  </Avatar>
+                  <Drawer
+                    isOpen={notification.isOpen}
+                    placement='right'
+                    size={{ base: 'sm', md: 'md' }}
+                    onClose={notification.onClose}
+                  >
+                    <DrawerOverlay />
+                    <DrawerContent>
+                      <DrawerCloseButton />
+                      <DrawerHeader>Thông báo</DrawerHeader>
+                      <DrawerBody>
 
-                  {/* <DrawerFooter>
+                        {isLoadingN ? (
+                          <Flex
+                            alignItems="center"
+                            justify="center"
+                            direction={{ base: "column", md: "row" }}
+                          >
+                            <Spinner size='lg' color='orange.500' />
+                          </Flex>
+                        ) : isErrorN ? (
+                          <Flex
+                            alignItems="center"
+                            justify="center"
+                            direction={{ base: "column", md: "row" }}
+                            m={4}
+                          >
+                            <Alert w='50%' status='error'>
+                              <AlertIcon />
+                              Can not fetch data from server
+                            </Alert>
+                          </Flex>
+                        ) : (
+                          <>
+                            {getNotifications?.length === 0 && (
+                              <p>Không có thông báo nào</p>
+                            )}
+                            {getNotifications?.length !== 0 && (
+                              getNotifications?.map((noti: any) => (
+                                <VStack align={'start'} justifyContent={'flex-start'} mb={4} key={noti.id} cursor={'pointer'}
+                                  onClick={async () => {
+                                    if (noti.read === false)
+                                      await setNotiIsRead(noti.id).unwrap()
+                                    if (noti.type === 'EMPLOYEE_REQUEST') router.push("/requests")
+                                    if (noti.type === 'ORDER_INFO') router.push("/order")
+                                    notification.onClose();
+                                  }}>
+                                  <Flex gap={2}>
+                                    {noti.read === false && (
+                                      <CheckCircleIcon mt={2} color={'orange.500'} />
+                                    )}
+                                    <VStack align={'start'} justifyContent={'flex-start'}>
+                                      <Text>{noti.message}</Text>
+                                      <Text color={'gray.400'}>{convertISOToCustomFormat(noti.createdAt)}</Text>
+                                    </VStack>
+                                  </Flex>
+                                  <Divider />
+                                </VStack>
+                              ))
+                            )}
+                          </>
+                        )}
+                      </DrawerBody>
+
+                      {/* <DrawerFooter>
                     <Button variant='outline' mr={3} onClick={onClose}>
                       Cancel
                     </Button>
                     <Button colorScheme='blue'>Save</Button>
                   </DrawerFooter> */}
-                </DrawerContent>
-              </Drawer>
+                    </DrawerContent>
+                  </Drawer>
 
-              <MenuButton
-                as={Button}
-                rounded={"full"}
-                variant={"link"}
-                cursor={"pointer"}
-                minW={0}
-                ml={6}
-              >
-              {getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE") && role === "ROLE_EMPLOYEE" ? (
-                <Tag size='lg' colorScheme='red' borderRadius='full'>
-                  <Avatar
-                    size={"xs"}
-                    src={getUser?.avatar ? getUser.avatar :
-                      "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
+                  <MenuButton
+                    as={Button}
+                    rounded={"full"}
+                    variant={"link"}
+                    cursor={"pointer"}
+                    minW={0}
+                    ml={6}
+                  >
+                    {getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE") && role === "ROLE_EMPLOYEE" ? (
+                      <Tag size='lg' colorScheme='red' borderRadius='full'>
+                        <Avatar
+                          size={"xs"}
+                          src={getUser?.avatar ? getUser.avatar :
+                            "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
+                          }
+                        />
+                        <TagLabel>Nhân viên</TagLabel>
+                      </Tag>
+                    )
+                      : (
+                        <Avatar
+                          size={"sm"}
+                          src={getUser?.avatar ? getUser.avatar :
+                            "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
+                          }
+                        />
+                      )
                     }
-                  />
-                  <TagLabel>Nhân viên</TagLabel>
-                </Tag>
-                )
-              : (
-                <Avatar
-                  size={"sm"}
-                  src={getUser?.avatar ? getUser.avatar :
-                    "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
-                  }
-                />
-                )
-              }
-              </MenuButton>
-              <MenuList>
-                <MenuItem onClick={() => router.push("/user")}>
-                  Cá nhân
-                </MenuItem>
-                
-                {/* {getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE") && role === "ROLE_USER" && (
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem onClick={() => router.push("/user")}>
+                      Cá nhân
+                    </MenuItem>
+
+                    {/* {getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE") && role === "ROLE_USER" && (
                   <MenuItem onClick={() => dispatch(getRole("ROLE_EMPLOYEE"))}>
                     Chuyển giao diện <br/> nhân viên
                   </MenuItem>
@@ -418,40 +422,42 @@ export default function NavBar() {
                     Chuyển giao diện <br/> người dùng
                   </MenuItem>
                 )} */}
-                
-                <MenuItem onClick={() => router.push("/dashboard")}>
-                  Cài đặt
-                </MenuItem>
-                <MenuDivider />
-                <MenuItem onClick={() => handleLogout()}>Đăng xuất</MenuItem>
-              </MenuList>
-            </Menu>
-            </>
-          ) : (
-            <>
-            <Button
-              colorScheme="orange"
-              variant='outline'
-              mx={2}
-              size={{base:'sm', md:'md'}}
-              onClick={() => (window.location.href = "/register")}
-            >
-              Đăng ký
-            </Button>
-            <Button
-              colorScheme="orange"
-              onClick={() => (window.location.href = "/login")}
-              mx={2}
-              size={{base:'sm', md:'md'}}
-            >
-              Đăng nhập
-            </Button>
-          </>
-          )}
-          
+
+                    <MenuItem onClick={() => router.push("/dashboard")}>
+                      Cài đặt
+                    </MenuItem>
+                    <MenuDivider />
+                    <MenuItem onClick={() => handleLogout()}>Đăng xuất</MenuItem>
+                  </MenuList>
+                </Menu>
+              </>
+            ) : (
+              <>
+                <Button
+                  color="#f9a61a"
+                  borderColor="#f9a61a"
+                  variant='outline'
+                  mx={2}
+                  size={{ base: 'sm', md: 'md' }}
+                  onClick={() => (window.location.href = "/register")}
+                >
+                  Đăng ký
+                </Button>
+                <Button
+                  color="white"
+                  bgColor={"#f9a61a"}
+                  onClick={() => (window.location.href = "/login")}
+                  mx={2}
+                  size={{ base: 'sm', md: 'md' }}
+                >
+                  Đăng nhập
+                </Button>
+              </>
+            )}
+
+          </Flex>
         </Flex>
-      </Flex>
-    </Box>
+      </Box>
     </IsLoginContext.Provider>
   );
 }
@@ -463,7 +469,7 @@ interface SidebarProps extends BoxProps {
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   const router = useRouter();
   const pathname = usePathname();
-  
+
   return (
     <Box
       bg={useColorModeValue("white", "gray.900")}
@@ -474,33 +480,33 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       h="full"
       {...rest}
     >
-      <Flex  display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="10" justifyContent="space-between">
+      <Flex display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="10" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           OrList
         </Text>
         <CloseButton onClick={onClose} />
       </Flex>
-      <Button 
+      <Button
         onClick={() => {
           onClose();
           router.push("/create");
-        }} 
-        ml={8} mt={6} mb={2} 
-        w="25%" 
+        }}
+        ml={8} mt={6} mb={2}
+        w="25%"
         colorScheme="orange"
       >
-        + Tạo đơn 
+        + Tạo đơn
       </Button>
       {LinkItems.map((link) => (
-        <NavItem  
-          key={link.name} 
+        <NavItem
+          key={link.name}
           icon={link.icon}
           onClick={() => {
             onClose();
             router.push(`${link.link}`)
           }}
           bgColor={link.link === pathname ? "orange.500" : ""}
-          color= {link.link === pathname ? "white" : ""}
+          color={link.link === pathname ? "white" : ""}
         >
           {link.name}
         </NavItem>
