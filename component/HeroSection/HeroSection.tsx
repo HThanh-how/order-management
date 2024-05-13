@@ -14,7 +14,7 @@ import {
 import { useState } from "react";
 import Place from "./Estimate";
 import { useDisclosure } from "@chakra-ui/react";
-
+import PostOfficeLocation from "./PostOfficeLocation";
 const MyBox = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const [captchaVerified, setCaptchaVerified] = useState(false);
@@ -45,7 +45,7 @@ const MyBox = () => {
       justify="center"
       w="full"
       h={{ base: 'full', md: "93vh" }}
-      backgroundImage="https://images3.alphacoders.com/132/1328226.png"
+      backgroundImage="mainbg.png"
       backgroundSize="cover"
       backgroundPosition="center"
     >
@@ -59,15 +59,15 @@ const MyBox = () => {
         >
           <TabList>
             <Tab
-              _selected={{ color: "white", bg: "#f9a61a" }}
+              _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }}
               shadow={"xl"}
-              border={"1px"}
+              // border={"1px"}
               borderColor={"gray.300"}
             >
               Mã vận đơn
             </Tab>
             <Tab
-              _selected={{ color: "white", bg: "#f9a61a" }}
+              _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }}
               shadow={"xl"}
               border={"1px"}
               borderColor={"gray.300"}
@@ -75,7 +75,7 @@ const MyBox = () => {
               Ước tính chi phí
             </Tab>
             <Tab
-              _selected={{ color: "white", bg: "#f9a61a" }}
+              _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }}
               shadow={"xl"}
               border={"1px"}
               borderColor={"gray.300"}
@@ -98,8 +98,20 @@ const MyBox = () => {
                   type="text"
                   placeholder="Nhập mã vận đơn"
                 />
-                <Button my={{ base: 2, md: 4 }} mx={{ base: 2, md: 4 }} color="white"
-                  bgColor={"#f9a61a"} onClick={onOpen}>
+                <Button
+                  my={{ base: 2, md: 4 }}
+                  mx={{ base: 2, md: 4 }}
+                  color="white"
+                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                  sx={{
+                    '@media (hover: hover)': {
+                      _hover: {
+                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                      }
+                    }
+                  }}
+                  onClick={onOpen}
+                >
                   Tra cứu
                 </Button>
               </Flex>
@@ -136,7 +148,9 @@ const MyBox = () => {
             <TabPanel>
               <Place />
             </TabPanel>
-            <TabPanel></TabPanel>
+            <TabPanel>
+              <PostOfficeLocation />
+            </TabPanel>
           </TabPanels>
         </Tabs>
       </Box>

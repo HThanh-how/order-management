@@ -85,7 +85,7 @@ export default function Sidebar() {
       
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} /> */}
       <Box ml={{ base: 0, md: 60 }} p={{ base: 4, md: 8 }}>
-        <OrderForm />        
+        <OrderForm />
       </Box>
     </Box>
   );
@@ -101,7 +101,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   const dispatch = useAppDispatch();
   const [linkItems, setLinkItems] = useState<Array<LinkItemProps>>([]);
   // const LinkItems: Array<LinkItemProps> = role == "ROLE_USER" ? LinkItemsU : LinkItemsE;
-  useEffect (() => {
+  useEffect(() => {
     setLinkItems(role == "ROLE_USER" ? LinkItemsU : LinkItemsE)
   }, [role])
 
@@ -121,10 +121,15 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         </Text>
         <CloseButton onClick={onClose} />
       </Flex>
-      <Button onClick={()=>router.push("/create")}  ml={8} mt={6} mb={2} w="50%" colorScheme="orange">+ Tạo đơn </Button>
+      <Button onClick={() => router.push("/create")} ml={8} mt={6} mb={2} w="50%" bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
+        color={"white"}
+        _hover={{
+          bgGradient: "linear-gradient(to right, #df5207, #d80740)",
+          boxShadow: "xl",
+        }}>+ Tạo đơn </Button>
       {linkItems.map((link) => (
-        <NavItem  
-          key={link.name} 
+        <NavItem
+          key={link.name}
           icon={link.icon}
           onClick={() => router.push(`${link.link}`)}
         >
@@ -155,8 +160,9 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
         role="group"
         cursor="pointer"
         _hover={{
-          bg: "orange.400",
-          color: "white",
+          bgGradient: "linear-gradient(90deg, #ff5e09, #ff0348)",
+          textColor: "white",
+          boxShadow: "xl",
         }}
         {...rest}
       >

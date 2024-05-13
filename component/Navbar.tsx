@@ -285,14 +285,14 @@ export default function NavBar() {
           </Drawer>
           <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
           <HStack spacing={{ base: 4, md: 8 }} alignItems={"center"}>
-<Box ml={{ base: 0, md: 8 }}  onClick={() => router.push("/")} cursor={"pointer"} backgroundImage={"/logo.png"}>
-  <Image 
-    src="/logo.png" 
-    alt="OrList" 
-    objectFit="cover" // or "contain"
-    height={'50px'}
-  />
-</Box>
+            <Box ml={{ base: 0, md: 8 }} onClick={() => router.push("/")} cursor={"pointer"} backgroundImage={"/logo.png"}>
+              <Image
+                src="/logo.png"
+                alt="OrList"
+                objectFit="cover" // or "contain"
+                height={'50px'}
+              />
+            </Box>
           </HStack>
 
           <Flex alignItems={"center"} color="#171717">
@@ -434,10 +434,22 @@ export default function NavBar() {
             ) : (
               <>
                 <Button
-                  color="#f9a61a"
-                  borderColor="#f9a61a"
+                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                  backgroundClip="text"
+                  color="transparent"
+                  borderColor={"#ff0348"}
                   variant='outline'
                   mx={2}
+                  sx={{
+                    transition: "all 0.3s",
+                    '@media (hover: hover)': {
+                      _hover: {
+                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)",
+                        textColor: "white",
+                    
+                      }
+                    }
+                  }}
                   size={{ base: 'sm', md: 'md' }}
                   onClick={() => (window.location.href = "/register")}
                 >
@@ -445,7 +457,14 @@ export default function NavBar() {
                 </Button>
                 <Button
                   color="white"
-                  bgColor={"#f9a61a"}
+                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                  sx={{
+                    '@media (hover: hover)': {
+                      _hover: {
+                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                      }
+                    }
+                  }}
                   onClick={() => (window.location.href = "/login")}
                   mx={2}
                   size={{ base: 'sm', md: 'md' }}

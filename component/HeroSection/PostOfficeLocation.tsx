@@ -7,7 +7,7 @@ import { cityData, City, District, Ward } from "./CityData";
 import {calculateShippingCost} from "./shippingCaculate"
 import { useToast } from "@chakra-ui/react"
 
-export default function AddressSelect() {
+export default function PostOfficeLocation() {
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [RecievedCity, setRecievedCity] = useState("");
@@ -23,16 +23,16 @@ export default function AddressSelect() {
 
 
   const handleButtonClick = () => {
-    const costCal = calculateShippingCost(sendProvinceCode, sendDistrictCode, receiveProvinceCode, receiveDistrictCode, weight);
+    // const costCal = calculateShippingCost(sendProvinceCode, sendDistrictCode, receiveProvinceCode, receiveDistrictCode, weight);
 
     // console.log(sendProvinceCode, sendProvinceCode, receiveProvinceCode, receiveDistrictCode, weight, costCal)
-    setCost(costCal)
-    if (sendProvinceCode === null || receiveProvinceCode === null) {
+    // setCost(costCal)
+    if (sendProvinceCode === null ) {
       
       setCost(0)
       toast({
-        title: "Chưa thể tính toán",
-        description: "Vui lòng điền tỉnh thành để chúng tôi tính toán chi phí",
+        title: "Chưa tìm thấy",
+        description: "Vui lòng điền tỉnh thành để chúng tôi tìm bưu cục cho bạn",
         status: "warning",
         duration: 3000,
         isClosable: true,
@@ -40,16 +40,20 @@ export default function AddressSelect() {
       })
       return;
     }
-    if (weight === 0) {
+    if (sendDistrictCode === null ) {
       
+      setCost(0)
       toast({
-        title: "Lưu ý",
-        description: "Đây là ước tính dựa trên khối lượng mặc định dưới 300g",
-        status: "success",
+        title: "Có quá nhiều bưu cục hiển thị",
+        description: "Vui lòng điền đầy đủ để chúng tôi tìm bưu cục cho bạn",
+        status: "warning",
         duration: 3000,
         isClosable: true,
+        
       })
+      return;
     }
+ 
   };
 
   
@@ -112,7 +116,7 @@ export default function AddressSelect() {
     <SimpleGrid columns={{ base: 1, md: 2 }}>
       <Box w={{base: "60vw", md: "20vw"}} mt={4}>
         {/* Dropdown chọn thành phố */}
-        <Text fontSize="xl">Địa chỉ nơi gửi</Text>
+        {/* <Text fontSize="xl">Địa chỉ nơi gửi</Text> */}
         <Select
           m={4}
           placeholder="Chọn tỉnh thành"
@@ -167,81 +171,25 @@ export default function AddressSelect() {
             </option>
           ))}
         </Select>
-      </Box>
-      <Box w={{base: "60vw", md: "20vw"}} mt={4}>
-        {/* Dropdown chọn thành phố */}
-        <Text fontSize={"xl"}>Địa chỉ nơi nhận</Text>
-        <Select
-          m={4}
-          placeholder="Chọn tỉnh thành"
-          value={RecievedCity}
-          onChange={RecieveCityChange}
-          variant="filled"
-        >
-          <option value="" disabled hidden>
-            Chọn tỉnh thành
-          </option>
-          {cityData.map((city) => (
-            <option key={city.code} value={city.codename}>
-              {city.name}
-            </option>
-          ))}
-        </Select>
-
-        {/* Dropdown chọn quận */}
-
-        <Select
-          m={4}
-          placeholder="Chọn quận"
-          isDisabled={RecievedCity == "" ? true : false}
-          value={RecievedDistrict}
-          onChange={RecieveDistrictChange}
-          variant="filled"
-        >
-          <option value="" disabled hidden>
-            Chọn quận
-          </option>
-          {RecievedCityData?.districts.map((district) => (
-            <option key={district.code} value={district.codename}>
-              {district.name}
-            </option>
-          ))}
-        </Select>
-
-        {/* Dropdown chọn phường */}
-
-        <Select
-          m={4}
-          variant="filled"
-          placeholder="Chọn phường"
-          isDisabled={RecievedDistrict == "" ? true : false}
-        >
-          <option value="" disabled hidden>
-            Chọn phường
-          </option>
-          {RecievedDistrictData?.wards.map((ward) => (
-            <option key={ward.code} value={ward.codename}>
-              {ward.name}
-            </option>
-          ))}
-        </Select>
-      </Box>
-      
-      <Input m={4} placeholder="Khối lượng (g)" bgColor="gray.50" w={{base: "60vw", md: "20vw"}}  onChange={(e)=>setWeight(Number(e.target.value))}/>
-      
-      <Button  m={4} ml={4}        color="white"
-                  
-                    backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
-                    sx={{
-                      '@media (hover: hover)': {
-                        _hover: {
-                          backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
-                        }
+        <Button  m={4} ml={4}          color="white"
+                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                  sx={{
+                    '@media (hover: hover)': {
+                      _hover: {
+                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
                       }
-                    }} w={{base: '80%', md: '40%'}} size={{base:'sm', md: 'md'}} onClick={handleButtonClick}>
-          Ước tính
+                    }
+                  }} w={{base: '80%', md: '40%'}} size={{base:'sm', md: 'md'}} onClick={handleButtonClick}>
+                    Tìm bưu cục
       </Button>
-      <Box>{cost !== 0 && <Flex  m={4} fontSize="xl" fontWeight={600} color="gray.800">Chi phí:  <Text mx={2} color="green">{" "} {cost} {" "}</Text>  đồng</Flex>}</Box>
+      </Box>
+<Box>
+
+
+</Box>
+      
+
+
     </SimpleGrid>
   );
 }

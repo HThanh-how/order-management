@@ -381,10 +381,10 @@ export default function Login() {
                 fontFamily={"heading"}
                 mt={8}
                 w={"full"}
-                bgGradient="linear(to-r, red.400,pink.400)"
+                bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
                 color={"white"}
                 _hover={{
-                  bgGradient: "linear(to-r, red.400,pink.400)",
+                  bgGradient: "linear-gradient(to right, #df5207, #d80740)",
                   boxShadow: "xl",
                 }}
                 onClick={handleRegister}

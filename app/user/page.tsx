@@ -140,7 +140,12 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         </Text>
         <CloseButton  onClick={onClose} />
       </Flex>
-      <Button onClick={()=>router.push("/create")}  ml={8} mt={6} mb={2} w="50%" colorScheme="orange">+ Tạo đơn </Button>
+      <Button onClick={()=>router.push("/create")}  ml={8} mt={6} mb={2} w="50%"                 bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
+                color={"white"}
+                _hover={{
+                  bgGradient: "linear-gradient(to right, #df5207, #d80740)",
+                  boxShadow: "xl",
+                }}>+ Tạo đơn </Button>
       {linkItems.map((link) => (
         <NavItem  
           key={link.name} 
