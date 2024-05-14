@@ -91,7 +91,9 @@ export default function Order() {
           alignItems={"flex-start"}
           maxW={{ base: "80vw", md: "full" }}
         >
-          <Text fontSize={{ base: "xl", md: "3xl" }} color={'blue.500'} fontWeight={700}>
+          <Text fontSize={{ base: "xl", md: "3xl" }} backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                  backgroundClip="text"
+                  color="transparent" fontWeight={700}>
             Đơn hàng
           </Text>
           <Text color={"gray"}>Bạn bán hơn 60 đơn hàng mỗi ngày</Text>

@@ -42,7 +42,7 @@ export default function CustomerTable() {
   const [searchInput, setSearchInput] = useState("");
   const role = useAppSelector((state) => state.role.value);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
-  
+
   const {
     data: customers,
     isLoading,
@@ -51,15 +51,15 @@ export default function CustomerTable() {
     error,
   } = useGetCustomersQuery(1);
 
-  const getCustomers = useMemo (() => {
-    if(isSuccess) return customers.data
+  const getCustomers = useMemo(() => {
+    if (isSuccess) return customers.data
   }, [customers])
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
 
     const inputValue = event.target.value;
     setSearchInput(inputValue);
-    if(isSuccess) {
+    if (isSuccess) {
       const filteredResults = getCustomers.filter(
         (customer: any) =>
           customer.name.toLowerCase().includes(inputValue.toLowerCase()) ||
@@ -84,7 +84,9 @@ export default function CustomerTable() {
           alignItems={"flex-start"}
           maxW={{ base: "80vw", md: "full" }}
         >
-          <Text fontSize={{ base: "xl", md: "3xl" }} color={'blue.500'} fontWeight={700}>
+          <Text fontSize={{ base: "xl", md: "3xl" }} backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+            backgroundClip="text"
+            color="transparent" fontWeight={700}>
             Khách hàng
           </Text>
           <Text color={"gray"}>Tuần này bạn có thêm 20 khách hàng mới</Text>
@@ -98,45 +100,45 @@ export default function CustomerTable() {
             onChange={handleSearchInputChange}
           />
         </Flex>
-        { role === "ROLE_USER" && (
+        {role === "ROLE_USER" && (
           <Dialog />
         )}
-        
+
       </Flex>
 
-        {isLoading ? (
-          <Flex
+      {isLoading ? (
+        <Flex
           alignItems="center"
           justify="center"
           direction={{ base: "column", md: "row" }}
-          >
-            <Spinner size='lg' color='orange.500' />
-          </Flex>
-        ) : isError ? (
-          <Flex
+        >
+          <Spinner size='lg' color='orange.500' />
+        </Flex>
+      ) : isError ? (
+        <Flex
           alignItems="center"
           justify="center"
           direction={{ base: "column", md: "row" }}
           m={4}
-          >
-            <Alert w='25%' status='error'>
-              <AlertIcon />
-              Can not fetch data from server
-            </Alert>
-          </Flex>
-        ) : filteredCustomers.length === 0 ? (
-          <Flex
-            alignItems="center"
-            justify="center"
-            direction={{ base: "column", md: "row" }}
-          >
-            <Text color={'gray'} fontSize={20}>Chưa thêm khách hàng nào</Text>
-          </Flex>
-          
-        ) : (
+        >
+          <Alert w='25%' status='error'>
+            <AlertIcon />
+            Can not fetch data from server
+          </Alert>
+        </Flex>
+      ) : filteredCustomers.length === 0 ? (
+        <Flex
+          alignItems="center"
+          justify="center"
+          direction={{ base: "column", md: "row" }}
+        >
+          <Text color={'gray'} fontSize={20}>Chưa thêm khách hàng nào</Text>
+        </Flex>
+
+      ) : (
         <CustomerList customers={filteredCustomers} />
-        )}
-  
+      )}
+
     </TableContainer>
   );
 }

@@ -45,7 +45,7 @@ const MyBox = () => {
       justify="center"
       w="full"
       h={{ base: 'full', md: "93vh" }}
-      backgroundImage="mainbg.png"
+      backgroundImage="mainbg.webp"
       backgroundSize="cover"
       backgroundPosition="center"
     >

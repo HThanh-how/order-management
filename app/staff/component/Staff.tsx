@@ -47,17 +47,17 @@ export default function CustomerTable() {
     isSuccess,
     isError,
     error,
-  } = useGetEmployeesQuery() 
+  } = useGetEmployeesQuery()
 
-  const getStaffs = useMemo (() => {
-    if(isSuccess) return staffs.data
+  const getStaffs = useMemo(() => {
+    if (isSuccess) return staffs.data
   }, [staffs])
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
     const inputValue = event.target.value;
     setSearchInput(inputValue);
 
-    if(isSuccess) {
+    if (isSuccess) {
       const filteredResults = getStaffs.filter(
         (staff: any) =>
           staff.email.toLowerCase().includes(inputValue.toLowerCase())
@@ -81,7 +81,9 @@ export default function CustomerTable() {
           alignItems={"flex-start"}
           maxW={{ base: "80vw", md: "full" }}
         >
-          <Text fontSize={{ base: "xl", md: "3xl" }} color={'blue.500'} fontWeight={700}>
+          <Text fontSize={{ base: "xl", md: "3xl" }} backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+            backgroundClip="text"
+            color="transparent" fontWeight={700}>
             Nhân viên
           </Text>
           <Text color={"gray"}>Tuần này bạn có thêm 20 nhân viên mới</Text>
@@ -95,25 +97,25 @@ export default function CustomerTable() {
             onChange={handleSearchInputChange}
           />
         </Flex>
-        { role === "ROLE_USER" && (
+        {role === "ROLE_USER" && (
           <Dialog />
         )}
-        
+
       </Flex>
       {isLoading ? (
         <Flex
-        alignItems="center"
-        justify="center"
-        direction={{ base: "column", md: "row" }}
+          alignItems="center"
+          justify="center"
+          direction={{ base: "column", md: "row" }}
         >
           <Spinner size='lg' color='orange.500' />
         </Flex>
       ) : isError ? (
         <Flex
-        alignItems="center"
-        justify="center"
-        direction={{ base: "column", md: "row" }}
-        m={4}
+          alignItems="center"
+          justify="center"
+          direction={{ base: "column", md: "row" }}
+          m={4}
         >
           <Alert w='25%' status='error'>
             <AlertIcon />
@@ -128,11 +130,11 @@ export default function CustomerTable() {
         >
           <Text color={'gray'} fontSize={20}>Chưa có nhân viên nào</Text>
         </Flex>
-        
+
       ) : (
         <CustomerList staffs={filteredStaffs} />
       )}
-      
+
     </TableContainer>
   );
 }
