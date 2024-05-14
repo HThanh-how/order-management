@@ -33,7 +33,9 @@ import ReceiverDialog from "../../table/component/Dialog";
 import {  useGetProductsQuery, useGetCustomersQuery, useGetStoresQuery, useAddOrderMutation, useAddOrderForEmployeeMutation  } from "@/app/_lib/features/api/apiSlice"
 import { useAppSelector } from "@/app/_lib/hooks";
 import { Product, Customer, Store } from "@/app/type";
-import { M_PLUS_1 } from "next/font/google";
+import { cityData } from "@/component/HeroSection/CityData";
+import { calculateShippingCost } from "@/pages/api/cost";
+
 
 type OrderItem = {
   quantity: number,
@@ -166,10 +168,15 @@ export default function OrderForm() {
         shippingFee: 0,
         collectionCharge: 0,
       };
-      
+      const sendLocation = selectedStore.address.split(", ");
+      const receiveLocation = data.receiver?.address?.split(", ");
       data.price.itemsPrice = totalPriceItems;
-      data.price.shippingFee = shippingFee + optionFee;
-      data.price.collectionCharge = totalPriceItems + shippingFee + optionFee;
+      data.price.shippingFee = calculateShippingCost(
+        getProvinceCode(sendLocation[2]), getDistrictCode(sendLocation[2], sendLocation[1]),
+        getProvinceCode(receiveLocation[2]), getDistrictCode(receiveLocation[2], receiveLocation[1]),
+        500
+      )
+      data.price.collectionCharge = totalPriceItems + data.price.shippingFee
       data.store = {...selectedStore};
       if(role === "ROLE_USER") {
         result = await addOrder(data).unwrap();
@@ -210,6 +217,21 @@ export default function OrderForm() {
     }
      
   }
+
+  const getProvinceCode = (cityName: string) => {
+    const city = cityData.find(city => city.name === cityName);
+    return city ? city.code : null;
+  };
+  
+  // Function to get district code
+  const getDistrictCode = (cityName: string, districtName: string) => {
+    const city = cityData.find(city => city.name === cityName);
+    if (city) {
+      const district = city.districts.find(district => district.name === districtName);
+      return district ? district.code : null;
+    }
+    return null;
+  };
 
   const handleProductInputChange = async (value: string) => {
     if (getProducts && value.length > 1) { // Typically, we look for suggestions after 2 characters have been typed.

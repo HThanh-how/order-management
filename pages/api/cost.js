@@ -72,7 +72,7 @@ function calculateDistanceCost(senderProvinceId, receiverProvinceId) {
   return 1000;
 }
 
-function calculateShippingCost(sendProvinceCode, sendDistrictCode, receiveProvinceCode, receiveDistrictCode, weight) {
+export function calculateShippingCost(sendProvinceCode, sendDistrictCode, receiveProvinceCode, receiveDistrictCode, weight) {
   const baseCost = 15000;
 
   if (sendProvinceCode === receiveProvinceCode) {

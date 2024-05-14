@@ -424,7 +424,7 @@ export default function NavBar() {
                 )} */}
 
                     <MenuItem onClick={() => router.push("/dashboard")}>
-                      Cài đặt
+                      Quản lý
                     </MenuItem>
                     <MenuDivider />
                     <MenuItem onClick={() => handleLogout()}>Đăng xuất</MenuItem>
