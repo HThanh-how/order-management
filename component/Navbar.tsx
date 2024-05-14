@@ -298,6 +298,24 @@ export default function NavBar() {
           <Flex alignItems={"center"} color="#171717">
             {isLogin ? (
               <>
+                {pathname === "/" && (
+                  <Button
+                    color="white"
+                    backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                    sx={{
+                      '@media (hover: hover)': {
+                        _hover: {
+                          backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                        }
+                      }
+                    }}
+                    onClick={() => router.push("/dashboard")}
+                    mx={2}
+                    size={{ base: 'sm', md: 'md' }}
+                  >
+                    Trang tổng quan
+                  </Button>
+                )}
                 <Menu>
                   <Avatar size='sm' bgColor={'white'} cursor={"pointer"} icon={<BellIcon boxSize={7} color="orange" />} onClick={notification.onOpen}>
                     {isSuccessN && getNotifications?.filter((noti) => noti.read === false).length !== 0 && (
@@ -434,12 +452,12 @@ export default function NavBar() {
             ) : (
               <>
                 <Button
-                
-              
+
+
                   variant='outline'
                   mx={2}
                   borderColor={"#ff0348"}
-                    backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
                   backgroundClip="text"
                   color="transparent"
                   sx={{
@@ -448,7 +466,7 @@ export default function NavBar() {
                       _hover: {
                         backgroundImage: "linear-gradient(to right, #df5207, #d80740)",
                         textColor: "white",
-                    
+
                       }
                     }
                   }}
