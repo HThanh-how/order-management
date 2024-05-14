@@ -454,6 +454,7 @@ export default function OrderForm() {
               mt={4} 
               w={{base: '50%', md: '25%'}} 
               placeholder={"Số lượng "} 
+              type="number"
               onChange={(e) => {
                 // setQuantityItem([...quantityItem.slice(0, quantityItem.length-1), Number(e.target.value)]);
                 // setPriceItem([...priceItem.slice(0, priceItem.length-1), selectedItems[index]?.product.price * Number(e.target.value)]);
