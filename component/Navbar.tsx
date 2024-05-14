@@ -285,7 +285,7 @@ export default function NavBar() {
           </Drawer>
           <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
           <HStack spacing={{ base: 4, md: 8 }} alignItems={"center"}>
-            <Box ml={{ base: 0, md: 8 }} onClick={() => router.push("/")} cursor={"pointer"} backgroundImage={"/logo.png"}>
+            <Box ml={{ base: 0, md: 8 }} onClick={() => router.push("/")} cursor={"pointer"}>
               <Image
                 src="/logo.png"
                 alt="OrList"
