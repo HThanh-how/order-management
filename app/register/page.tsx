@@ -199,7 +199,7 @@ export default function Login() {
 
   return (
     <Box position={"relative"} bg="white" h="100vh" style={{
-      backgroundImage: `url(/login.png)`,
+      backgroundImage: `url(/login.webp)`,
       backgroundPosition: 'center',
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat'
