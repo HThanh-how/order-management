@@ -24,6 +24,7 @@ import {
   AlertIcon,
   useToast,
   StackDivider,
+  Link,
 } from "@chakra-ui/react";
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
@@ -35,6 +36,7 @@ import { useAppSelector } from "@/app/_lib/hooks";
 import { Product, Customer, Store } from "@/app/type";
 import { cityData } from "@/component/HeroSection/CityData";
 import { calculateShippingCost } from "@/pages/api/cost";
+import { current } from "@reduxjs/toolkit";
 
 
 type OrderItem = {
@@ -84,14 +86,18 @@ export default function OrderForm() {
   const [priceItem, setPriceItem] = useState<number[]>([]);
   const [totalPriceItems, setTotalPriceItems] = useState<number>(0);
   const [shippingFee, setShippingFee] = useState<number>(0);
-  const [optionFee, setOptionFee] = useState<number>(0);
+  const [totalWeight, setTotalWeight] = useState<number>(0);
 
-  const [selectedStore, setSelectedStore] = useState<any>(null);
+  const [optionValuable, setOptionValuable] = useState<number>(0);
+  const [optionBulky, setOptionBulky] = useState<number>(0);
+
   //only 1 checkbox of receiver box be checked
   const [checkbox1Checked, setCheckbox1Checked] = useState(true);
   const [checkbox2Checked, setCheckbox2Checked] = useState(false);
 
+  const [selectedStore, setSelectedStore] = useState<any>(null);
   const [selectedReceiver, setSelectedReceiver] = useState<any>(null);
+
   const [receiverValue, setReceiverValue] = useState<string>("");
   const [receiverSuggestions, setReceiverSuggestions] = useState<Customer[]>([]);
 
@@ -150,7 +156,11 @@ export default function OrderForm() {
 
   useEffect(() => {
     setTotalPriceItems(priceItem.reduce((acc, currentValue) => acc + currentValue, 0))
-    // console.log(totalPriceItems);
+    let tmp: number = 0;
+    for(let i = 0; i < selectedItems.length; i++) {
+      tmp += selectedItems[i].product.weight * quantityItem[i];
+    }
+    setTotalWeight(tmp);
   }, [priceItem])
 
 
@@ -168,15 +178,10 @@ export default function OrderForm() {
         shippingFee: 0,
         collectionCharge: 0,
       };
-      const sendLocation = selectedStore.address.split(", ");
-      const receiveLocation = data.receiver?.address?.split(", ");
+      
       data.price.itemsPrice = totalPriceItems;
-      data.price.shippingFee = calculateShippingCost(
-        getProvinceCode(sendLocation[2]), getDistrictCode(sendLocation[2], sendLocation[1]),
-        getProvinceCode(receiveLocation[2]), getDistrictCode(receiveLocation[2], receiveLocation[1]),
-        500
-      )
-      data.price.collectionCharge = totalPriceItems + data.price.shippingFee
+      data.price.shippingFee = shippingFee + optionValuable + optionBulky;
+      data.price.collectionCharge = totalPriceItems + data.price.shippingFee;
       data.store = {...selectedStore};
       if(role === "ROLE_USER") {
         result = await addOrder(data).unwrap();
@@ -261,11 +266,9 @@ export default function OrderForm() {
     if (checkboxId === 'checkbox1') {
       setCheckbox1Checked(true);
       setCheckbox2Checked(false);
-      //setValue('callBeforeSend', false);
     } else if (checkboxId === 'checkbox2') {
       setCheckbox1Checked(false);
       setCheckbox2Checked(true);
-      //setValue('receiveAtPost', false);
     }
   };
 
@@ -306,7 +309,7 @@ export default function OrderForm() {
         setSelectedItems([...selectedItems, { product: suggestion,
                                               price: 0,
                                               quantity: 0,
-                                            }]);
+                                            }]);                                  
         setPriceItem([...priceItem, 0]);
         setQuantityItem([...quantityItem, 0]);
         setValue('items', [...selectedItems, {  quantity: 0,
@@ -515,19 +518,26 @@ export default function OrderForm() {
             <Checkbox colorScheme="orange" {...register('isDocument')}>
               Tài liệu/ Văn kiện 
             </Checkbox>
-            <Checkbox colorScheme="orange" {...register('isValuable')}>
+            <Checkbox colorScheme="orange" {...register('isValuable')} value="true" onChange={(e) => {
+              if (e.target.value == "true") setOptionValuable(0.03 * totalPriceItems);
+              if (e.target.value != "true") setOptionValuable(0);
+            }}>
               Giá trị cao
             </Checkbox>
             <Checkbox colorScheme="orange" {...register('isFragile')}>
               Dễ vỡ
             </Checkbox>
-            <Checkbox colorScheme="orange" {...register('isBulky')}>
+            <Checkbox colorScheme="orange" {...register('isBulky')} value="true" onChange={(e) => {
+              if (e.target.value == "true") setOptionBulky(20000);
+              if (e.target.value != "true") setOptionBulky(0);
+            }}>
               Quá khổ
             </Checkbox>
         </HStack>
-        <Flex my={4}>
-          <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Tổng tiền hàng: {totalPriceItems} VNĐ</Text>
-        </Flex>
+        <Box my={4}>
+          <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Tổng tiền hàng: {totalPriceItems} VNĐ</Text><br />
+          <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Tổng khối lượng: {totalWeight} g</Text>
+        </Box>
       </Box>
     </Box>    
     <Box w={{ base: "80wv", lg: "50%" }}>
@@ -677,12 +687,27 @@ export default function OrderForm() {
 
         <Text mx={4} my={2} fontWeight={"500"}>Ghi chú </Text>
         <Textarea ml={4} mb={4} placeholder='Ghi chú' w={"95%"} {...register('delivery.note')}/>
-        <Flex m={4}>
-          <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Phí ship: {shippingFee} {optionFee !== 0 ? `+ ${optionFee} (phí tuỳ chọn)` : ""} VNĐ</Text>
+        <Flex m={4} justifyContent={'space-between'}>
+          <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Phí ship: {shippingFee} {optionValuable + optionBulky !== 0 ? `+ ${optionValuable + optionBulky} (phí tuỳ chọn)` : ""} VNĐ</Text>
+
+          {selectedReceiver && selectedStore && (
+            <Link color='orange.500' onClick={() => {
+              const sendLocation = selectedStore?.address?.split(", ")
+              const receiveLocation = selectedReceiver?.address?.split(", ")
+              setShippingFee(calculateShippingCost(
+                getProvinceCode(sendLocation[2]), 
+                getDistrictCode(sendLocation[2], sendLocation[1]),
+                getProvinceCode(receiveLocation[2]), 
+                getDistrictCode(receiveLocation[2], receiveLocation[1]),
+                totalWeight
+              ))
+            }
+            }>Kiểm tra phí ship</Link>
+          )}
           
         </Flex>
         <Flex m={4}>
-          <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Thành tiền: {totalPriceItems + shippingFee + optionFee} VNĐ</Text>
+          <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Thành tiền: {totalPriceItems + shippingFee + optionValuable + optionBulky} VNĐ</Text>
           
         </Flex>
         <Flex justifyContent={"right"} m={4}>
