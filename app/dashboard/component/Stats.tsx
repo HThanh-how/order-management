@@ -93,6 +93,7 @@ function Stats() {
           overflowX="auto"
           columns={{ base: 2, md: 4 }}
           spacing={{ base: 2, md: 10 }}
+          mb="4"
         >
           <Skeleton rounded={"md"} > <StatItem Label="Đơn mới hôm nay" Num={9999} background="linear-gradient(135deg, #13072e, #3f2182)" /></Skeleton>
           <Skeleton rounded={"md"} > <StatItem Label="Đơn mới hôm nay" Num={9999} background="linear-gradient(135deg, #13072e, #3f2182)" /></Skeleton><Skeleton rounded={"md"} > <StatItem Label="Đơn mới hôm nay" Num={9999} background="linear-gradient(135deg, #13072e, #3f2182)" /></Skeleton><Skeleton rounded={"md"} > <StatItem Label="Đơn mới hôm nay" Num={9999} background="linear-gradient(135deg, #13072e, #3f2182)" /></Skeleton>
