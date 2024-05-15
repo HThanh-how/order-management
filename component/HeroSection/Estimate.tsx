@@ -44,12 +44,20 @@ export default function AddressSelect() {
       
       toast({
         title: "Lưu ý",
-        description: "Đây là ước tính dựa trên khối lượng mặc định dưới 300g",
+        description: "Đây là ước tính dựa trên khối lượng mặc định dưới 300g, giá cả thực tế có thể khác nhau",
         status: "success",
         duration: 3000,
         isClosable: true,
       })
+      return;
     }
+    toast({
+      title: "Chú ý",
+      description: "Giá cả thực tế có thể khác so với ước tính, phụ thuộc vào nhiều yếu tố khác nhau",
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    })
   };
 
   
