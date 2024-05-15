@@ -151,7 +151,7 @@ export default function Dialog() {
                 {errors.name && errors.name.message}
               </FormErrorMessage>
             </FormControl>
-            <FormControl mt={4} isInvalid={!!errors.photoUrl} isRequired>
+            <FormControl mt={4} isInvalid={!!errors.photoUrl} >
               <FormLabel>Hình ảnh sản phẩm</FormLabel>
               <input type='file' accept="image/png" onChange={validateFiles}></input>
               <FormErrorMessage>

@@ -204,7 +204,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
                 {!isMobile ?
                 <>
                   <Image
-                    src={product.photoUrl}
+                    src={product.photoUrl? product.photoUrl : "/productImageDefault.webp"}
                     width={50}
                     height={20}
                     alt="product image"
