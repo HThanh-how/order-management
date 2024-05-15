@@ -4,7 +4,7 @@ import { Box, Button, Flex, Input, Select, SimpleGrid, Text, VStack } from "@cha
 import data from "@/public/province.json";
 import { ChangeEvent, useEffect, useState } from "react";
 import { cityData, City, District, Ward } from "./CityData";
-import {calculateShippingCost} from "./shippingCaculate"
+import { calculateShippingCost } from "./shippingCaculate"
 import { useToast } from "@chakra-ui/react"
 
 export default function AddressSelect() {
@@ -28,7 +28,7 @@ export default function AddressSelect() {
     // console.log(sendProvinceCode, sendProvinceCode, receiveProvinceCode, receiveDistrictCode, weight, costCal)
     setCost(costCal)
     if (sendProvinceCode === null || receiveProvinceCode === null) {
-      
+
       setCost(0)
       toast({
         title: "Chưa thể tính toán",
@@ -36,12 +36,12 @@ export default function AddressSelect() {
         status: "warning",
         duration: 3000,
         isClosable: true,
-        
+
       })
       return;
     }
     if (weight === 0) {
-      
+
       toast({
         title: "Lưu ý",
         description: "Đây là ước tính dựa trên khối lượng mặc định dưới 300g, giá cả thực tế có thể khác nhau",
@@ -49,18 +49,19 @@ export default function AddressSelect() {
         duration: 3000,
         isClosable: true,
       })
-      return;
     }
-    toast({
-      title: "Chú ý",
-      description: "Giá cả thực tế có thể khác so với ước tính, phụ thuộc vào nhiều yếu tố khác nhau",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    })
+    else {
+      toast({
+        title: "Chú ý",
+        description: "Giá cả thực tế có thể khác so với ước tính, phụ thuộc vào nhiều yếu tố khác nhau",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      })
+    }
   };
 
-  
+
 
   const handleCityChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedCity(event.target.value);
@@ -89,7 +90,7 @@ export default function AddressSelect() {
     const city = cityData.find(city => city.codename === cityCodename);
     return city ? city.code : null;
   };
-  
+
   // Function to get district code
   const getDistrictCode = (cityCodename: string, districtCodename: string) => {
     const city = cityData.find(city => city.codename === cityCodename);
@@ -110,15 +111,15 @@ export default function AddressSelect() {
   useEffect(() => {
     setSendProvinceCode(getProvinceCode(selectedCity));
     setSendDistrictCode(getDistrictCode(selectedCity, selectedDistrict));
-  
+
     setReceiveProvinceCode(getProvinceCode(RecievedCity));
     setReceiveDistrictCode(getDistrictCode(RecievedCity, RecievedDistrict));
   }, [selectedCity, selectedDistrict, RecievedCity, RecievedDistrict]);
 
-  
+
   return (
     <SimpleGrid columns={{ base: 1, md: 2 }}>
-      <Box w={{base: "60vw", md: "20vw"}} mt={4}>
+      <Box w={{ base: "60vw", md: "20vw" }} mt={4}>
         {/* Dropdown chọn thành phố */}
         <Text fontSize="xl">Địa chỉ nơi gửi</Text>
         <Select
@@ -176,7 +177,7 @@ export default function AddressSelect() {
           ))}
         </Select>
       </Box>
-      <Box w={{base: "60vw", md: "20vw"}} mt={4}>
+      <Box w={{ base: "60vw", md: "20vw" }} mt={4}>
         {/* Dropdown chọn thành phố */}
         <Text fontSize={"xl"}>Địa chỉ nơi nhận</Text>
         <Select
@@ -234,22 +235,22 @@ export default function AddressSelect() {
           ))}
         </Select>
       </Box>
-      
-      <Input m={4} placeholder="Khối lượng (g)" bgColor="gray.50" w={{base: "60vw", md: "20vw"}}  onChange={(e)=>setWeight(Number(e.target.value))}/>
-      
-      <Button  m={4} ml={4}        color="white"
-                  
-                    backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
-                    sx={{
-                      '@media (hover: hover)': {
-                        _hover: {
-                          backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
-                        }
-                      }
-                    }} w={{base: '80%', md: '40%'}} size={{base:'sm', md: 'md'}} onClick={handleButtonClick}>
-          Ước tính
+
+      <Input m={4} placeholder="Khối lượng (g)" bgColor="gray.50" w={{ base: "60vw", md: "20vw" }} onChange={(e) => setWeight(Number(e.target.value))} />
+
+      <Button m={4} ml={4} color="white"
+
+        backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+        sx={{
+          '@media (hover: hover)': {
+            _hover: {
+              backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+            }
+          }
+        }} w={{ base: '80%', md: '40%' }} size={{ base: 'sm', md: 'md' }} onClick={handleButtonClick}>
+        Ước tính
       </Button>
-      <Box>{cost !== 0 && <Flex  m={4} fontSize="xl" fontWeight={600} color="gray.800">Chi phí:  <Text mx={2} color="green">{" "} {cost} {" "}</Text>  đồng</Flex>}</Box>
+      <Box>{cost !== 0 && <Flex m={4} fontSize="xl" fontWeight={600} color="gray.800">Chi phí: <Text mx={2} color="green">{" "} {Math.round(cost).toLocaleString('en-US').replace(/,/g, ' ')} {" "}</Text>  đồng</Flex>}</Box>
     </SimpleGrid>
   );
 }
