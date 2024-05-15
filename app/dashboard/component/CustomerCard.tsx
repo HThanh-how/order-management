@@ -56,7 +56,7 @@ function CustomerCard() {
                     {/* Làm nút xem thêm
                 Chỉ hiển thị 5 khách gần nhất */}
                     <CardHeader>
-                        <Heading size='md' bgGradient="linear-gradient(135deg, #FFA500, #FF4500)" backgroundClip="text" color="transparent">
+                        <Heading size='md' bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)" backgroundClip="text" color="transparent">
                             Khách hàng tiềm năng
                         </Heading>
                     </CardHeader>
@@ -69,7 +69,7 @@ function CustomerCard() {
                                         {customer.name}
                                     </Heading>
                                     <Text>
-                                        {customer.totalAmount} VNĐ
+                                        {customer.totalAmount.toLocaleString('de-DE').replace(/\./g, ' ')} VNĐ
                                     </Text>
                                 </Flex>
                             ))}
