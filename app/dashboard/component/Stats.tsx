@@ -11,9 +11,11 @@ import {
   Spinner,
   Alert,
   AlertIcon,
+  Skeleton,
 } from "@chakra-ui/react";
+
 import { SlOptionsVertical } from "react-icons/sl";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useGetStatistic2Query } from "@/app/_lib/features/api/apiSlice";
 
 interface StatItemProps {
@@ -28,7 +30,7 @@ function StatItem(props: StatItemProps) {
   const { Label, Num, background } = props;
 
   // Định dạng Num thành chuỗi với dấu cách sau mỗi ba chữ số
-const formattedNum = Num ? Num.toLocaleString('en-US', {useGrouping: true}).replace(/,/g, ' ') : "0";
+  const formattedNum = Num ? Num.toLocaleString('en-US', { useGrouping: true }).replace(/,/g, ' ') : "0";
 
   return (
     <StatGroup bgGradient={background} p={4} borderRadius={"md"}>
@@ -60,16 +62,41 @@ function Stats() {
   const getData = useMemo(() => {
     if (isSuccess) return data.data
   }, [data])
+
+
+
+  const CountDown = (p0: number, p1: number, { initialValue, duration }: { initialValue: number; duration: number; }) => {
+    const [count, setCount] = useState(initialValue);
+
+    useEffect(() => {
+      const decrement = initialValue / (duration / 1000);
+      const timer = setInterval(() => {
+        setCount((prevCount) => {
+          if (prevCount - decrement <= 0) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prevCount - decrement;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }, [initialValue, duration]);
+
+    return <>{Math.round(count)}</>;
+  };
+
+
   return (
     <>
       {isLoading ? (
-        <Flex
-          alignItems="center"
-          justify="center"
-          direction={{ base: "column", md: "row" }}
+        <SimpleGrid
+          overflowX="auto"
+          columns={{ base: 2, md: 4 }}
+          spacing={{ base: 2, md: 10 }}
         >
-          <Spinner size='lg' color='orange.500' />
-        </Flex>
+          <Skeleton rounded={"md"} > <StatItem Label="Đơn mới hôm nay" Num={9999} background="linear-gradient(135deg, #13072e, #3f2182)" /></Skeleton>
+          <Skeleton rounded={"md"} > <StatItem Label="Đơn mới hôm nay" Num={9999} background="linear-gradient(135deg, #13072e, #3f2182)" /></Skeleton><Skeleton rounded={"md"} > <StatItem Label="Đơn mới hôm nay" Num={9999} background="linear-gradient(135deg, #13072e, #3f2182)" /></Skeleton><Skeleton rounded={"md"} > <StatItem Label="Đơn mới hôm nay" Num={9999} background="linear-gradient(135deg, #13072e, #3f2182)" /></Skeleton>
+        </SimpleGrid>
       ) : isError ? (
         <Flex
           alignItems="center"
@@ -95,7 +122,7 @@ function Stats() {
             Num={getData.totalRevenue}
             background="linear-gradient(135deg, #0086d1, #21fa93)"
           />
-          <StatItem Label="Đã nhận về" Num={getData.totalRevenue*3/4} background="linear-gradient(135deg, #d8bbf9, #d532a2, #4826d1)" />
+          <StatItem Label="Đã nhận về" Num={getData.totalRevenue * 3 / 4} background="linear-gradient(90deg, #ff5e09, #ff0348)" />
         </SimpleGrid>
       )}
     </>

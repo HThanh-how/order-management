@@ -1,12 +1,13 @@
-import { 
-  Flex, 
-  Box, 
-  Container, 
-  Grid, 
+import {
+  Flex,
+  Box,
+  Container,
+  Grid,
   GridItem,
   Spinner,
   Alert,
-  AlertIcon, 
+  AlertIcon,
+  Skeleton,
 } from "@chakra-ui/react";
 
 import { ApexOptions } from "apexcharts";
@@ -20,11 +21,11 @@ const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 
 interface seri {
-    name: string;
-    type: string;
-    // color: string;
-    data: number[];
-  }
+  name: string;
+  type: string;
+  // color: string;
+  data: number[];
+}
 
 
 
@@ -37,32 +38,32 @@ const ActivityChart = () => {
     error,
   } = useGetStatisticQuery(1)
 
-  const getData = useMemo (() => {
-    if(isSuccess) return data.data
+  const getData = useMemo(() => {
+    if (isSuccess) return data.data
   }, [data])
 
-  const series :Array<seri> = [
+  const series: Array<seri> = [
     {
       name: "Đơn hàng",
       type: "column",
       // color: "#7a7d82",
-      data: isSuccess ? getData.map((data: any) => data.totalOrder): 0,
+      data: isSuccess ? getData.map((data: any) => data.totalOrder) : 0,
     },
     {
       name: "Doanh thu",
       type: "line",
       // color: "#1267de",
-      data: isSuccess ? getData.map((data: any) => data.totalAmount): 0,
+      data: isSuccess ? getData.map((data: any) => data.totalAmount) : 0,
     },
   ];
 
   let seriesLength = isSuccess ? getData.length : 0;
-  const optimalColumnWidthPercent = 20 + (60 / (1 + 30*Math.exp(-seriesLength /3)));
+  const optimalColumnWidthPercent = 20 + (60 / (1 + 30 * Math.exp(-seriesLength / 3)));
 
   const options: ApexOptions = {
     chart: {
       fontFamily: 'system-ui, sans-serif',
-      id: "mixed-chart",   
+      id: "mixed-chart",
       // stacked: false,
       zoom: {
         type: 'x',
@@ -79,13 +80,13 @@ const ActivityChart = () => {
     markers: {
       size: 4,
     },
-    
+
     title: {
       text: 'Báo cáo',
       align: 'left'
     },
     xaxis: {
-      categories: isSuccess? getData.map((data: any) => data.monthYear): 0,
+      categories: isSuccess ? getData.map((data: any) => data.monthYear) : 0,
     },
     yaxis: [
       {
@@ -99,7 +100,7 @@ const ActivityChart = () => {
         title: {
           text: "Số lượng đơn",
         },
-        
+
       },
       {
         seriesName: "Doanh thu",
@@ -110,10 +111,10 @@ const ActivityChart = () => {
         axisBorder: {
           show: true,
         },
-        
+
         title: {
           text: "Tổng doanh thu",
-        }, 
+        },
       },
     ],
     // plotOptions: {
@@ -137,38 +138,38 @@ const ActivityChart = () => {
   return (
     <>
       {isLoading ? (
-          <Flex
-          alignItems="center"
-          justify="center"
-          direction={{ base: "column", md: "row" }}
-          >
-            <Spinner size='lg' color='orange.500' />
-          </Flex>
+        <Skeleton isLoaded={!isLoading} startColor="gray.100" endColor="gray.300" height={400} width={'100%'} rounded={"2xl"}>
+          <Box
+            
+            width={'100%'}
+            height={400}
+          />
+        </Skeleton>
       ) : isError ? (
-          <Flex
+        <Flex
           alignItems="center"
           justify="center"
           direction={{ base: "column", md: "row" }}
           m={4}
-          >
-            <Alert w='50%' status='error'>
-              <AlertIcon />
-              Can not fetch data from server
-            </Alert>
-          </Flex>
-        ) : (
-          <Flex mt={4} width={{md:'80%'}}>
-            <Box bgColor={'white'} p={{base: 0, md: 4}} width={'100%'} borderRadius="xl">
-              <Chart
-                options={options}
-                series={series}
-                type="line"
-                width={'100%'}
-                height={350}
-              />
-            </Box>
-          </Flex>
-        )}
+        >
+          <Alert w='50%' status='error'>
+            <AlertIcon />
+            Can not fetch data from server
+          </Alert>
+        </Flex>
+      ) : (
+        <Flex mt={4} width={{ md: '80%' }}>
+          <Box bgColor={'white'} p={{ base: 0, md: 4 }} width={'100%'} borderRadius="xl">
+            <Chart
+              options={options}
+              series={series}
+              type="line"
+              width={'100%'}
+              height={350}
+            />
+          </Box>
+        </Flex>
+      )}
     </>
   );
 };

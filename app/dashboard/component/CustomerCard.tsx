@@ -12,6 +12,7 @@ import {
     Spinner,
     Alert,
     AlertIcon,
+    Skeleton,
 } from '@chakra-ui/react'
 import { useMemo } from 'react';
 import { useGetTopCustomersQuery } from '@/app/_lib/features/api/apiSlice';
@@ -32,13 +33,7 @@ function CustomerCard() {
     return (
         <>
             {isLoading ? (
-                <Flex
-                    alignItems="center"
-                    justify="center"
-                    direction={{ base: "column", md: "row" }}
-                >
-                    <Spinner size='lg' color='orange.500' />
-                </Flex>
+                  <Skeleton  w={{ base: '100%', md: '40%' }} startColor="gray.100" endColor="gray.300" shadow={"2xl"} rounded={"2xl"} height={400}/>
             ) : isError ? (
                 <Flex
                     alignItems="center"
