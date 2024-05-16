@@ -383,7 +383,15 @@ const {
               <Button ref={cancelRef} onClick={onClose}>
                 Huỷ
               </Button>
-              <Button colorScheme='orange' onClick={() => handleCancelOrder(getOrder.id)} ml={3}>
+              <Button                   color="white"
+                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                  sx={{
+                    '@media (hover: hover)': {
+                      _hover: {
+                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                      }
+                    }
+                  }} onClick={() => handleCancelOrder(getOrder.id)} ml={3}>
                 Xác nhận
               </Button>
             </AlertDialogFooter>

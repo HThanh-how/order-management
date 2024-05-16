@@ -532,7 +532,15 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         }}
         ml={8} mt={6} mb={2}
         w="25%"
-        colorScheme="orange"
+        color="white"
+        backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+        sx={{
+          '@media (hover: hover)': {
+            _hover: {
+              backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+            }
+          }
+        }}
       >
         + Tạo đơn
       </Button>

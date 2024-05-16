@@ -222,7 +222,15 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
           </ModalBody>
           <ModalFooter>
             <Button mr={3} onClick={() => handleDeleteClose()}>Đóng</Button>
-            <Button colorScheme='orange' onClick={() => handleDelete(selectedCustomer.id)}>Xác nhận</Button>
+            <Button                   color="white"
+                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                  sx={{
+                    '@media (hover: hover)': {
+                      _hover: {
+                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                      }
+                    }
+                  }} onClick={() => handleDelete(selectedCustomer.id)}>Xác nhận</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

@@ -153,6 +153,7 @@ export default function CustomerTable() {
           alignItems="center"
           justify="center"
           direction={{ base: "column", md: "row" }}
+          my={12}
         >
           <Text color={'gray'} fontSize={20}>Chưa thêm khách hàng nào</Text>
         </Flex>

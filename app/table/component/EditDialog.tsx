@@ -79,24 +79,26 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
     setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({defaultValues: {
-    name: selectedCustomer?.name || "",
-    phoneNumber: selectedCustomer?.phoneNumber || "",
-    address: selectedCustomer?.address || "",
-    detailedAddress: selectedCustomer?.detailedAddress || "",
-    note: selectedCustomer?.note || "",
-    receivedPlace: "",
-    deliveryTimeFrame: "",
-    callBeforeSend: selectedCustomer?.callBeforeSend,
-    receiveAtPost: selectedCustomer?.receiveAtPost,
-  }})
+  } = useForm<FormData>({
+    defaultValues: {
+      name: selectedCustomer?.name || "",
+      phoneNumber: selectedCustomer?.phoneNumber || "",
+      address: selectedCustomer?.address || "",
+      detailedAddress: selectedCustomer?.detailedAddress || "",
+      note: selectedCustomer?.note || "",
+      receivedPlace: "",
+      deliveryTimeFrame: "",
+      callBeforeSend: selectedCustomer?.callBeforeSend,
+      receiveAtPost: selectedCustomer?.receiveAtPost,
+    }
+  })
 
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedVillage, setSelectedVillage] = useState("");
 
-  const [editCustomer, {isLoading}] = useEditCustomerMutation();
- 
+  const [editCustomer, { isLoading }] = useEditCustomerMutation();
+
   const toast = useToast();
 
 
@@ -126,8 +128,8 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
     (district) => district.name === selectedDistrict
   );
 
-  const onSubmit = async(data: FormData) => {
-    const {village, district, city, ...sendData} = data;
+  const onSubmit = async (data: FormData) => {
+    const { village, district, city, ...sendData } = data;
     console.log(sendData);
     let isSuccess: boolean = true;
     try {
@@ -144,7 +146,7 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
         isClosable: true,
       })
     } finally {
-      if(isSuccess) {
+      if (isSuccess) {
         toast({
           title: 'Cập nhật thông tin người nhận thành công',
           position: 'top',
@@ -155,147 +157,155 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
         // setTimeout(() => window.location.reload(), 1000);
       }
     }
-}
+  }
 
   return (
-      <Modal
-        closeOnOverlayClick={false}
-        isOpen={isOpen}
-        onClose={onClose}
-        isCentered
-        size={{base: 'sm', md: 'md'}}
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Cập nhật thông tin người nhận</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>  
-            <FormControl mt={4} isRequired isInvalid={Boolean(errors.name)}>
-              <FormLabel>Tên người nhận</FormLabel>
-              <Input type='text' {...register('name', {
+    <Modal
+      closeOnOverlayClick={false}
+      isOpen={isOpen}
+      onClose={onClose}
+      isCentered
+      size={{ base: 'sm', md: 'md' }}
+    >
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Cập nhật thông tin người nhận</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody pb={6}>
+          <FormControl mt={4} isRequired isInvalid={Boolean(errors.name)}>
+            <FormLabel>Tên người nhận</FormLabel>
+            <Input type='text' {...register('name', {
+              required: 'Trường này không được bỏ trống',
+            })} />
+            <FormErrorMessage>
+              {errors.name && errors.name.message}
+            </FormErrorMessage>
+          </FormControl>
+
+          <FormControl isRequired isInvalid={Boolean(errors.name)} mt={4}>
+            <FormLabel>Số điện thoại (g)</FormLabel>
+            <Input type='text' {...register('phoneNumber', {
+              required: 'Trường này không được bỏ trống'
+            })} />
+            <FormErrorMessage>
+              {errors.name && errors.name.message}
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl mt={4} isRequired isInvalid={Boolean(errors.city)}>
+            <FormLabel>Tỉnh/Thành phố</FormLabel>
+            <Select
+              my={4}
+              placeholder="Chọn tỉnh thành"
+              // value={selectedCity}
+              variant="filled"
+              {...register('city', {
                 required: 'Trường này không được bỏ trống',
-              })}   />
-              <FormErrorMessage>
-                {errors.name && errors.name.message}
-              </FormErrorMessage>
-            </FormControl>
-            
-            <FormControl isRequired isInvalid={Boolean(errors.name)} mt={4}>
-              <FormLabel>Số điện thoại (g)</FormLabel>
-              <Input type='text' {...register('phoneNumber', {
-                required: 'Trường này không được bỏ trống'
-              })} />
-              <FormErrorMessage>
-                {errors.name && errors.name.message}
-              </FormErrorMessage>
-            </FormControl>
-            <FormControl mt={4} isRequired isInvalid={Boolean(errors.city)}>
-              <FormLabel>Tỉnh/Thành phố</FormLabel>
-              <Select
-                my={4}
-                placeholder="Chọn tỉnh thành"
-                // value={selectedCity}
-                variant="filled"
-                {...register('city', {
-                  required: 'Trường này không được bỏ trống',
-                })}
-                onChange={handleCityChange}
-              >
-                <option value="" disabled hidden>
-                  Chọn tỉnh thành
+              })}
+              onChange={handleCityChange}
+            >
+              <option value="" disabled hidden>
+                Chọn tỉnh thành
+              </option>
+              {cityData.map((city) => (
+                <option key={city.code} value={city.name}>
+                  {city.name}
                 </option>
-                {cityData.map((city) => (
-                  <option key={city.code} value={city.name}>
-                    {city.name}
-                  </option>
-                ))}
-              </Select>
-              <FormErrorMessage>
-                {errors.city && errors.city.message}
-              </FormErrorMessage>
-            </FormControl>
-            <FormControl mt={4} isRequired isInvalid={Boolean(errors.district)}>
-              <FormLabel>Quận/Huyện</FormLabel>
-              <Select
-                my={4}
-                placeholder="Chọn quận"
-                isDisabled={selectedCity == "" ? true : false}
-                // value={selectedDistrict}
-                {...register('district', {
-                  required: 'Trường này không được bỏ trống',
-                })}
-                onChange={handleDistrictChange}
-                variant="filled"
-              >
-                <option value="" disabled hidden>
-                  Chọn quận
+              ))}
+            </Select>
+            <FormErrorMessage>
+              {errors.city && errors.city.message}
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl mt={4} isRequired isInvalid={Boolean(errors.district)}>
+            <FormLabel>Quận/Huyện</FormLabel>
+            <Select
+              my={4}
+              placeholder="Chọn quận"
+              isDisabled={selectedCity == "" ? true : false}
+              // value={selectedDistrict}
+              {...register('district', {
+                required: 'Trường này không được bỏ trống',
+              })}
+              onChange={handleDistrictChange}
+              variant="filled"
+            >
+              <option value="" disabled hidden>
+                Chọn quận
+              </option>
+              {selectedCityData?.districts.map((district) => (
+                <option key={district.code} value={district.name}>
+                  {district.name}
                 </option>
-                {selectedCityData?.districts.map((district) => (
-                  <option key={district.code} value={district.name}>
-                    {district.name}
-                  </option>
-                ))}
-              </Select>
-              <FormErrorMessage>
-                {errors.district && errors.district.message}
-              </FormErrorMessage>
-            </FormControl>
+              ))}
+            </Select>
+            <FormErrorMessage>
+              {errors.district && errors.district.message}
+            </FormErrorMessage>
+          </FormControl>
 
-            <FormControl mt={4} isRequired isInvalid={Boolean(errors.village)}>
-              <FormLabel>Phường/xã</FormLabel>
-              <Select
-                my={4}
-                variant="filled"
-                placeholder="Chọn phường"
-                {...register('village', {
-                  required: 'Trường này không được bỏ trống',
-                })}
-                onChange={handleVillageChange}
-                isDisabled={selectedDistrict == "" ? true : false}
-              >
-                <option value="" disabled hidden>
-                  Chọn phường
+          <FormControl mt={4} isRequired isInvalid={Boolean(errors.village)}>
+            <FormLabel>Phường/xã</FormLabel>
+            <Select
+              my={4}
+              variant="filled"
+              placeholder="Chọn phường"
+              {...register('village', {
+                required: 'Trường này không được bỏ trống',
+              })}
+              onChange={handleVillageChange}
+              isDisabled={selectedDistrict == "" ? true : false}
+            >
+              <option value="" disabled hidden>
+                Chọn phường
+              </option>
+              {selectedDistrictData?.wards.map((ward) => (
+                <option key={ward.code} value={ward.name}>
+                  {ward.name}
                 </option>
-                {selectedDistrictData?.wards.map((ward) => (
-                  <option key={ward.code} value={ward.name}>
-                    {ward.name}
-                  </option>
-                ))}
-              </Select>
-              <FormErrorMessage>
-                {errors.village && errors.village.message}
-              </FormErrorMessage>
-            </FormControl>
-            <FormControl mt={4} isRequired isInvalid={Boolean(errors.detailedAddress)}>
-              <FormLabel>Địa chỉ chi tiết</FormLabel>
-              <Input 
-                type="text" 
-                placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
-                {...register('detailedAddress', {
-                  required: 'Trường này không được bỏ trống',
-                })} 
-              />
-              <FormErrorMessage>
-                {errors.detailedAddress && errors.detailedAddress.message}
-              </FormErrorMessage>
-            </FormControl>
-            <FormControl mt={4}>
-              <FormLabel>Ghi chú</FormLabel>
-              <Textarea placeholder={"Ghi chú"} {...register('note')}/>
-            </FormControl>
-               
-          </ModalBody>
+              ))}
+            </Select>
+            <FormErrorMessage>
+              {errors.village && errors.village.message}
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl mt={4} isRequired isInvalid={Boolean(errors.detailedAddress)}>
+            <FormLabel>Địa chỉ chi tiết</FormLabel>
+            <Input
+              type="text"
+              placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
+              {...register('detailedAddress', {
+                required: 'Trường này không được bỏ trống',
+              })}
+            />
+            <FormErrorMessage>
+              {errors.detailedAddress && errors.detailedAddress.message}
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl mt={4}>
+            <FormLabel>Ghi chú</FormLabel>
+            <Textarea placeholder={"Ghi chú"} {...register('note')} />
+          </FormControl>
 
-          <ModalFooter>
-            <Button onClick={onClose} mr={3}>
-              Huỷ
-            </Button>
-            <Button colorScheme="orange" onClick={handleSubmit(onSubmit)}>
-              Lưu
-            </Button>
-            
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+        </ModalBody>
+
+        <ModalFooter>
+          <Button onClick={onClose} mr={3}>
+            Huỷ
+          </Button>
+          <Button color="white"
+            backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+            sx={{
+              '@media (hover: hover)': {
+                _hover: {
+                  backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                }
+              }
+            }} onClick={handleSubmit(onSubmit)}>
+            Lưu
+          </Button>
+
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 }

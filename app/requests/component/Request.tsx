@@ -229,7 +229,20 @@ export default function CustomerTable() {
                   {req.status === "PENDING" && (
                     <HStack mt={4} justifyContent={'flex-end'}>
                     <Button
-                      colorScheme="orange"
+                      borderColor={"#ff0348"}
+                      backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                      backgroundClip="text"
+                      color="transparent"
+                      sx={{
+                        transition: "all 0.3s",
+                        '@media (hover: hover)': {
+                          _hover: {
+                            backgroundImage: "linear-gradient(to right, #df5207, #d80740)",
+                            textColor: "white",
+    
+                          }
+                        }
+                      }}
                       variant='outline'
                       mx={2}
                       size={'sm'}
@@ -238,7 +251,15 @@ export default function CustomerTable() {
                       Từ chối
                     </Button>
                     <Button
-                      colorScheme="orange"
+                                        color="white"
+                                        backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                                        sx={{
+                                          '@media (hover: hover)': {
+                                            _hover: {
+                                              backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                                            }
+                                          }
+                                        }}
                       onClick={() => handleOpen(req)}
                       mx={2}
                       size={'sm'}
@@ -269,7 +290,15 @@ export default function CustomerTable() {
                     >
                       Đóng
                     </Button>
-                    <Button colorScheme='orange' onClick={() => handleApproveRequest(selectedReq)}>Xác nhận</Button>
+                    <Button                   color="white"
+                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                  sx={{
+                    '@media (hover: hover)': {
+                      _hover: {
+                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                      }
+                    }
+                  }} onClick={() => handleApproveRequest(selectedReq)}>Xác nhận</Button>
                   </ModalFooter>
                 </ModalContent>
               </Modal>
