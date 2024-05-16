@@ -258,7 +258,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
                 </Flex>
               </Td>
               
-              { role === " ROLE_USER" && (
+              { role === "ROLE_USER" && (
                 <Td>
                   <Menu>
                     <MenuButton>
