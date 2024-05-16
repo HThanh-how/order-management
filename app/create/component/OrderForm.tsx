@@ -549,19 +549,19 @@ export default function OrderForm() {
           <Input mt={{base: 2, md: 4}} placeholder={" Cao - cm"} {...register('height')}/>
         </Stack>
         <HStack mt={{base: 2, md: 4}} justifyContent={'space-between'} >
-            <Checkbox colorScheme="orange" {...register('isDocument')}>
+            <Checkbox colorScheme="red" {...register('isDocument')}>
               Tài liệu/ Văn kiện 
             </Checkbox>
-            <Checkbox colorScheme="orange" {...register('isValuable')} value="true" onChange={(e) => {
+            <Checkbox colorScheme="red" {...register('isValuable')} value="true" onChange={(e) => {
               if (e.target.value == "true") setOptionValuable(0.03 * totalPriceItems);
               if (e.target.value != "true") setOptionValuable(0);
             }}>
               Giá trị cao
             </Checkbox>
-            <Checkbox colorScheme="orange" {...register('isFragile')}>
+            <Checkbox colorScheme="red" {...register('isFragile')}>
               Dễ vỡ
             </Checkbox>
-            <Checkbox colorScheme="orange" {...register('isBulky')} value="true" onChange={(e) => {
+            <Checkbox colorScheme="red" {...register('isBulky')} value="true" onChange={(e) => {
               if (e.target.value == "true") setOptionBulky(20000);
               if (e.target.value != "true") setOptionBulky(0);
             }}>
@@ -613,7 +613,7 @@ export default function OrderForm() {
           <Checkbox 
             id="checkbox1" 
             m={4} 
-            colorScheme="orange" 
+            colorScheme="red" 
             isChecked={checkbox1Checked} 
             {...register('receiver.receiveAtPost')} 
             onChange={() => handleCheckboxChange('checkbox1')}
@@ -623,7 +623,7 @@ export default function OrderForm() {
           <Checkbox 
             id="checkbox2" 
             m={4} 
-            colorScheme="orange" 
+            colorScheme="red" 
             isChecked={checkbox2Checked} 
             {...register('receiver.callBeforeSend')} 
             onChange={() => handleCheckboxChange('checkbox2')}
@@ -642,10 +642,10 @@ export default function OrderForm() {
         <RadioGroup defaultValue="RECEIVER" m={4}>
           <Stack spacing={10} direction="row">
           <Text fontWeight={"500"}>Người trả cước</Text>
-            <Radio colorScheme="orange" {...register('delivery.payer')}  value="SENDER">
+            <Radio colorScheme="red" {...register('delivery.payer')}  value="SENDER">
               Người gửi
             </Radio>
-            <Radio colorScheme="orange" {...register('delivery.payer')} value="RECEIVER">
+            <Radio colorScheme="red" {...register('delivery.payer')} value="RECEIVER">
               Người nhận
             </Radio>
           </Stack>
@@ -717,7 +717,7 @@ export default function OrderForm() {
             </FormErrorMessage>
           </FormControl>
         </Stack>
-        <Checkbox m={4} fontWeight={"500"} {...register('delivery.hasLostInsurance')}>Bảo hiểm thất lạc</Checkbox>
+        <Checkbox m={4} fontWeight={"500"} colorScheme="red"{...register('delivery.hasLostInsurance')}>Bảo hiểm thất lạc</Checkbox>
 
         <Text mx={4} my={2} fontWeight={"500"}>Ghi chú </Text>
         <Textarea ml={4} mb={4} placeholder='Ghi chú' w={"95%"} {...register('delivery.note')}/>

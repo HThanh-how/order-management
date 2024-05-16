@@ -292,11 +292,11 @@ export default function AddressSelect() {
               <Textarea placeholder={"Ghi chú"} {...register('note')} />
             </FormControl>
 
-            <Checkbox id="checkbox1" colorScheme="orange" isChecked={checkbox1Checked} {...register('receiveAtPost')} onChange={() => handleCheckboxChange('checkbox1')}>
+            <Checkbox id="checkbox1" colorScheme="red" isChecked={checkbox1Checked} {...register('receiveAtPost')} onChange={() => handleCheckboxChange('checkbox1')}>
               Nhận tại bưu cục
             </Checkbox>
             <br />
-            <Checkbox id="checkbox2" colorScheme="orange" isChecked={checkbox2Checked} {...register('callBeforeSend')} onChange={() => handleCheckboxChange('checkbox2')}>
+            <Checkbox id="checkbox2" colorScheme="red" isChecked={checkbox2Checked} {...register('callBeforeSend')} onChange={() => handleCheckboxChange('checkbox2')}>
               Liên hệ trước khi gửi
             </Checkbox>
           </ModalBody>

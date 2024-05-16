@@ -276,11 +276,11 @@ export default function AddressSelect() {
               <Textarea placeholder={"Mô tả"} {...register('description')}/>
             </FormControl>
 
-            <Checkbox colorScheme="orange" {...register('isDefault')}>
+            <Checkbox colorScheme="red" {...register('isDefault')}>
               Đặt làm cửa hàng mặc định
             </Checkbox> 
             <br />   
-            <Checkbox colorScheme="orange" {...register('sendAtPost')}>
+            <Checkbox colorScheme="red" {...register('sendAtPost')}>
               Nhận tại bưu cục
             </Checkbox>   
           </ModalBody>

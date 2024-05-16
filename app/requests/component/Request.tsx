@@ -164,7 +164,7 @@ export default function CustomerTable() {
             justify="center"
             direction={{ base: "column", md: "row" }}
             >
-              <Spinner size='lg' color='orange.500' />
+              <Spinner size='lg' color='#ff0348' />
             </Flex>
           ) : isSuccessR || isSuccessE ?(
             <Stack divider={<StackDivider />} spacing='4'>

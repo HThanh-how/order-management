@@ -115,7 +115,7 @@ export default function Order() {
 
       {isLoadingU || isLoadingE ? (
         <Box overflowX={{ base: "scroll", md: "hidden" }} p={8} pt={0}>
-        {/* <Tabs isFitted variant="enclosed" colorScheme="orange" mb={2}>
+        {/* <Tabs isFitted variant="enclosed" colorScheme="red" mb={2}>
           <TabList>
             <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} ><Skeleton height="20px" /></Tab>
             <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} ><Skeleton height="20px" /></Tab>

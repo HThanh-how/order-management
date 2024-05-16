@@ -247,7 +247,7 @@ export default function CustomerTable() {
                 <Flex justify={'space-between'}>
                   <Heading size='md' ><GradientText>Vận chuyển từ</GradientText></Heading>
                   {/* {getOrder.orderStatus !== 'CANCELLED' && (
-              // <EditIcon color="orange.500" boxSize={6} style={{cursor: 'pointer'}} />
+              // <EditIcon color="#ff0348" boxSize={6} style={{cursor: 'pointer'}} />
               )}
               */}
                 </Flex>
@@ -270,7 +270,7 @@ export default function CustomerTable() {
                 <Flex justify={'space-between'}>
                   <Heading size='md' ><GradientText>Thông tin người nhận</GradientText></Heading>
                   {getOrder.orderStatus !== 'CANCELLED' && (
-                    <EditIcon color="orange.500" boxSize={6} style={{ cursor: 'pointer' }} onClick={receiverDialog.onOpen} />
+                    <EditIcon color="#ff0348" boxSize={6} style={{ cursor: 'pointer' }} onClick={receiverDialog.onOpen} />
                   )}
                 </Flex>
               </CardHeader>
@@ -314,7 +314,7 @@ export default function CustomerTable() {
           >
             <Card w={{base:"100%", md:'75%'}} mt={4} bgColor={"white"} rounded={"2xl"}>
               <CardHeader>
-                <Heading size='md' color="orange.500"><GradientText>Thông tin vận chuyển</GradientText></Heading>
+                <Heading size='md' color="#ff0348"><GradientText>Thông tin vận chuyển</GradientText></Heading>
               </CardHeader>
               <CardBody>
                 {getOrder.orderStatus === 'CANCELLED' ? (
