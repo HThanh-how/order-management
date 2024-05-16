@@ -20,6 +20,7 @@ import {
   Heading,
   StackDivider,
   Badge,
+  SkeletonText,
   Step,
   StepDescription,
   StepIcon,
@@ -142,13 +143,44 @@ const {
   return (
     <>
       {isLoadingU || isLoadingE ? (
-        <Flex
-        alignItems="center"
-        justify="center"
-        direction={{ base: "column", md: "row" }}
-        >
-          <Spinner size='lg' color='orange.500' />
-        </Flex>
+      
+<>
+<Flex justify="space-between" direction={ "row" } bgColor={"white"} rounded={"2xl"}>
+<VStack m={{ base: 2, md: 8 }} alignItems={"flex-start"}>
+  <SkeletonText noOfLines={2} width="300px" />
+  <SkeletonText noOfLines={2} width="300px" />
+</VStack>
+<VStack m={{ base: 2, md: 8 }} alignItems={"flex-start"}>
+  <SkeletonText noOfLines={2} width="300px" />
+  <SkeletonText noOfLines={2} width="300px" />
+</VStack>
+
+<Flex alignItems="flex-start" justify="space-between" direction={{ base: "column", md: "row" }} gap={6} mt={6}>
+  <Box w={'100%'} mt={6} bgColor={"white"} rounded={"2xl"}>
+    <SkeletonText noOfLines={6} width="100%" />
+  </Box>
+
+  <Box w={'100%'} mt={6} bgColor={"white"} rounded={"2xl"}>
+    <SkeletonText noOfLines={7} width="100%" />
+  </Box>
+</Flex>
+
+<Flex alignItems="flex-start" justify="space-between" direction={{ base: "column", md: "row" }} gap={6} mt={6}>
+  <Box w='75%' mt={6} bgColor={"white"} rounded={"2xl"}>
+    <SkeletonText noOfLines={12} width="100%" />
+  </Box>
+  <VStack w={{base: '100%'}}>
+    <Box w='100%' mt={6} bgColor={"white"} rounded={"2xl"}>
+      <SkeletonText noOfLines={7} width="100%" />
+    </Box> 
+
+    <Box mt={6}  w='100%' bgColor={"white"} rounded={"2xl"}>
+      <SkeletonText noOfLines={5} width="100%" />
+    </Box>
+  </VStack>
+</Flex>
+</Flex>
+</>
       ) : isErrorU || isErrorE ? (
         <Flex
         alignItems="center"
