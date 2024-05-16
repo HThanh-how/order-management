@@ -87,8 +87,11 @@ export default function Dialog() {
   }
 
   const onSubmit = async (data: FormData) => {
-    const tmp = await uploadImage(img);
-    data.photoUrl = tmp.base64;
+    if(img) {
+      const tmp = await uploadImage(img);
+      data.photoUrl = tmp.base64;
+    }
+
     let isSuccess: boolean = true;
     try {
       await addProduct(data).unwrap();
@@ -151,7 +154,7 @@ export default function Dialog() {
                 {errors.name && errors.name.message}
               </FormErrorMessage>
             </FormControl>
-            <FormControl mt={4} isInvalid={!!errors.photoUrl} >
+            <FormControl mt={4}>
               <FormLabel>Hình ảnh sản phẩm</FormLabel>
               <input type='file' accept="image/png" onChange={validateFiles}></input>
               <FormErrorMessage>

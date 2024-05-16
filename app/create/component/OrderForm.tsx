@@ -340,7 +340,7 @@ export default function OrderForm() {
         setReceiverSuggestions([]);
       }}
     >
-      {suggestion.phoneNumber}
+      {suggestion.name}  {suggestion.phoneNumber}
     </option>
   ));
 
@@ -415,7 +415,7 @@ export default function OrderForm() {
               <Controller
                 name="items"
                 control={control}
-                rules={{ required: 'This field is required' }}
+                rules={{ required: 'Trường này không được bỏ trống' }}
                 defaultValue={[]}
                 render={({ field }) => (
                   <FormControl isInvalid={Boolean(errors.items)}>
@@ -483,7 +483,7 @@ export default function OrderForm() {
                   color="teal.400"
                   fontSize="1.2em"
                 >$</InputLeftElement>
-                <Input  placeholder="Tiền thu hộ" value={priceItem[index] ? String(priceItem[index]) : ""} readOnly/>
+                <Input  placeholder="Tiền hàng" value={priceItem[index] ? String(priceItem[index]) : ""} readOnly/>
               </InputGroup>
             </Flex>
           </Box>
@@ -638,7 +638,7 @@ export default function OrderForm() {
       </Box>
       
       <Box mt={4} bg="gray.50" p={4}>
-        <Text color="f9a61a" fontWeight={"bold"} fontSize="20px">Vận chuyển</Text>
+        <Text color="orange.500" fontWeight={"bold"} fontSize="20px">Vận chuyển</Text>
         <RadioGroup defaultValue="RECEIVER" m={4}>
           <Stack spacing={10} direction="row">
           <Text fontWeight={"500"}>Người trả cước</Text>
