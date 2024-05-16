@@ -289,12 +289,22 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
+          <ModalHeader>Xác nhận xóa sản phẩm</ModalHeader>
           <ModalBody>
               Bạn có chắc chắn xóa sản phẩm này?
+              <Text>Đây là yêu cầu không thể hoàn tác.</Text>
           </ModalBody>
           <ModalFooter>
             <Button mr={3} onClick={() => handleDeleteClose()}>Đóng</Button>
-            <Button colorScheme='orange' onClick={() => handleDelete(selectedProduct.id)}>Xác nhận</Button>
+            <Button color="white"
+              backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+              sx={{
+                '@media (hover: hover)': {
+                  _hover: {
+                    backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                  }
+                }
+              }} onClick={() => handleDelete(selectedProduct.id)}>Xác nhận</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

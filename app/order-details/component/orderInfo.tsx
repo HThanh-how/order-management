@@ -13,9 +13,9 @@ import {
   Spinner,
   Alert,
   AlertIcon,
-  Card, 
-  CardHeader, 
-  CardBody, 
+  Card,
+  CardHeader,
+  CardBody,
   CardFooter,
   Heading,
   StackDivider,
@@ -44,10 +44,10 @@ import {
 import { EditIcon } from '@chakra-ui/icons'
 import Image from 'next/image';
 import { ChangeEvent, useEffect, useState, useMemo, useRef } from "react";
-import { 
+import {
   useGetOrderDetailQuery,
-  useGetOrderDetailForEmployeeQuery, 
-  useEditOrderStatusMutation, 
+  useGetOrderDetailForEmployeeQuery,
+  useEditOrderStatusMutation,
 } from "@/app/_lib/features/api/apiSlice";
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from "next/navigation";
@@ -61,6 +61,17 @@ const steps = [
   { title: 'Giao thành công', description: 'Select Rooms' },
 ]
 
+
+import { chakra } from "@chakra-ui/react"
+
+const GradientText = chakra('span', {
+  baseStyle: {
+    fontWeight: 'bold',
+    background: 'linear-gradient(90deg, #ff5e09, #ff0348)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+  },
+})
 export default function CustomerTable() {
   const [searchInput, setSearchInput] = useState("");
   const [receiver, setReceiver] = useState<any>(null);
@@ -70,19 +81,19 @@ export default function CustomerTable() {
     count: steps.length,
   })
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const receiverDialog  = useDisclosure();
+  const receiverDialog = useDisclosure();
   const cancelRef = useRef<HTMLButtonElement>(null);
   const toast = useToast();
   const router = useRouter();
   const role = useAppSelector((state: any) => state.role.value);
 
-const {
+  const {
     data: orderU,
     isLoading: isLoadingU,
     isSuccess: isSuccessU,
     isError: isErrorU,
     error: errorU,
-} = useGetOrderDetailQuery(Number(params?.get("id")), {skip: role === "ROLE_EMPLOYEE"});
+  } = useGetOrderDetailQuery(Number(params?.get("id")), { skip: role === "ROLE_EMPLOYEE" });
 
   const {
     data: orderE,
@@ -90,19 +101,19 @@ const {
     isSuccess: isSuccessE,
     isError: isErrorE,
     error: errorE,
-  } = useGetOrderDetailForEmployeeQuery(Number(params?.get("id")), {skip: role !== "ROLE_EMPLOYEE"});
+  } = useGetOrderDetailForEmployeeQuery(Number(params?.get("id")), { skip: role !== "ROLE_EMPLOYEE" });
 
-  const getOrder = useMemo (() => {
+  const getOrder = useMemo(() => {
     if (isSuccessU) return orderU.data;
     if (isSuccessE) return orderE.data;
   }, [orderU, orderE]);
 
-  const [ editOrderStatus ] = useEditOrderStatusMutation();
+  const [editOrderStatus] = useEditOrderStatusMutation();
 
   useEffect(() => {
-    if(isSuccessU || isSuccessE) {
-      if(getOrder.orderStatus === 'PROCESSING') setActiveStep(3);
-      if(getOrder.orderStatus === 'DELIVERED') setActiveStep(4);
+    if (isSuccessU || isSuccessE) {
+      if (getOrder.orderStatus === 'PROCESSING') setActiveStep(3);
+      if (getOrder.orderStatus === 'DELIVERED') setActiveStep(4);
       setReceiver(getOrder.receiverDto);
     }
     return;
@@ -112,7 +123,7 @@ const {
     let isSuccess: boolean = true;
     try {
       await editOrderStatus({
-        newStatus: {newStatus: "CANCELLED"},
+        newStatus: { newStatus: "CANCELLED" },
         id: id,
       }).unwrap();
       onClose();
@@ -127,7 +138,7 @@ const {
         isClosable: true,
       })
     } finally {
-      if(isSuccess) {
+      if (isSuccess) {
         setTimeout(() => router.push("/order"), 2000);
         toast({
           title: 'Huỷ đơn hàng thành công',
@@ -143,50 +154,50 @@ const {
   return (
     <>
       {isLoadingU || isLoadingE ? (
-      
-<>
-<Flex justify="space-between" direction={ "row" } bgColor={"white"} rounded={"2xl"}>
-<VStack m={{ base: 2, md: 8 }} alignItems={"flex-start"}>
-  <SkeletonText noOfLines={2} width="300px" />
-  <SkeletonText noOfLines={2} width="300px" />
-</VStack>
-<VStack m={{ base: 2, md: 8 }} alignItems={"flex-start"}>
-  <SkeletonText noOfLines={2} width="300px" />
-  <SkeletonText noOfLines={2} width="300px" />
-</VStack>
 
-<Flex alignItems="flex-start" justify="space-between" direction={{ base: "column", md: "row" }} gap={6} mt={6}>
-  <Box w={'100%'} mt={6} bgColor={"white"} rounded={"2xl"}>
-    <SkeletonText noOfLines={6} width="100%" />
-  </Box>
+        <>
+          <Flex justify="space-between" direction={"row"} bgColor={"white"} rounded={"2xl"}>
+            <VStack m={{ base: 2, md: 8 }} alignItems={"flex-start"}>
+              <SkeletonText noOfLines={2} width="300px" />
+              <SkeletonText noOfLines={2} width="300px" />
+            </VStack>
+            <VStack m={{ base: 2, md: 8 }} alignItems={"flex-start"}>
+              <SkeletonText noOfLines={2} width="300px" />
+              <SkeletonText noOfLines={2} width="300px" />
+            </VStack>
 
-  <Box w={'100%'} mt={6} bgColor={"white"} rounded={"2xl"}>
-    <SkeletonText noOfLines={7} width="100%" />
-  </Box>
-</Flex>
+            <Flex alignItems="flex-start" justify="space-between" direction={{ base: "column", md: "row" }} gap={6} mt={6}>
+              <Box w={'100%'} mt={6} bgColor={"white"} rounded={"2xl"}>
+                <SkeletonText noOfLines={6} width="100%" />
+              </Box>
 
-<Flex alignItems="flex-start" justify="space-between" direction={{ base: "column", md: "row" }} gap={6} mt={6}>
-  <Box w='75%' mt={6} bgColor={"white"} rounded={"2xl"}>
-    <SkeletonText noOfLines={12} width="100%" />
-  </Box>
-  <VStack w={{base: '100%'}}>
-    <Box w='100%' mt={6} bgColor={"white"} rounded={"2xl"}>
-      <SkeletonText noOfLines={7} width="100%" />
-    </Box> 
+              <Box w={'100%'} mt={6} bgColor={"white"} rounded={"2xl"}>
+                <SkeletonText noOfLines={7} width="100%" />
+              </Box>
+            </Flex>
 
-    <Box mt={6}  w='100%' bgColor={"white"} rounded={"2xl"}>
-      <SkeletonText noOfLines={5} width="100%" />
-    </Box>
-  </VStack>
-</Flex>
-</Flex>
-</>
+            <Flex alignItems="flex-start" justify="space-between" direction={{ base: "column", md: "row" }} gap={6} mt={6}>
+              <Box w='75%' mt={6} bgColor={"white"} rounded={"2xl"}>
+                <SkeletonText noOfLines={12} width="100%" />
+              </Box>
+              <VStack w={{ base: '100%' }}>
+                <Box w='100%' mt={6} bgColor={"white"} rounded={"2xl"}>
+                  <SkeletonText noOfLines={7} width="100%" />
+                </Box>
+
+                <Box mt={6} w='100%' bgColor={"white"} rounded={"2xl"}>
+                  <SkeletonText noOfLines={5} width="100%" />
+                </Box>
+              </VStack>
+            </Flex>
+          </Flex>
+        </>
       ) : isErrorU || isErrorE ? (
         <Flex
-        alignItems="center"
-        justify="center"
-        direction={{ base: "column", md: "row" }}
-        m={4}
+          alignItems="center"
+          justify="center"
+          direction={{ base: "column", md: "row" }}
+          m={4}
         >
           <Alert w='25%' status='error'>
             <AlertIcon />
@@ -194,212 +205,252 @@ const {
           </Alert>
         </Flex>
       ) : (
-      <>
-      <Flex
-        justify="space-between"
-        direction={ "row" }
-        bgColor={"white"} rounded={"2xl"}
-      >
-        <VStack
-          m={{ base: 2, md: 8 }}
-          alignItems={"flex-start"}
-          // maxW={{ base: "80vw", md: "full" }}
-        >
-          <Text color={"gray"} fontSize={{ base: "lg", md: "xl" }} >
-            Mã đơn hàng
-          </Text>
-          <Text fontWeight={700} color="orange.500">{getOrder.code}</Text>
-        </VStack>
-        <VStack
-          m={{ base: 2, md: 8 }}
-          alignItems={"flex-start"}
-          // maxW={{ base: "80vw", md: "full" }}
-        >
-          <Text color={"gray"} fontSize={{ base: "lg", md: "xl" }} >
-            Cập nhật lần cuối:
-          </Text>
-          <Text fontWeight={700} color="orange.500">{getOrder.lastUpdatedBy}</Text>
-        </VStack>
-        
-      </Flex>
+        <>
+          <Flex
+            justify="space-between"
+            direction={"row"}
+            bgColor={"white"} rounded={"2xl"}
+          >
+            <VStack
+              m={{ base: 2, md: 8 }}
+              alignItems={"flex-start"}
+            // maxW={{ base: "80vw", md: "full" }}
+            >
+              <Text color={"gray"} fontSize={{ base: "lg", md: "xl" }} >
+                Mã đơn hàng
+              </Text>
+              <GradientText>{getOrder.code}</GradientText>
+            </VStack>
+            <VStack
+              m={{ base: 2, md: 8 }}
+              alignItems={"flex-start"}
+            // maxW={{ base: "80vw", md: "full" }}
+            >
+              <Text color={"gray"} fontSize={{ base: "lg", md: "xl" }} >
+                Cập nhật lần cuối:
+              </Text>
+              <GradientText>{getOrder.lastUpdatedBy}</GradientText>
+            </VStack>
 
-      <Flex
-        alignItems="flex-start"
-        justify="space-between"
-        direction={{ base: "column", md: "row" }}
-        gap={4}
-        mt={4}
-      >
-        <Card w={'100%'} mt={4} bgColor={"white"} rounded={"2xl"}>
-          <CardHeader>
-            <Flex justify={'space-between'}>
-              <Heading size='md' color="orange.500">Vận chuyển từ</Heading>
-              {/* {getOrder.orderStatus !== 'CANCELLED' && (
+          </Flex>
+
+          <Flex
+            alignItems="flex-start"
+            justify="space-between"
+            direction={{ base: "column", md: "row" }}
+            gap={4}
+            mt={4}
+          >
+            <Card w={'100%'} mt={4} bgColor={"white"} rounded={"2xl"}>
+              <CardHeader>
+                <Flex justify={'space-between'}>
+                  <Heading size='md' ><GradientText>Vận chuyển từ</GradientText></Heading>
+                  {/* {getOrder.orderStatus !== 'CANCELLED' && (
               // <EditIcon color="orange.500" boxSize={6} style={{cursor: 'pointer'}} />
               )}
               */}
-            </Flex>
-          </CardHeader>
-          <CardBody>
-            <Text fontSize={'lg'} fontWeight={400}>Tên cửa hàng: {getOrder.storeDto.name}</Text>
-            <Text fontSize={'lg'} fontWeight={400}>SĐT: {getOrder.storeDto.phoneNumber}</Text>
-            <Text fontSize={'lg'} fontWeight={400}>Địa chỉ: {`${getOrder.storeDto.detailedAddress}, ${getOrder.storeDto.address}`}</Text>
-          </CardBody>
-        </Card>
-
-        <Card w={'100%'} mt={4} bgColor={"white"} rounded={"2xl"}>
-          <CardHeader>
-            <Flex justify={'space-between'}>
-              <Heading size='md' color="orange.500">Thông tin người nhận</Heading>
-              {getOrder.orderStatus !== 'CANCELLED' && (
-              <EditIcon color="orange.500" boxSize={6} style={{cursor: 'pointer'}} onClick={receiverDialog.onOpen}/>
-              )}
-            </Flex>
-          </CardHeader>
-          <CardBody>
-            <Text fontSize={'lg'} fontWeight={400}>Tên người nhận: {getOrder.receiverDto.name}</Text>
-            <Text fontSize={'lg'} fontWeight={400}>SĐT: {getOrder.receiverDto.phoneNumber}</Text>
-            <Text fontSize={'lg'} fontWeight={400}>Địa chỉ: {`${getOrder.receiverDto.detailedAddress}, ${getOrder.receiverDto.address}`}</Text>
-            <Text fontSize={'lg'} fontWeight={400}>Ghi chú: {getOrder.receiverDto.note}</Text>
-          </CardBody>
-        </Card>
-
-        <ReceiverDialog 
-          isOpen={receiverDialog.isOpen}
-          onOpen={receiverDialog.onOpen}
-          onClose={receiverDialog.onClose}
-          selectedCustomer={receiver}
-        />
-
-      </Flex>
-
-      
-
-      <Flex
-        alignItems="flex-start"
-        justify="space-between"
-        direction={{ base: "column", md: "row" }}
-        gap={4}
-        mt={4}
-      >
-        <Card w='75%' mt={4} bgColor={"white"} rounded={"2xl"}>
-          <CardHeader>
-            <Heading size='md' color="orange.500">Thông tin vận chuyển</Heading>
-          </CardHeader>
-          <CardBody>
-          {getOrder.orderStatus === 'CANCELLED' ? (
-            <Text color={'red.500'} fontWeight={600} fontSize={16}>Đơn hàng này đã bị huỷ</Text>
-          )
-          :
-          <Stepper colorScheme="orange" index={activeStep} orientation='vertical' >
-            {steps.map((step, index) => (
-              <Step key={index}>
-                <StepIndicator>
-                  <StepStatus
-                    complete={<StepIcon />}
-                    incomplete={<StepNumber />}
-                    active={<StepNumber />}
-                  />
-                </StepIndicator>
-
-                <Box flexShrink='0'>
-                  <StepTitle>{step.title}</StepTitle>
-                  <StepDescription>{step.description}</StepDescription>
-                </Box>
-                <StepSeparator />
-              </Step>
-            ))}
-          </Stepper>
-          }
-          </CardBody>
-        </Card>
-        <VStack w={{base: '100%'}}>
-          <Card w='100%' mt={4} bgColor={"white"} rounded={"2xl"}>
-          <CardHeader>
-            <Heading size='md' color="orange.500">Sản phẩm đã đặt</Heading>
-          </CardHeader>
-          <CardBody>
-            <Stack divider={<StackDivider />} spacing='4'>
-            {getOrder.orderItemDtos.map((order: any) => (
-              <HStack key={order.id} spacing={4} justifyContent={'space-between'}>
-                <Flex alignItems="center" gap={4}>
-                  <Image
-                    src={order.product.photoUrl}
-                    width={80}
-                    height={60}
-                    alt="product image"
-                  />
-                  <Heading size='xs' textTransform='uppercase'>
-                    {order.product.name}
-                  </Heading>
                 </Flex>
-                <VStack>
-                  <Text>{order.price} VNĐ</Text>
-                  <Text>SL: {order.quantity}</Text>
-                </VStack>
-              </HStack>
-            ))}
-            </Stack>
-          </CardBody>
-          </Card> 
+              </CardHeader>
+              <CardBody>
+                <Flex fontSize={'lg'} ><Text fontWeight={"600"} mx={1}>Tên cửa hàng: </Text>{getOrder.storeDto.name}</Flex>
+                <Flex fontSize={'lg'}>
+                  <Text fontWeight={"600"} mx={1}>SĐT:</Text>
+                  {getOrder.storeDto.phoneNumber}
+                </Flex>
+                <Flex fontSize={'lg'}>
+                  <Text fontWeight={"600"} mx={1} whiteSpace="nowrap">Địa chỉ:</Text>
+                  {`${getOrder.storeDto.detailedAddress}, ${getOrder.storeDto.address}`}
+                </Flex>
+              </CardBody>
+            </Card>
 
-          <Card mt={4}  w='100%' bgColor={"white"} rounded={"2xl"}>
-            <CardHeader>
-              <Heading size='md' color="orange.500">Thanh toán</Heading>  
-            </CardHeader>
-            <CardBody>
-              <Text fontSize={'lg'} fontWeight={400}>Tổng tiền hàng: {getOrder.price?.itemsPrice} VNĐ</Text>
-              <Text fontSize={'lg'} fontWeight={400}>Phí ship: {getOrder.price?.shippingFee} VNĐ</Text>
-              <Text fontSize={'lg'} fontWeight={400}>Thành tiền: {getOrder.price?.collectionCharge} VNĐ</Text>
-            </CardBody>
-          </Card>
+            <Card w={'100%'} mt={4} bgColor={"white"} rounded={"2xl"}>
+              <CardHeader>
+                <Flex justify={'space-between'}>
+                  <Heading size='md' ><GradientText>Thông tin người nhận</GradientText></Heading>
+                  {getOrder.orderStatus !== 'CANCELLED' && (
+                    <EditIcon color="orange.500" boxSize={6} style={{ cursor: 'pointer' }} onClick={receiverDialog.onOpen} />
+                  )}
+                </Flex>
+              </CardHeader>
+              <CardBody>
+                <Flex fontSize={'lg'}>
+                  <Text fontWeight={"600"} mx={1}>Tên người nhận:</Text>
+                  {getOrder.receiverDto.name}
+                </Flex>
+                <Flex fontSize={'lg'}>
+                  <Text fontWeight={"600"} mx={1}>SĐT:</Text>
+                  {getOrder.receiverDto.phoneNumber}
+                </Flex>
+                <Flex fontSize={'lg'}>
+                  <Text fontWeight={"600"} mx={1} whiteSpace={"nowrap"}>Địa chỉ:</Text>
+                  {`${getOrder.receiverDto.detailedAddress}, ${getOrder.receiverDto.address}`}
+                </Flex>
+                <Flex fontSize={'lg'}>
+                  <Text fontWeight={"600"} mx={1} whiteSpace={"nowrap"}>Ghi chú:</Text>
+                  {getOrder.receiverDto.note}
+                </Flex>
+              </CardBody>
+            </Card>
 
-          {getOrder.orderStatus !== 'CANCELLED' && (
-          <Flex mt={4} alignItems={'center'} justifyContent={'flex-end'}>
-            <Button colorScheme='orange' variant='outline' onClick={onOpen}>
-              Huỷ đơn
-            </Button>
+            <ReceiverDialog
+              isOpen={receiverDialog.isOpen}
+              onOpen={receiverDialog.onOpen}
+              onClose={receiverDialog.onClose}
+              selectedCustomer={receiver}
+            />
+
           </Flex>
-          )}
-          
-        </VStack>
-      </Flex>
-      <AlertDialog
-        isOpen={isOpen}
-        leastDestructiveRef={cancelRef}
-        onClose={onClose}
-      >
-        <AlertDialogOverlay>
-          <AlertDialogContent>
-            <AlertDialogHeader fontSize='lg' fontWeight='bold'>
-              Huỷ đơn
-            </AlertDialogHeader>
 
-            <AlertDialogBody>
-              Bạn có chắc chắn muốn huỷ đơn hàng này?
-            </AlertDialogBody>
 
-            <AlertDialogFooter>
-              <Button ref={cancelRef} onClick={onClose}>
-                Huỷ
-              </Button>
-              <Button                   color="white"
-                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
-                  sx={{
-                    '@media (hover: hover)': {
-                      _hover: {
-                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+
+          <Flex
+            alignItems="flex-start"
+            justify="space-between"
+            direction={{ base: "column", md: "row" }}
+            gap={4}
+            mt={4}
+          >
+            <Card w='75%' mt={4} bgColor={"white"} rounded={"2xl"}>
+              <CardHeader>
+                <Heading size='md' color="orange.500"><GradientText>Thông tin vận chuyển</GradientText></Heading>
+              </CardHeader>
+              <CardBody>
+                {getOrder.orderStatus === 'CANCELLED' ? (
+                  <Text color={'red.500'} fontWeight={600} fontSize={16}>Đơn hàng này đã bị huỷ</Text>
+                )
+                  :
+                  <Stepper colorScheme="red" index={activeStep} orientation='vertical' >
+                    {steps.map((step, index) => (
+                      <Step key={index}>
+                        <StepIndicator>
+                          <StepStatus
+                            complete={<StepIcon />}
+                            incomplete={<StepNumber />}
+                            active={<StepNumber />}
+                          />
+                        </StepIndicator>
+
+                        <Box flexShrink='0'>
+                          <StepTitle>{step.title}</StepTitle>
+                          <StepDescription>{step.description}</StepDescription>
+                        </Box>
+                        <StepSeparator />
+                      </Step>
+                    ))}
+                  </Stepper>
+                }
+              </CardBody>
+            </Card>
+            <VStack w={{ base: '100%' }}>
+              <Card w='100%' mt={4} bgColor={"white"} rounded={"2xl"}>
+                <CardHeader>
+                  <Heading size='md' ><GradientText>Sản phẩm đã đặt</GradientText></Heading>
+                </CardHeader>
+                <CardBody>
+                  <Stack divider={<StackDivider />} spacing='4'>
+                    {getOrder.orderItemDtos.map((order: any) => (
+                      <HStack key={order.id} spacing={4} justifyContent={'space-between'}>
+                        <Flex alignItems="center" gap={4}>
+                          <Image
+                            src={order.product.photoUrl}
+                            width={80}
+                            height={60}
+                            alt="product image"
+                          />
+                          <Heading size='xs' textTransform='uppercase'>
+                            {order.product.name}
+                          </Heading>
+                        </Flex>
+                        <VStack>
+                          <Text>{order.price} VNĐ</Text>
+                          <Text>SL: {order.quantity}</Text>
+                        </VStack>
+                      </HStack>
+                    ))}
+                  </Stack>
+                </CardBody>
+              </Card>
+
+              <Card mt={4} w='100%' bgColor={"white"} rounded={"2xl"}>
+                <CardHeader>
+                  <Heading size='md' ><GradientText>Thanh toán</GradientText></Heading>
+                </CardHeader>
+                <CardBody>
+                 <Flex fontSize={'lg'} justifyContent="space-between">
+  <Text fontWeight={"600"} mx={1}>Tổng tiền hàng:</Text>
+  <Text>{getOrder.price?.itemsPrice.toLocaleString('vi-VN')} VNĐ</Text>
+</Flex>
+<Flex fontSize={'lg'} justifyContent="space-between">
+  <Text fontWeight={"600"} mx={1}>Phí ship:</Text>
+  <Text>{getOrder.price?.shippingFee.toLocaleString('vi-VN')} VNĐ</Text>
+</Flex>
+<Flex fontSize={'lg'} justifyContent="space-between">
+  <Text fontWeight={"600"} mx={1}><GradientText>Thành tiền:</GradientText></Text>
+  <Text  fontWeight={"600"}><GradientText>{getOrder.price?.collectionCharge.toLocaleString('vi-VN')} VNĐ</GradientText></Text>
+</Flex>
+                </CardBody>
+              </Card>
+                    <Flex mt={4}>
+              {getOrder.orderStatus !== 'CANCELLED' && (
+                <Flex  alignItems={'center'} justifyContent={'flex-end'}>
+                  <Button borderColor={"#ff0348"}
+                    backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                    backgroundClip="text"
+                    color="transparent"
+                    sx={{
+                      transition: "all 0.3s",
+                      '@media (hover: hover)': {
+                        _hover: {
+                          backgroundImage: "linear-gradient(to right, #df5207, #d80740)",
+                          textColor: "white",
+
+                        }
                       }
-                    }
-                  }} onClick={() => handleCancelOrder(getOrder.id)} ml={3}>
-                Xác nhận
-              </Button>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialogOverlay>
-      </AlertDialog>
-      </>
+                    }} variant='outline' onClick={onOpen}>
+                    Huỷ đơn
+                  </Button>
+                </Flex>
+              )}
+              <Button>In PDF</Button></Flex>
+            </VStack>
+          </Flex>
+          <AlertDialog
+            isOpen={isOpen}
+            leastDestructiveRef={cancelRef}
+            onClose={onClose}
+          >
+            <AlertDialogOverlay>
+              <AlertDialogContent>
+                <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+                  Huỷ đơn
+                </AlertDialogHeader>
+
+                <AlertDialogBody>
+                  Bạn có chắc chắn muốn huỷ đơn hàng này?
+                </AlertDialogBody>
+
+                <AlertDialogFooter>
+                  <Button ref={cancelRef} onClick={onClose}>
+                    Huỷ
+                  </Button>
+                  <Button color="white"
+                    backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                    sx={{
+                      '@media (hover: hover)': {
+                        _hover: {
+                          backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                        }
+                      }
+                    }} onClick={() => handleCancelOrder(getOrder.id)} ml={3}>
+                    Xác nhận
+                  </Button>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialogOverlay>
+          </AlertDialog>
+        </>
       )}
-      </>
+    </>
   );
 }

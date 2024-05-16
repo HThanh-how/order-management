@@ -217,6 +217,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
+          <ModalHeader>Xác nhận Xóa khách hàng</ModalHeader>
           <ModalBody>
               Bạn có chắc chắn xóa khách hàng này?
           </ModalBody>

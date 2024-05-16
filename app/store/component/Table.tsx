@@ -42,6 +42,17 @@ interface StoreTableProps {
   stores: Store[];
 }
 
+import { chakra } from "@chakra-ui/react"
+
+const GradientText = chakra('span', {
+  baseStyle: {
+    fontWeight: 'bold',
+    background: 'linear-gradient(90deg, #ff5e09, #ff0348)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+  },
+})
+
 const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
   const [checkedAll, setCheckedAll] = useState(false);
   const [storeSelections, setStoreSelections] = useState<number[]>([]);
@@ -50,7 +61,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
   const [selectedStore, setSelectedStore] = useState<any>({});
   const [deleteOpen, setDeleteOpen] = useState(false);
   const role = useAppSelector((state: any) => state.role.value)
-  const [removeStore, {isLoading}] = useRemoveStoreMutation();
+  const [removeStore, { isLoading }] = useRemoveStoreMutation();
   const toast = useToast();
 
   const handleDeleteClose = async () => {
@@ -59,7 +70,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
   }
   const handleDeleteOpen = async (id: any) => {
     const p = stores.find((tmp) => tmp.id === id);
-    setSelectedStore({...p});
+    setSelectedStore({ ...p });
     setDeleteOpen(true);
   }
 
@@ -128,8 +139,8 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
   const totalPages = Math.ceil(stores.length / storesPerPage);
 
   return (
-    <Box overflowX={{base: 'scroll', md: "hidden"}} p={8}>
-      <Table variant="simple" size={{base: 'sm', md: 'md'}}>
+    <Box overflowX={{ base: 'scroll', md: "hidden" }} p={8}>
+      <Table variant="simple" size={{ base: 'sm', md: 'md' }}>
         <Thead bgColor={"gray.50"} rounded={"xl"}>
           <Tr>
             <Th width={"1vw"}>
@@ -144,18 +155,18 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
             <Th>Số điện thoại</Th>
             <Th>Địa chỉ</Th>
             <Th>Ghi chú</Th>
-            { role === 'ROLE_USER' && (
-            <Th w={"1vw"}>
-              <Menu>
-                <MenuButton>
-                  <Icon as={SlOptionsVertical} />
-                </MenuButton>
-                {/* <MenuList>
+            {role === 'ROLE_USER' && (
+              <Th w={"1vw"}>
+                <Menu>
+                  <MenuButton>
+                    <Icon as={SlOptionsVertical} />
+                  </MenuButton>
+                  {/* <MenuList>
                   <MenuItem>Sửa</MenuItem>                  
                   <MenuItem>Xoá</MenuItem>
                 </MenuList> */}
-              </Menu>
-            </Th>
+                </Menu>
+              </Th>
             )}
           </Tr>
         </Thead>
@@ -198,42 +209,47 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
               <Td>{store.phoneNumber}</Td>
               <Td>{store.detailedAddress}, {store.address}</Td>
               <Td>{store.description}</Td>
-              { role === 'ROLE_USER' && (
-              <Td>
-                <Menu>
-                  <MenuButton>
-                    <Icon as={SlOptionsVertical} color={"gray"} />
-                  </MenuButton>
-                  <MenuList>
-                    {/* <MenuItem>Sửa</MenuItem> */}
-                    <MenuItem onClick={() => handleDeleteOpen(store.id)}>Xoá</MenuItem>
-                  </MenuList>
-                </Menu>
-              </Td>
+              {role === 'ROLE_USER' && (
+                <Td>
+                  <Menu>
+                    <MenuButton>
+                      <Icon as={SlOptionsVertical} color={"gray"} />
+                    </MenuButton>
+                    <MenuList>
+                      {/* <MenuItem>Sửa</MenuItem> */}
+                      <MenuItem onClick={() => handleDeleteOpen(store.id)}>Xoá</MenuItem>
+                    </MenuList>
+                  </Menu>
+                </Td>
               )}
             </Tr>
           ))}
         </Tbody>
       </Table>
 
-      <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered size={{base: 'sm', md: 'md'}}>
+      <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered size={{ base: 'sm', md: 'md' }}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
+          <ModalHeader>Xác nhận xoá cửa hàng</ModalHeader>
           <ModalBody>
-              Bạn có chắc chắn xóa cửa hàng này?
+            
+<Flex  alignItems="center">
+  <Text >Bạn có chắc chắn muốn xoá cửa hàng này không?</Text>
+</Flex>
+            Đây là yêu cầu không thể hoàn tác.
           </ModalBody>
           <ModalFooter>
             <Button mr={3} onClick={() => handleDeleteClose()}>Đóng</Button>
-            <Button                   color="white"
-                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
-                  sx={{
-                    '@media (hover: hover)': {
-                      _hover: {
-                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
-                      }
-                    }
-                  }} onClick={() => handleDelete(selectedStore.id)}>Xác nhận</Button>
+            <Button color="white"
+              backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+              sx={{
+                '@media (hover: hover)': {
+                  _hover: {
+                    backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                  }
+                }
+              }} onClick={() => handleDelete(selectedStore.id)}>Xác nhận</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -271,14 +287,14 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
             25
           </Button>
         </ButtonGroup> */}
-        <Select ml={2} fontSize={{base: 10, md: 16}} w={{base: '15%', md:'20%'}} onChange={(e) => handleStoresPerPageChange(Number(e.target.value))}>
+        <Select ml={2} fontSize={{ base: 10, md: 16 }} w={{ base: '15%', md: '20%' }} onChange={(e) => handleStoresPerPageChange(Number(e.target.value))}>
           <option defaultChecked value='5' >5 cửa hàng</option>
           <option value='10' >10 cửa hàng</option>
           <option value='15' >15 cửa hàng</option>
           <option value='20' >20 cửa hàng</option>
         </Select>
 
-        <Flex ml={{base: 6}} align="center">
+        <Flex ml={{ base: 6 }} align="center">
           <Text>{`Page `}</Text>
           <Input
             mx={2}

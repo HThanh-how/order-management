@@ -552,7 +552,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             onClose();
             router.push(`${link.link}`)
           }}
-          bgColor={link.link === pathname ? "orange.500" : ""}
+          bgGradient={link.link === pathname ? "linear-gradient(90deg, #ff5e09, #ff0348)" : ""}
           color={link.link === pathname ? "white" : ""}
         >
           {link.name}
