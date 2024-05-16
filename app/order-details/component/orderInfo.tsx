@@ -64,6 +64,7 @@ const steps = [
 
 import { chakra } from "@chakra-ui/react"
 
+
 const GradientText = chakra('span', {
   baseStyle: {
     fontWeight: 'bold',
@@ -311,7 +312,7 @@ export default function CustomerTable() {
             gap={4}
             mt={4}
           >
-            <Card w='75%' mt={4} bgColor={"white"} rounded={"2xl"}>
+            <Card w={{base:"100%", md:'75%'}} mt={4} bgColor={"white"} rounded={"2xl"}>
               <CardHeader>
                 <Heading size='md' color="orange.500"><GradientText>Thông tin vận chuyển</GradientText></Heading>
               </CardHeader>
@@ -377,23 +378,22 @@ export default function CustomerTable() {
                   <Heading size='md' ><GradientText>Thanh toán</GradientText></Heading>
                 </CardHeader>
                 <CardBody>
-                 <Flex fontSize={'lg'} justifyContent="space-between">
-  <Text fontWeight={"600"} mx={1}>Tổng tiền hàng:</Text>
-  <Text>{getOrder.price?.itemsPrice.toLocaleString('vi-VN')} VNĐ</Text>
-</Flex>
-<Flex fontSize={'lg'} justifyContent="space-between">
-  <Text fontWeight={"600"} mx={1}>Phí ship:</Text>
-  <Text>{getOrder.price?.shippingFee.toLocaleString('vi-VN')} VNĐ</Text>
-</Flex>
-<Flex fontSize={'lg'} justifyContent="space-between">
-  <Text fontWeight={"600"} mx={1}><GradientText>Thành tiền:</GradientText></Text>
-  <Text  fontWeight={"600"}><GradientText>{getOrder.price?.collectionCharge.toLocaleString('vi-VN')} VNĐ</GradientText></Text>
-</Flex>
+                  <Flex fontSize={'lg'} justifyContent="space-between">
+                    <Text fontWeight={"600"} mx={1}>Tổng tiền hàng:</Text>
+                    <Text>{getOrder.price?.itemsPrice.toLocaleString('vi-VN')} VNĐ</Text>
+                  </Flex>
+                  <Flex fontSize={'lg'} justifyContent="space-between">
+                    <Text fontWeight={"600"} mx={1}>Phí ship:</Text>
+                    <Text>{getOrder.price?.shippingFee.toLocaleString('vi-VN')} VNĐ</Text>
+                  </Flex>
+                  <Flex fontSize={'lg'} justifyContent="space-between">
+                    <Text fontWeight={"600"} mx={1}><GradientText>Thành tiền:</GradientText></Text>
+                    <Text fontWeight={"600"}><GradientText>{getOrder.price?.collectionCharge.toLocaleString('vi-VN')} VNĐ</GradientText></Text>
+                  </Flex>
                 </CardBody>
               </Card>
-                    <Flex mt={4}>
-              {getOrder.orderStatus !== 'CANCELLED' && (
-                <Flex  alignItems={'center'} justifyContent={'flex-end'}>
+              <Flex mt={4} ml="auto">
+                {getOrder.orderStatus !== 'CANCELLED' && (
                   <Button borderColor={"#ff0348"}
                     backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
                     backgroundClip="text"
@@ -404,15 +404,22 @@ export default function CustomerTable() {
                         _hover: {
                           backgroundImage: "linear-gradient(to right, #df5207, #d80740)",
                           textColor: "white",
-
                         }
                       }
                     }} variant='outline' onClick={onOpen}>
                     Huỷ đơn
                   </Button>
-                </Flex>
-              )}
-              <Button>In PDF</Button></Flex>
+                )}
+                <Button ml={4} color="white"
+                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                  sx={{
+                    '@media (hover: hover)': {
+                      _hover: {
+                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                      }
+                    }
+                  }}>In PDF</Button>
+              </Flex>
             </VStack>
           </Flex>
           <AlertDialog
