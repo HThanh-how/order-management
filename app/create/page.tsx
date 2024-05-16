@@ -115,7 +115,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       h="full"
       {...rest}
     >
-      <Flex display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="10" justifyContent="space-between">
+      <title>Tạo đơn mới</title>
+            <Flex display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="10" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           OrList
         </Text>

@@ -257,6 +257,10 @@ export default function OrderForm() {
   };
 
   const handleStoreChange = (value: string) => {
+    if (value === "_store_add_") {
+      router.push('/store');
+      return;
+    }
     const tmp = getStores.find((store: any) => store.name === value)
     setSelectedStore(tmp);
     //setValue('store', tmp);
@@ -370,7 +374,7 @@ export default function OrderForm() {
             <FormControl isRequired isInvalid={Boolean(errors.store)}>
               <Select
                 mt={4}
-                placeholder="Chọn cửa hàng" 
+                placeholder="Chọn cửa hàng/Nơi gửi hàng" 
                 variant="filled" 
                 {...register('store', {
                   required: 'Người gửi không được bỏ trống',
@@ -383,6 +387,7 @@ export default function OrderForm() {
                   {store.name}
                 </option>
                 ))}
+                <option value="_store_add_">Nơi gửi mới</option>
               </Select>
               <FormErrorMessage>
                 {errors.store && errors.store.message}

@@ -28,6 +28,7 @@ import {
   Spinner,
   Alert,
   AlertIcon,
+  Skeleton,
 } from "@chakra-ui/react";
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
@@ -86,7 +87,7 @@ export default function CustomerTable() {
             color="transparent" fontWeight={700}>
             Nhân viên
           </Text>
-          <Text color={"gray"}>Tuần này bạn có thêm 20 nhân viên mới</Text>
+          <Text color={"gray"}>Chúc tập thể công ty thành công</Text>
         </VStack>
         <Flex>
           <Input
@@ -103,13 +104,43 @@ export default function CustomerTable() {
 
       </Flex>
       {isLoading ? (
-        <Flex
-          alignItems="center"
-          justify="center"
-          direction={{ base: "column", md: "row" }}
-        >
-          <Spinner size='lg' color='orange.500' />
-        </Flex>
+         <Box overflowX={{ base: "scroll", md: "hidden" }} p={8} pt={0}>
+         {/* <Tabs isFitted variant="enclosed" colorScheme="orange" mb={2}>
+           <TabList>
+             <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} ><Skeleton height="20px" /></Tab>
+             <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} ><Skeleton height="20px" /></Tab>
+             <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} ><Skeleton height="20px" /></Tab>
+             <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} ><Skeleton height="20px" /></Tab>
+             <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} ><Skeleton height="20px" /></Tab>
+           </TabList>
+         </Tabs> */}
+         <Table variant="simple" size={{ base: "sm", md: "md" }}>
+           <Thead bgColor={"gray.50"} rounded={"xl"}>
+             <Tr>
+               <Th width={"1vw"}><Skeleton height="20px" /></Th>
+               <Th><Skeleton height="20px" /></Th>
+               <Th><Skeleton height="20px" /></Th>
+               <Th><Skeleton height="20px" /></Th>
+               <Th><Skeleton height="20px" /></Th>
+               <Th><Skeleton height="20px" /></Th>
+               <Th w={"1vw"}><Skeleton height="20px" /></Th>
+             </Tr>
+           </Thead>
+           <Tbody>
+             {[...Array(5)].map((_, i) => (
+               <Tr key={i}>
+                 <Td><Skeleton height="20px" /></Td>
+                 <Td><Skeleton height="20px" /></Td>
+                 <Td><Skeleton height="20px" /></Td>
+                 <Td><Skeleton height="20px" /></Td>
+                 <Td><Skeleton height="20px" /></Td>
+                 <Td><Skeleton height="20px" /></Td>
+                 <Td><Skeleton height="20px" /></Td>
+               </Tr>
+             ))}
+           </Tbody>
+         </Table>
+       </Box>
       ) : isError ? (
         <Flex
           alignItems="center"
@@ -127,6 +158,8 @@ export default function CustomerTable() {
           alignItems="center"
           justify="center"
           direction={{ base: "column", md: "row" }}
+           
+          my={12}
         >
           <Text color={'gray'} fontSize={20}>Chưa có nhân viên nào</Text>
         </Flex>
