@@ -25,6 +25,7 @@ import {
   useToast,
   StackDivider,
   Link,
+  Skeleton,
 } from "@chakra-ui/react";
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
@@ -366,8 +367,9 @@ export default function OrderForm() {
             alignItems="center"
             justify="center"
             direction={{ base: "column", md: "row" }}
+            my={2}
           >
-            <Spinner size='lg' color='orange.500' />
+             <Skeleton  rounded= "md" height="40px" width="100%" />
           </Flex>
           )
           : (
