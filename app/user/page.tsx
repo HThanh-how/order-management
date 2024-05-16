@@ -4,10 +4,10 @@ import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Avatar from "./components/UserAvatar";
 import Profile from "./components/Profile";
-import { 
+import {
   Text,
-  useColorModeValue, 
-  useDisclosure, 
+  useColorModeValue,
+  useDisclosure,
   Box,
   CloseButton,
   Flex,
@@ -18,6 +18,13 @@ import {
   Spinner,
   Alert,
   AlertIcon,
+  Skeleton,
+  VStack,
+  SkeletonCircle,
+  SkeletonText,
+  FormLabel,
+  FormControl,
+  Grid,
 } from "@chakra-ui/react";
 import getFromLocalStorage from "../_lib/getFromLocalStorage";
 import {
@@ -69,8 +76,8 @@ export default function Sidebar() {
     error,
   } = useGetUserInfoQuery(getFromLocalStorage('userId'))
 
-  const getUser = useMemo (() => {
-    if(isSuccess) return user.data
+  const getUser = useMemo(() => {
+    if (isSuccess) return user.data
   }, [user])
 
   return (
@@ -79,34 +86,86 @@ export default function Sidebar() {
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
       />
-      
+
       {isLoading ? (
-          <Flex
-          alignItems="center"
-          justify="center"
-          direction={{ base: "column", md: "row" }}
+        <Box ml={{ base: 0, md: 60 }} p={{ base: 2, md: 8 }} display={{ base: 'block', md: 'flex' }}>
+          <Box
+
+
+            bg="white"
+            rounded="md"
+            borderColor="#e9ebee"
+            h={300}
+            w={250}
+            m={4}
           >
-            <Spinner size='lg' color='orange.500' />
-          </Flex>
-        ) : isError ? (
-          <Flex
+            <VStack spacing={3} py={5} borderColor="#e9ebee">
+              <SkeletonCircle h={150} w={150} />
+              <VStack spacing={1}>
+                <SkeletonText noOfLines={1} width="100px" />
+              </VStack>
+           
+            </VStack>
+          </Box>
+          <Box
+                m={4}
+                as="main"
+                flex={3}
+                flexDir="column"
+                justifyContent="space-between"
+                p={5}
+                bg="white"
+                rounded="md"
+                borderWidth={1}
+                borderColor="gray.200"
+                h={300}
+              >
+                <Grid
+                  templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }}
+                  gap={6}
+                >
+                  <FormControl>
+                    <FormLabel>Tên</FormLabel>
+                    <Skeleton height="20px" />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Họ</FormLabel>
+                    <Skeleton height="20px" />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Số điện thoại</FormLabel>
+                    <Skeleton height="20px" />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Email</FormLabel>
+                    <Skeleton height="20px" />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel>Ngày sinh</FormLabel>
+                    <Skeleton height="20px" />
+                  </FormControl>
+                </Grid>
+              </Box>
+        </Box>
+      ) : isError ? (
+        <Flex
           alignItems="center"
           justify="center"
           direction={{ base: "column", md: "row" }}
           m={4}
-          >
-            <Alert w='25%' status='error'>
-              <AlertIcon />
-              Can not fetch data from server
-            </Alert>
-          </Flex>
-        ) : (
-          <Box ml={{ base: 0, md: 60 }} p={{ base: 2, md: 8 }} display={{ base: 'block', md: 'flex' }}>
-            <Avatar user={getUser}/>
-            <Profile user={getUser}/>
-          </Box>
-        )}
-        
+        >
+          <Alert w='25%' status='error'>
+            <AlertIcon />
+            Can not fetch data from server
+          </Alert>
+        </Flex>
+      ) : (
+        <Box ml={{ base: 0, md: 60 }} p={{ base: 2, md: 8 }} display={{ base: 'block', md: 'flex' }}>
+          <Avatar user={getUser} />
+          <Profile user={getUser} />
+        </Box>
+      )}
+
     </Box>
   );
 }
@@ -120,7 +179,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   const role = useAppSelector((state: any) => state.role.value);
   const [linkItems, setLinkItems] = useState<Array<LinkItemProps>>([]);
   // const LinkItems: Array<LinkItemProps> = role == "ROLE_USER" ? LinkItemsU : LinkItemsE;
-  useEffect (() => {
+  useEffect(() => {
     setLinkItems(role == "ROLE_USER" ? LinkItemsU : LinkItemsE)
   }, [role])
 
@@ -138,17 +197,17 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           OrList
         </Text>
-        <CloseButton  onClick={onClose} />
+        <CloseButton onClick={onClose} />
       </Flex>
-      <Button onClick={()=>router.push("/create")}  ml={8} mt={6} mb={2} w="50%"                 bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
-                color={"white"}
-                _hover={{
-                  bgGradient: "linear-gradient(to right, #df5207, #d80740)",
-                  boxShadow: "xl",
-                }}>+ Tạo đơn </Button>
+      <Button onClick={() => router.push("/create")} ml={8} mt={6} mb={2} w="50%" bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
+        color={"white"}
+        _hover={{
+          bgGradient: "linear-gradient(to right, #df5207, #d80740)",
+          boxShadow: "xl",
+        }}>+ Tạo đơn </Button>
       {linkItems.map((link) => (
-        <NavItem  
-          key={link.name} 
+        <NavItem
+          key={link.name}
           icon={link.icon}
           onClick={() => router.push(`${link.link}`)}
         >
