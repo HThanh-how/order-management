@@ -1,5 +1,5 @@
 "use client";
-import { Box, Button, Flex, Input, Select, SimpleGrid, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Flex, Input, Select, SimpleGrid, Text, VStack, useBreakpointValue } from "@chakra-ui/react";
 import findPostOffice from "@/app/_lib/features/getPostOfficeLocation.js";
 
 import data from "@/public/province.json";
@@ -21,6 +21,7 @@ interface Office {
 }
 
 export default function PostOfficeLocation() {
+  const isMobile = useBreakpointValue({ base: true, md: false });
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [provinceName, setProvinceName] = useState<string | null>(null);
@@ -232,9 +233,13 @@ export default function PostOfficeLocation() {
                 <Flex fontWeight={"bold"}
                 >Bưu cục {" "} {postOffice.name} <FiArrowUpRight /></Flex>
                 <Text>{postOffice.detailAddress}</Text> </a>
-              <a href={`tel:${postOffice.phone}`}>
+              {isMobile ? (
+                <a href={`tel:${postOffice.phone}`}>
+                  <Text>Điện thoại: 0{postOffice.phone.toLocaleString('en-US').replace(/,/g, ' ')}</Text>
+                </a>
+              ) : (
                 <Text>Điện thoại: 0{postOffice.phone.toLocaleString('en-US').replace(/,/g, ' ')}</Text>
-              </a>
+              )}
 
 
             </Box>
