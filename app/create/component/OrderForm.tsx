@@ -555,8 +555,6 @@ export default function OrderForm() {
             <Checkbox colorScheme="orange" {...register('isValuable')} value="true" onChange={(e) => {
               if (e.target.checked) setOptionValuable(Math.ceil(0.03 * totalPriceItems));
               else setOptionValuable(0);
-              console.log(optionValuable)
-              console.log(e.target.checked)
             }}>
               Giá trị cao
             </Checkbox>
