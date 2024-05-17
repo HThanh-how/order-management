@@ -62,7 +62,18 @@ export default function PostOfficeLocation() {
       })
       return;
     }
+    if (offices.length =0) {
 
+      toast({
+        title: "Không tìm thấy bưu cục ở khu vực này",
+        description: "Vui lòng chọn khu vực khác hoặc thử lại sau",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+
+      })
+      return;
+    }
 
     // console.table(offices);
   };
