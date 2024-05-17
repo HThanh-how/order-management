@@ -221,7 +221,7 @@ export default function PostOfficeLocation() {
           Tìm bưu cục
         </Button>
       </Box>
-      <Box overflow={"auto"} w={{ base: "60vw", md: "27vw" }} mt={6} maxH={{ base: "150vw", md: "50vw", lg: "20vw" }}>
+      <Box overflow={"auto"} w={{ base: "60vw", md: "27vw" }} mt={6} maxH={{ base: "60vw", md: "50vw", lg: "20vw" }}>
         {postOffices.map((postOffice, index) => (
           postOffice.phone && (
 
