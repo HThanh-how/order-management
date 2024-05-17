@@ -354,7 +354,7 @@ export const apiSlice = createApi({
     approveEmployeeRequest: builder.mutation({
       query: ({ id, request }) => ({
         url: `/empl-mngt/${id}/approve`,
-        method: "POST",
+        method: "PATCH",
         body: request,
         responseHandler: (response) => response.text(),
       }),
@@ -362,7 +362,7 @@ export const apiSlice = createApi({
     rejectEmployeeRequest: builder.mutation({
       query: ({ id, request }) => ({
         url: `/empl-mngt/${id}/reject`,
-        method: "POST",
+        method: "PATCH",
         body: request,
         responseHandler: (response) => response.text(),
       }),
