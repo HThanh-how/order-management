@@ -250,7 +250,7 @@ export default function AddressSelect() {
         }} w={{ base: '80%', md: '40%' }} size={{ base: 'sm', md: 'md' }} onClick={handleButtonClick}>
         Ước tính
       </Button>
-      <Box>{cost !== 0 && <Flex m={4} fontSize="xl" fontWeight={600} color="gray.800">Chi phí: <Text mx={2} color="green">{" "} {Math.round(cost).toLocaleString('en-US').replace(/,/g, ' ')} {" "}</Text>  đồng</Flex>}</Box>
+      <Box>{cost !== 0 && <Flex m={4} fontSize="xl" fontWeight={600} color="gray.800">Cước phí khoảng: <Text mx={2} color="green">{" "} {Math.round(cost).toLocaleString('en-US').replace(/,/g, ' ')} {" "}</Text>  đồng</Flex>}</Box>
     </SimpleGrid>
   );
 }
