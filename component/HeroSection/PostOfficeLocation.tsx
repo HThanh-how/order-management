@@ -227,7 +227,7 @@ export default function PostOfficeLocation() {
 
 
             <Box key={index} mb={3} >
-              <a href={`https://www.google.com/maps/search/?api=1&query=${postOffice.detailAddress}+${postOffice.district}+${postOffice.province}`}
+              <a href={`https://www.google.com/maps/search/?api=1&query=VNPost+${postOffice.detailAddress}+${postOffice.district}+${postOffice.province}`}
                 target="_blank"
                 rel="noopener noreferrer">
                 <Flex fontWeight={"bold"}
