@@ -552,18 +552,20 @@ export default function OrderForm() {
             <Checkbox colorScheme="red" {...register('isDocument')}>
               Tài liệu/ Văn kiện 
             </Checkbox>
-            <Checkbox colorScheme="red" {...register('isValuable')} value="true" onChange={(e) => {
-              if (e.target.value == "true") setOptionValuable(0.03 * totalPriceItems);
-              if (e.target.value != "true") setOptionValuable(0);
+            <Checkbox colorScheme="orange" {...register('isValuable')} value="true" onChange={(e) => {
+              if (e.target.checked) setOptionValuable(Math.ceil(0.03 * totalPriceItems));
+              else setOptionValuable(0);
+              console.log(optionValuable)
+              console.log(e.target.checked)
             }}>
               Giá trị cao
             </Checkbox>
             <Checkbox colorScheme="red" {...register('isFragile')}>
               Dễ vỡ
             </Checkbox>
-            <Checkbox colorScheme="red" {...register('isBulky')} value="true" onChange={(e) => {
-              if (e.target.value == "true") setOptionBulky(20000);
-              if (e.target.value != "true") setOptionBulky(0);
+            <Checkbox colorScheme="orange" {...register('isBulky')} value="true" onChange={(e) => {
+              if (e.target.checked) setOptionBulky(20000);
+              else setOptionBulky(0);
             }}>
               Quá khổ
             </Checkbox>
@@ -728,13 +730,13 @@ export default function OrderForm() {
             <Link color='orange.500' onClick={() => {
               const sendLocation = selectedStore?.address?.split(", ")
               const receiveLocation = selectedReceiver?.address?.split(", ")
-              setShippingFee(calculateShippingCost(
+              setShippingFee(Math.ceil(calculateShippingCost(
                 getProvinceCode(sendLocation[2]), 
                 getDistrictCode(sendLocation[2], sendLocation[1]),
                 getProvinceCode(receiveLocation[2]), 
                 getDistrictCode(receiveLocation[2], receiveLocation[1]),
                 totalWeight
-              ))
+              )))
             }
             }>Kiểm tra phí ship</Link>
           )}
@@ -745,7 +747,7 @@ export default function OrderForm() {
           
         </Flex>
         <Flex justifyContent={"right"} m={4}>
-        <Button colorScheme='gray' m={2} >Lưu nháp</Button>
+        {/* <Button colorScheme='gray' m={2} >Lưu nháp</Button> */}
         {isSubmitting ? (
           <Button
           isLoading
