@@ -62,7 +62,7 @@ export default function PostOfficeLocation() {
       })
       return;
     }
-    if (offices.length =0) {
+    if (offices.length == 0) {
 
       toast({
         title: "Không tìm thấy bưu cục ở khu vực này",
@@ -229,10 +229,12 @@ export default function PostOfficeLocation() {
               <a href={`https://www.google.com/maps/search/?api=1&query=${postOffice.detailAddress}+${postOffice.district}+${postOffice.province}`}
                 target="_blank"
                 rel="noopener noreferrer">
-              <Flex fontWeight={"bold"}
+                <Flex fontWeight={"bold"}
                 >Bưu cục {" "} {postOffice.name} <FiArrowUpRight /></Flex>
-              <Text>{postOffice.detailAddress}</Text> </a>
-              <Text>Điện thoại: 0{postOffice.phone.toLocaleString('en-US').replace(/,/g, ' ')}</Text>
+                <Text>{postOffice.detailAddress}</Text> </a>
+              <a href={`tel:${postOffice.phone}`}>
+                <Text>Điện thoại: 0{postOffice.phone.toLocaleString('en-US').replace(/,/g, ' ')}</Text>
+              </a>
 
 
             </Box>
