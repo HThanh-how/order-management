@@ -1,10 +1,6 @@
-import React from 'react';
-import { Page, Text, View, Document, StyleSheet, PDFDownloadLink, Font } from '@react-pdf/renderer';
+import React, { useEffect, useState } from 'react';
+import { Page, Text, View, Document, StyleSheet, PDFDownloadLink } from '@react-pdf/renderer';
 
-Font.register({
-  family: 'Roboto',
-  // src: '/fonts/Roboto-Regular.ttf', // Đường dẫn tuyệt đối đến file font
-});
 // Tạo styles cho document
 const styles = StyleSheet.create({
   page: {
@@ -21,9 +17,24 @@ const styles = StyleSheet.create({
 });
 
 // Tạo component PDF
-const MyDocument = ({ order }) => (
-  <Document title={`Order ${order.data.code}`}>
-    <Page size="A4" style={styles.page}>
+const MyDocument = ({ order }) => {
+  const [Font, setFont] = useState(null);
+
+  useEffect(() => {
+    import('@react-pdf/renderer').then((rpdf) => {
+      setFont(rpdf.Font);
+      if (rpdf.Font) {
+        rpdf.Font.register({
+          family: 'Roboto',
+          src: '/fonts/Roboto-Regular.ttf',
+        });
+      }
+    });
+  }, []);
+
+  return (
+    <Document title={`Order ${order.data.code}`}>
+      <Page size="A4" style={styles.page}>
       <View style={styles.section}>
         <Text>{`Order ID: ${order.data.id}`}</Text>
         <Text>{`Order Code: ${order.data.code}`}</Text>
@@ -51,9 +62,10 @@ const MyDocument = ({ order }) => (
           </View>
         ))}
       </View>
-    </Page>
-  </Document>
-);
+      </Page>
+    </Document>
+  );
+};
 
 const handlePrintPDF = (order) => {
   return (
