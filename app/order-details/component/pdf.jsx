@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Page, Text, View, Document, StyleSheet, PDFDownloadLink, Image } from '@react-pdf/renderer';
-// import { QRCode } from 'qrcode.react';
+import QRCode from 'qrcode';
+
+
 // Tạo styles cho document
 const styles = StyleSheet.create({
   page: {
@@ -46,7 +48,17 @@ const styles = StyleSheet.create({
 // Tạo component PDF
 const MyDocument = ({ order }) => {
   const [Font, setFont] = useState(null);
+  const [qrCode, setQrCode] = useState(null);
 
+  useEffect(() => {
+    QRCode.toDataURL(order.data.code)
+      .then(url => {
+        setQrCode(url);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  }, [order]);
   useEffect(() => {
     import('@react-pdf/renderer').then((rpdf) => {
       setFont(rpdf.Font);
@@ -64,14 +76,16 @@ const MyDocument = ({ order }) => {
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <View>
-            <Image src="logo.png" style={{  height: 50 }} />
+            <Image src="logo.png" style={{ height: 50 }} />
             {/* <Text style={styles.boldText}>Shopee Xpress</Text> */}
           </View>
           <View>
-            <Text style={styles.info}>Mã đơn hàng: {order.data.id}</Text>
-            {/* {order && order.data && order.data.code && <QRCode value={order.data.code} />} */}
-            <Text style={styles.info}>Mã vận đơn {order.data.code}</Text>
+            <Image src={barcode} style={{ height: 50, width: 100 }} />
+            <Image src={qrCode} style={{ height: 50, width: 50 }} />
+
           </View>
+          <Text style={styles.info}>Mã đơn hàng: {order.data.id}</Text>
+            <Text style={styles.info}>Mã vận đơn {order.data.code}</Text>
         </View>
 
         <View style={styles.section}>
