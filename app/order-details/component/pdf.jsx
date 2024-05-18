@@ -80,7 +80,7 @@ const MyDocument = ({ order }) => {
             {/* <Text style={styles.boldText}>Shopee Xpress</Text> */}
           </View>
           <View>
-            <Image src={barcode} style={{ height: 50, width: 100 }} />
+            {/* <Image src={barcode} style={{ height: 50, width: 100 }} /> */}
             <Image src={qrCode} style={{ height: 50, width: 50 }} />
 
           </View>
