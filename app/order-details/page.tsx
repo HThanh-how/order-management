@@ -76,10 +76,10 @@ const LinkItemsE: Array<LinkItemProps> = [
 
 export default function Sidebar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  
+
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
-          <title>Chi tiết đơn hàng</title>
+      <title>Chi tiết đơn hàng</title>
       <SidebarContent
         onClose={() => onClose}
         display={{ base: "none", md: "block" }}
@@ -114,7 +114,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   const role = useAppSelector((state: any) => state.role.value);
   const [linkItems, setLinkItems] = useState<Array<LinkItemProps>>([]);
   // const LinkItems: Array<LinkItemProps> = role == "ROLE_USER" ? LinkItemsU : LinkItemsE;
-  useEffect (() => {
+  useEffect(() => {
     setLinkItems(role == "ROLE_USER" ? LinkItemsU : LinkItemsE)
   }, [role])
 
@@ -132,19 +132,21 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           OrList
         </Text>
-        <CloseButton  onClick={onClose} />
+        <CloseButton onClick={onClose} />
       </Flex>
-      <Button onClick={()=>router.push("/create")}  ml={8} mt={6} mb={2} w="50%"                 bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
-                color={"white"}
-                _hover={{
-                  bgGradient: "linear-gradient(to right, #df5207, #d80740)",
-                  boxShadow: "xl",
-                }}>+ Tạo đơn </Button>
+      <Button onClick={() => router.push("/create")} ml={8} mt={6} mb={2} w="50%" bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
+        color={"white"}
+        _hover={{
+          bgGradient: "linear-gradient(to right, #df5207, #d80740)",
+          boxShadow: "xl",
+        }}>+ Tạo đơn </Button>
       {linkItems.map((link) => (
-        <NavItem  
-          key={link.name} 
+        <NavItem
+          key={link.name}
           icon={link.icon}
           onClick={() => router.push(`${link.link}`)}
+          bgGradient={link.name === "Đơn hàng" ? "linear-gradient(90deg, #ff5e09, #ff0348)" : ""}
+          color={link.name === "Đơn hàng" ? "white" : ""}
         >
           {link.name}
         </NavItem>

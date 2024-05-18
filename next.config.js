@@ -1,15 +1,14 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
-    images: {
-        remotePatterns: [
-          {
-            protocol: 'https',
-            hostname: 'firebasestorage.googleapis.com',
-            port: '',
-            pathname: '**',
-          },
-        ],
-      },
-}
+const withFonts = require('next-fonts');
 
-module.exports = nextConfig
+module.exports = withFonts({
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+        port: '',
+        pathname: '**',
+      },
+    ],
+  },
+});
