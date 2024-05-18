@@ -1,18 +1,45 @@
 import React, { useEffect, useState } from 'react';
-import { Page, Text, View, Document, StyleSheet, PDFDownloadLink } from '@react-pdf/renderer';
-
+import { Page, Text, View, Document, StyleSheet, PDFDownloadLink, Image } from '@react-pdf/renderer';
+// import { QRCode } from 'qrcode.react';
 // Tạo styles cho document
 const styles = StyleSheet.create({
   page: {
-    flexDirection: 'row',
-    backgroundColor: '#E4E4E4',
+    padding: 10,
+    backgroundColor: '#FFFFFF',
     fontFamily: 'Roboto',
   },
   section: {
     margin: 10,
     padding: 10,
     flexGrow: 1,
-    fontFamily: 'Roboto',
+    border: '1px solid #E4E4E4',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottom: '1px solid #E4E4E4',
+    marginBottom: 10,
+  },
+  info: {
+    fontSize: 10,
+    marginBottom: 2,
+  },
+  barcode: {
+    width: '100%',
+    height: 'auto',
+    marginVertical: 10,
+  },
+  boldText: {
+    fontWeight: 'bold',
+  },
+  qrCode: {
+    width: 50,
+    height: 50,
+  },
+  footer: {
+    marginTop: 10,
+    borderTop: '1px solid #E4E4E4',
+    paddingTop: 10,
   }
 });
 
@@ -35,33 +62,64 @@ const MyDocument = ({ order }) => {
   return (
     <Document title={`Order ${order.data.code}`}>
       <Page size="A4" style={styles.page}>
-      <View style={styles.section}>
-        <Text>{`Order ID: ${order.data.id}`}</Text>
-        <Text>{`Order Code: ${order.data.code}`}</Text>
-        <Text>{`Customer Name: ${order.data.userId}`}</Text>
-        <Text>{`Order Status: ${order.data.orderStatus}`}</Text>
-        <Text>{`Created By: ${order.data.createdBy}`}</Text>
-        <Text>{`Created Date: ${order.data.createdDate}`}</Text>
-        <Text>{`Last Updated By: ${order.data.lastUpdatedBy}`}</Text>
-        <Text>{`Last Updated Date: ${order.data.lastUpdatedDate}`}</Text>
-        <Text>{`Receiver Name: ${order.data.receiverDto.name}`}</Text>
-        <Text>{`Receiver Phone Number: ${order.data.receiverDto.phoneNumber}`}</Text>
-        <Text>{`Receiver Address: ${order.data.receiverDto.address}`}</Text>
-        <Text>{`Receiver Detailed Address: ${order.data.receiverDto.detailedAddress}`}</Text>
-        <Text>{`Receiver Note: ${order.data.receiverDto.note}`}</Text>
-        <Text>{`Store Name: ${order.data.storeDto.name}`}</Text>
-        <Text>{`Store Phone Number: ${order.data.storeDto.phoneNumber}`}</Text>
-        <Text>{`Store Address: ${order.data.storeDto.address}`}</Text>
-        <Text>{`Store Detailed Address: ${order.data.storeDto.detailedAddress}`}</Text>
-        <Text>{`Store Description: ${order.data.storeDto.description}`}</Text>
-        {order.data.orderItemDtos.map((item, index) => (
-          <View key={index}>
-            <Text>{`Item ${index + 1}: ${item.product.name}`}</Text>
-            <Text>{`Quantity: ${item.quantity}`}</Text>
-            <Text>{`Price: ${item.price}`}</Text>
+        <View style={styles.header}>
+          <View>
+            <Image src="logo.png" style={{  height: 50 }} />
+            {/* <Text style={styles.boldText}>Shopee Xpress</Text> */}
           </View>
-        ))}
-      </View>
+          <View>
+            <Text style={styles.info}>Mã đơn hàng: {order.data.id}</Text>
+            {/* {order && order.data && order.data.code && <QRCode value={order.data.code} />} */}
+            <Text style={styles.info}>Mã vận đơn {order.data.code}</Text>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.boldText}>Từ:</Text>
+          <Text style={styles.info}>{order.data.storeDto.name}</Text>
+          <Text style={styles.info}>{order.data.storeDto.address}</Text>
+          <Text style={styles.info}>{order.data.storeDto.detailedAddress}</Text>
+          <Text style={styles.info}>SĐT: {order.data.storeDto.phoneNumber}</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.boldText}>Đến:</Text>
+          <Text style={styles.info}>{order.data.receiverDto.name}</Text>
+          <Text style={styles.info}>{order.data.receiverDto.address}</Text>
+          <Text style={styles.info}>{order.data.receiverDto.detailedAddress}</Text>
+          <Text style={styles.info}>SĐT: {order.data.receiverDto.phoneNumber}</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.boldText}>Nội dung hàng:</Text>
+          {order.data.orderItemDtos.map((item, index) => (
+            <Text key={index} style={styles.info}>
+              {item.quantity} x {item.product.name}
+            </Text>
+          ))}
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.boldText}>Tiền thu Người nhận:</Text>
+          <Text style={styles.info}>{order.data.totalAmount} VND</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.boldText}>Ngày đặt hàng:</Text>
+          <Text style={styles.info}>{order.data.createdDate}</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Image src="barcode-placeholder.png" style={styles.barcode} />
+        </View>
+
+        <View style={styles.section}>
+          <Image src="qrcode-placeholder.png" style={styles.qrCode} />
+        </View>
+
+        <View style={styles.footer}>
+          <Text style={styles.info}>Chỉ dẫn giao hàng: {order.data.deliveryInstructions}</Text>
+        </View>
       </Page>
     </Document>
   );
