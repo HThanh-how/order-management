@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Page, Text, View, Document, StyleSheet, PDFDownloadLink, Image } from '@react-pdf/renderer';
 import QRCode from 'qrcode';
 
-
 // Tạo styles cho document
 const styles = StyleSheet.create({
   page: {
@@ -33,6 +32,7 @@ const styles = StyleSheet.create({
   },
   boldText: {
     fontWeight: 'bold',
+    fontSize: 16,
   },
   qrCode: {
     width: 50,
@@ -42,6 +42,13 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderTop: '1px solid #E4E4E4',
     paddingTop: 10,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  halfWidthSection: {
+    width: '48%',
   }
 });
 
@@ -51,7 +58,7 @@ const MyDocument = ({ order }) => {
   const [qrCode, setQrCode] = useState(null);
 
   useEffect(() => {
-    QRCode.toDataURL(order.data.code)
+    QRCode.toDataURL('orlist://open?code=' + order.data.code)
       .then(url => {
         setQrCode(url);
       })
@@ -59,6 +66,7 @@ const MyDocument = ({ order }) => {
         console.error(err);
       });
   }, [order]);
+
   useEffect(() => {
     import('@react-pdf/renderer').then((rpdf) => {
       setFont(rpdf.Font);
@@ -75,33 +83,35 @@ const MyDocument = ({ order }) => {
     <Document title={`Order ${order.data.code}`}>
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
-          <View>
+          <View style={{ margin: 10 }}>
             <Image src="logo.png" style={{ height: 50 }} />
-            {/* <Text style={styles.boldText}>Shopee Xpress</Text> */}
+          </View>
+
+          <View style={{ margin: 20 }}>
+            <Text style={styles.info}>Mã đơn hàng: {order.data.id}</Text>
+            <Text style={styles.info}>Mã vận đơn {order.data.code}</Text>
           </View>
           <View>
-            {/* <Image src={barcode} style={{ height: 50, width: 100 }} /> */}
-            <Image src={qrCode} style={{ height: 50, width: 50 }} />
-
+            <Image src={qrCode} style={{ height: 70, width: 70 }} />
           </View>
-          <Text style={styles.info}>Mã đơn hàng: {order.data.id}</Text>
-            <Text style={styles.info}>Mã vận đơn {order.data.code}</Text>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.boldText}>Từ:</Text>
-          <Text style={styles.info}>{order.data.storeDto.name}</Text>
-          <Text style={styles.info}>{order.data.storeDto.address}</Text>
-          <Text style={styles.info}>{order.data.storeDto.detailedAddress}</Text>
-          <Text style={styles.info}>SĐT: {order.data.storeDto.phoneNumber}</Text>
-        </View>
+        <View style={styles.row}>
+          <View style={[styles.section, styles.halfWidthSection]}>
+            <Text style={styles.boldText}>Từ:</Text>
+            <Text style={styles.info}>{order.data.storeDto.name}</Text>
+            <Text style={styles.info}>{order.data.storeDto.address}</Text>
+            <Text style={styles.info}>{order.data.storeDto.detailedAddress}</Text>
+            <Text style={styles.info}>SĐT: {order.data.storeDto.phoneNumber}</Text>
+          </View>
 
-        <View style={styles.section}>
-          <Text style={styles.boldText}>Đến:</Text>
-          <Text style={styles.info}>{order.data.receiverDto.name}</Text>
-          <Text style={styles.info}>{order.data.receiverDto.address}</Text>
-          <Text style={styles.info}>{order.data.receiverDto.detailedAddress}</Text>
-          <Text style={styles.info}>SĐT: {order.data.receiverDto.phoneNumber}</Text>
+          <View style={[styles.section, styles.halfWidthSection]}>
+            <Text style={styles.boldText}>Đến:</Text>
+            <Text style={styles.info}>{order.data.receiverDto.name}</Text>
+            <Text style={styles.info}>{order.data.receiverDto.address}</Text>
+            <Text style={styles.info}>{order.data.receiverDto.detailedAddress}</Text>
+            <Text style={styles.info}>SĐT: {order.data.receiverDto.phoneNumber}</Text>
+          </View>
         </View>
 
         <View style={styles.section}>
@@ -113,14 +123,16 @@ const MyDocument = ({ order }) => {
           ))}
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.boldText}>Tiền thu Người nhận:</Text>
-          <Text style={styles.info}>{order.data.totalAmount} VND</Text>
-        </View>
+        <View style={styles.row}>
+          <View style={[styles.section, styles.halfWidthSection]}>
+            <Text style={styles.boldText}>Tiền thu Người nhận:</Text>
+            <Text style={styles.info}>{order.data.totalAmount} VND</Text>
+          </View>
 
-        <View style={styles.section}>
-          <Text style={styles.boldText}>Ngày đặt hàng:</Text>
-          <Text style={styles.info}>{order.data.createdDate}</Text>
+          <View style={[styles.section, styles.halfWidthSection]}>
+            <Text style={styles.boldText}>Ngày đặt hàng:</Text>
+            <Text style={styles.info}>{order.data.createdDate}</Text>
+          </View>
         </View>
 
         <View style={styles.section}>
