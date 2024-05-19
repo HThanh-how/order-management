@@ -49,7 +49,7 @@ const MyBox = () => {
       backgroundSize="cover"
       backgroundPosition="center"
     >
-      <Box w={{ base: "80vw", md: "60vw" }} h={{ base: "190vw", md: "auto", lg:"30vw" }} mt={{ base: 2, md: 8 }} bg="gray.200" rounded={"lg"}>
+      <Box w={{ base: "80vw", md: "60vw" }} h={{ base: "190vw", md: "auto", lg: "30vw" }} mt={{ base: 2, md: 8 }} bg="gray.200" rounded={"lg"}>
         <Tabs
           isFitted
           variant="enclosed"
@@ -80,7 +80,7 @@ const MyBox = () => {
               border={"1px"}
               borderColor={"gray.300"}
             >
-              Bưu cục gần đó
+              Tìm kiếm bưu cục
             </Tab>
           </TabList>
 
