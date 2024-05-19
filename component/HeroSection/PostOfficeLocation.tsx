@@ -51,18 +51,6 @@ export default function PostOfficeLocation() {
     const offices = findPostOffice(provinceName, districtName, wardName)
       .map(office => ({ ...office, ward: String(office.ward) }));
     setPostOffices(offices);
-    if (offices.length > 30) {
-
-      toast({
-        title: "Lưu ý: Có quá nhiều bưu cục hiển thị",
-        description: "Vui lòng điền thêm quận để chúng tôi tìm bưu cục chính xác hơn",
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-
-      })
-      return;
-    }
     if (offices.length == 0) {
 
       toast({
@@ -76,6 +64,19 @@ export default function PostOfficeLocation() {
       return;
     }
 
+    if (offices.length > 30) {
+
+      toast({
+        title: "Lưu ý: Có quá nhiều bưu cục hiển thị",
+        description: "Vui lòng điền thêm quận để chúng tôi tìm bưu cục chính xác hơn",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+
+      })
+      return;
+    }
+   
     // console.table(offices);
   };
 

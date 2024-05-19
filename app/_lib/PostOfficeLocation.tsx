@@ -14849,9 +14849,9 @@ export default [
     {
      id: 1525,
      code: 873100,
-     name: "Sađéc",
+     name: "Sa Đéc",
      province: "Đồng Tháp",
-     district: "Sa Đéc",
+     district: "Sa Đéc",
      ward: 2,
      detailAddress: "90 Đường Hùng Vương, Phường 2",
      phone: 2773861025
@@ -14861,9 +14861,9 @@ export default [
      code: 873351,
      name: "Bưu Điện Khu Công Nghiệp C",
      province: "Đồng Tháp",
-     district: "Sa Đéc",
+     district: "Sa Đéc",
      ward: "Tân Quy Đông",
-     detailAddress: "TL 848 Khó Khu Công Nghiệp Sađéc, Phường Tân Quy Đông",
+     detailAddress: "TL 848 Khó Khu Công Nghiệp Sa Đéc, Phường Tân Quy Đông",
      phone: 2773655779
     },
     {
@@ -14871,7 +14871,7 @@ export default [
      code: 873580,
      name: "Tân Phú Đông",
      province: "Đồng Tháp",
-     district: "Sa Đéc",
+     district: "Sa Đéc",
      ward: "Tân Phú Đông",
      detailAddress: "Đường Ngã Bát, Xã Tân Phú Đông",
      phone: 2773862701
@@ -14881,7 +14881,7 @@ export default [
      code: 873600,
      name: "Nàng Hai",
      province: "Đồng Tháp",
-     district: "Sa Đéc",
+     district: "Sa Đéc",
      ward: "An Hòa",
      detailAddress: "Đường Tỉnh Lộ 848 (Tân Hòa), Phường An Hòa",
      phone: 2773761014
@@ -14891,7 +14891,7 @@ export default [
      code: 873601,
      name: "An Hòa",
      province: "Đồng Tháp",
-     district: "Sa Đéc",
+     district: "Sa Đéc",
      ward: "An Hòa",
      detailAddress: "Khóm Tân Hòa, Phường An Hòa",
      phone: 2773763500
