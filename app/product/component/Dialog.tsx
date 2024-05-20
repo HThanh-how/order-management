@@ -165,7 +165,7 @@ export default function Dialog() {
 
             <FormControl isRequired isInvalid={Boolean(errors.weight)} mt={4}>
               <FormLabel>Trọng lượng (g)</FormLabel>
-              <Input type='text' {...register('price', {
+              <Input type='text' {...register('weight', {
                 required: 'Trường này không được bỏ trống',
                 pattern: {
                   value: /^[0-9]*$/,
@@ -203,17 +203,41 @@ export default function Dialog() {
               </FormErrorMessage>
             </FormControl>
             <HStack spacing={{ base: 8, md: 12 }} mt={4}>
-              <FormControl>
+              <FormControl isInvalid={Boolean(errors.length)}>
                 <FormLabel>Dài (cm)</FormLabel>
-                <Input type='text' {...register('length')} />
+                <Input type='text' {...register('length', {
+                  pattern: {
+                    value: /^[0-9]*$/,
+                    message: 'Giá trị phải là số'
+                  }
+                })} />
+                <FormErrorMessage>
+                  {errors.length && errors.length.message}
+                </FormErrorMessage>
               </FormControl>
-              <FormControl>
+              <FormControl isInvalid={Boolean(errors.width)}>
                 <FormLabel>Rộng (cm)</FormLabel>
-                <Input type='text' {...register('width')} />
+                <Input type='text' {...register('width', {
+                  pattern: {
+                    value: /^[0-9]*$/,
+                    message: 'Giá trị phải là số'
+                  }
+                })} />
+                <FormErrorMessage>
+                  {errors.width && errors.width.message}
+                </FormErrorMessage>
               </FormControl>
-              <FormControl>
+              <FormControl isInvalid={Boolean(errors.height)}>
                 <FormLabel>Cao (cm)</FormLabel>
-                <Input type='text' {...register('height')} />
+                <Input type='text' {...register('height', {
+                  pattern: {
+                    value: /^[0-9]*$/,
+                    message: 'Giá trị phải là số'
+                  }
+                })} />
+                <FormErrorMessage>
+                  {errors.height && errors.height.message}
+                </FormErrorMessage>
               </FormControl>
             </HStack>
             <Textarea mt={4}

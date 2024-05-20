@@ -141,7 +141,11 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
             </Center>
             
             <FormControl mt={4}>
+              <FormLabel>Hình ảnh sản phẩm</FormLabel>
               <input type='file' accept="image/png" onChange={validateFiles}></input>
+              <FormErrorMessage>
+                {errors.photoUrl && errors?.photoUrl.message}
+              </FormErrorMessage>
             </FormControl>
 
             <FormControl mt={4} isRequired isInvalid={Boolean(errors.name)}>
@@ -154,26 +158,34 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
               </FormErrorMessage>
             </FormControl>
             
-            <FormControl isRequired isInvalid={Boolean(errors.name)} mt={4}>
+            <FormControl isRequired isInvalid={Boolean(errors.weight)} mt={4}>
               <FormLabel>Trọng lượng (g)</FormLabel>
               <Input type='text' {...register('weight', {
-                required: 'Trường này không được bỏ trống'
+                required: 'Trường này không được bỏ trống',
+                pattern: {
+                  value: /^[0-9]*$/,
+                  message: 'Giá trị phải là số'
+                }
               })} />
               <FormErrorMessage>
-                {errors.name && errors.name.message}
+                {errors.weight && errors.weight.message}
               </FormErrorMessage>
             </FormControl>
-            <FormControl isRequired isInvalid={Boolean(errors.name)} mt={4}>
+            <FormControl isRequired isInvalid={Boolean(errors.price)} mt={4}>
               <FormLabel>Đơn giá (VNĐ)</FormLabel>
               <Input type='text' {...register('price', {
-                required: 'Trường này không được bỏ trống'
+                required: 'Trường này không được bỏ trống',
+                pattern: {
+                  value: /^[0-9]*$/,
+                  message: 'Giá trị phải là số'
+                }
               })} />
               <FormErrorMessage>
-                {errors.name && errors.name.message}
+                {errors.price && errors.price.message}
               </FormErrorMessage>
             </FormControl>
             
-            <FormControl isRequired isInvalid={Boolean(errors.name)} mt={4}>
+            <FormControl isRequired isInvalid={Boolean(errors.status)} mt={4}>
               <FormLabel>Trạng thái</FormLabel>
               <Select placeholder='Chọn trạng thái' {...register('status', {
                 required: 'Trường này không được bỏ trống'
@@ -183,22 +195,46 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
                   <option value="OUT_OF_STOCK">HẾT HÀNG</option>
               </Select>
               <FormErrorMessage>
-                {errors.name && errors.name.message}
+                {errors.status && errors.status.message}
               </FormErrorMessage>
             </FormControl>
 
             <HStack spacing='16px' mt={4}>
-              <FormControl>
+              <FormControl isInvalid={Boolean(errors.length)}>
                 <FormLabel>Dài (cm)</FormLabel>
-                <Input type='text' {...register('length')} />
+                <Input type='text' {...register('length', {
+                  pattern: {
+                    value: /^[0-9]*$/,
+                    message: 'Giá trị phải là số'
+                  }
+                })} />
+                <FormErrorMessage>
+                  {errors.length && errors.length.message}
+                </FormErrorMessage>
               </FormControl>
-              <FormControl>
+              <FormControl isInvalid={Boolean(errors.width)}>
                 <FormLabel>Rộng (cm)</FormLabel>
-                <Input type='text' {...register('width')}  />
+                <Input type='text' {...register('width', {
+                  pattern: {
+                    value: /^[0-9]*$/,
+                    message: 'Giá trị phải là số'
+                  }
+                })} />
+                <FormErrorMessage>
+                  {errors.width && errors.width.message}
+                </FormErrorMessage>
               </FormControl>
-              <FormControl>
+              <FormControl isInvalid={Boolean(errors.height)}>
                 <FormLabel>Cao (cm)</FormLabel>
-                <Input type='text' {...register('height')}  />
+                <Input type='text' {...register('height', {
+                  pattern: {
+                    value: /^[0-9]*$/,
+                    message: 'Giá trị phải là số'
+                  }
+                })} />
+                <FormErrorMessage>
+                  {errors.height && errors.height.message}
+                </FormErrorMessage>
               </FormControl>
             </HStack>
             <Textarea mt={4} 

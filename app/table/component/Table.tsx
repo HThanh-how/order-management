@@ -31,12 +31,14 @@ import {
   ModalCloseButton,
   useToast,
   Select,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useState } from "react";
 import { useRemoveCustomerMutation } from "@/app/_lib/features/api/apiSlice"
 import { Customer } from "@/app/type";
 import { useAppSelector } from "@/app/_lib/hooks";
+import EditDialog from "./EditDialog";
 
 interface CustomerTableProps {
   customers: Customer[];
@@ -49,6 +51,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
   const [customersPerPage, setCustomersPerPage] = useState(5);
   const [selectedCustomer, setSelectedCustomer] = useState<any>({});
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [removeCustomer, {isLoading}] = useRemoveCustomerMutation();
   const toast = useToast();
@@ -139,6 +142,12 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
 
   const totalPages = Math.ceil(customers.length / customersPerPage);
 
+  const handleUpdate = async (id: any) => {
+    const p = customers.find((tmp) => tmp.id === id);
+    setSelectedCustomer({...p});
+    onOpen();
+  }
+
   return (
     <Box overflowX={{base: 'scroll', md: "hidden"}} p={8}>
       <Table variant="simple" size={{base: 'sm', md: 'md'}}>
@@ -211,7 +220,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
                     <Icon as={SlOptionsVertical} color={"gray"} />
                   </MenuButton>
                   <MenuList>
-                    {/* <MenuItem>Sửa</MenuItem> */}
+                    <MenuItem onClick={() => handleUpdate(customer.id)}>Sửa</MenuItem>
                     <MenuItem onClick={() => handleDeleteOpen(customer.id)}>Xoá</MenuItem>
                   </MenuList>
                 </Menu>
@@ -221,6 +230,13 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
           ))}
         </Tbody>
       </Table>
+
+      <EditDialog 
+        isOpen={isOpen}
+        onClose={onClose}
+        //setProducts={setProducts}
+        selectedCustomer={selectedCustomer}
+      />
 
       <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered size={{base: 'sm', md: 'md'}}>
         <ModalOverlay />
