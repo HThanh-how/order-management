@@ -273,12 +273,14 @@ export default function NavBar() {
         /> */}
           <Drawer
             isOpen={isOpen}
+
             placement="left"
             onClose={onClose}
             returnFocusOnClose={false}
             onOverlayClick={onClose}
-            size="full"
+            // size="full"
           >
+            <DrawerOverlay />
             <DrawerContent>
               <SidebarContent onClose={onClose} />
             </DrawerContent>
@@ -512,7 +514,8 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 
   return (
     <Box
-    display={{ base: "flex", lg: "none" }}
+   
+
       bg={useColorModeValue("white", "gray.900")}
       borderRight="1px"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
@@ -572,11 +575,12 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
   return (
     <Box
       as="a"
-
+    
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
     >
       <Flex
+        w={{base: "90%", md:"50%", lg:"none"}}
         align="center"
         p="4"
         m="4"
