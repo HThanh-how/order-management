@@ -84,12 +84,13 @@ const handleDelete = async (id: any) => {
     let response;
     try {
       response = await removeProduct(id).unwrap();
+      
       handleDeleteClose();
     } catch (err) {
       handleDeleteClose();
       console.error('Failed to delete product: ', err)
       toast({
-        title: response,
+        title: "Có lỗi khi xoá sản phẩm này",
         position: 'top',
         status: 'error',
         duration: 3000,
@@ -98,7 +99,7 @@ const handleDelete = async (id: any) => {
       return;
     }
     toast({
-      title: response,
+      title: "Xoá sản phẩm thành công",
       position: 'top',
       status: 'success',
       duration: 3000,

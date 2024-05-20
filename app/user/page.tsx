@@ -84,7 +84,7 @@ export default function Sidebar() {
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
       <SidebarContent
         onClose={() => onClose}
-        display={{ base: "none", md: "block" }}
+        display={{ base: "none", md: "none", lg: "block" }}
       />
 
       {isLoading ? (

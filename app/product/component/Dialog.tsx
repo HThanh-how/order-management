@@ -121,7 +121,8 @@ export default function Dialog() {
 
   return (
     <>
-      <Button m={{ base: 2, md: 8 }}  color="white"
+      <Button m={{ base: 2, lg: 8 }} ml={4}  color="white"
+                
                   backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
                   sx={{
                     '@media (hover: hover)': {

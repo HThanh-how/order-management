@@ -283,9 +283,9 @@ export default function NavBar() {
               <SidebarContent onClose={onClose} />
             </DrawerContent>
           </Drawer>
-          <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} />
+          <MobileNav display={{ base: "flex", md: "flex", lg :"none" }} onOpen={onOpen} />
           <HStack spacing={{ base: 4, md: 8 }} alignItems={"center"}>
-            <Box ml={{ base: 0, md: 8 }} onClick={() => router.push("/")} cursor={"pointer"}>
+            <Box ml={{ base: 0, md: 0, lg: 8 }} onClick={() => router.push("/")} cursor={"pointer"}>
               <Image
                 src="/logo.png"
                 alt="OrList"
@@ -295,11 +295,12 @@ export default function NavBar() {
             </Box>
           </HStack>
 
-          <Flex alignItems={"center"} color="#171717">
+          <Flex alignItems={"center"} color="#171717" >
             {isLogin ? (
               <>
                 {pathname === "/" && (
-                  <Button
+                  <Button 
+                  display={{ base: "none", md: "none", lg :"flex" }}
                     color="white"
                     backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
                     sx={{
@@ -511,15 +512,16 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 
   return (
     <Box
+    display={{ base: "flex", lg: "none" }}
       bg={useColorModeValue("white", "gray.900")}
       borderRight="1px"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
-      w={{ base: "full", md: 60 }}
+      w={{ base: "full", lg: 60 }}
       pos="fixed"
       h="full"
       {...rest}
     >
-      <Flex display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="10" justifyContent="space-between">
+      <Flex display={{ base: "flex", lg: "none" }} h="20" alignItems="center" mx="10" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           OrList
         </Text>
@@ -609,8 +611,8 @@ interface MobileProps extends FlexProps {
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
   return (
     <Flex
-      ml={{ base: 0, md: 60 }}
-      px={{ base: 0, md: 24 }}
+      ml={{ base: 0, lg: 60 }}
+      px={{ base: 0, lg: 24 }}
       height="20"
       alignItems="center"
       // bg={useColorModeValue("white", "gray.900")}

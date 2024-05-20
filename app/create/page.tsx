@@ -68,7 +68,7 @@ export default function Sidebar() {
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
       <SidebarContent
         onClose={() => onClose}
-        display={{ base: "none", md: "block" }}
+        display={{ base: "none", md: "none", lg: "block" }}
       />
       {/* <Drawer
         isOpen={isOpen}
@@ -84,7 +84,7 @@ export default function Sidebar() {
       </Drawer>
       
       <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} /> */}
-      <Box ml={{ base: 0, md: 60 }} p={{ base: 4, md: 8 }}>
+      <Box ml={{ base: 0, lg: 60 }} p={{ base: 2, lg: 8 }}>
         <OrderForm />
       </Box>
     </Box>

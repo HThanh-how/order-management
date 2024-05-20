@@ -87,7 +87,7 @@ export default function Sidebar() {
       <title>Tổng quan</title>
       <SidebarContent
         onClose={() => onClose}
-        display={{ base: "none", md: "block" }}
+        display={{ base: "none", md: "none", lg: "block" }}
       />
       {/* <Drawer
         isOpen={isOpen}
@@ -103,7 +103,7 @@ export default function Sidebar() {
       </Drawer> */}
       {/* mobilenav */}
       {/* <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} /> */}
-      <Box ml={{ base: 0, md: 60 }} p={{base: 2, md: 8}}>
+      <Box ml={{ base: 0, lg: 60 }} p={{ base: 2, lg: 8 }}>
         <Stats />
         <Stack mt={4} spacing={8} direction= {{base: 'column', md: 'row'}} >
           <MainChart/>

@@ -82,7 +82,7 @@ export default function Sidebar() {
       <title>Chi tiết đơn hàng</title>
       <SidebarContent
         onClose={() => onClose}
-        display={{ base: "none", md: "block" }}
+        display={{ base: "none", md: "none", lg: "block" }}
       />
       {/* <Drawer
         isOpen={isOpen}

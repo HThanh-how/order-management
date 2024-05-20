@@ -347,8 +347,8 @@ export default function OrderForm() {
   ));
 
   return (
-    <Stack direction={{ base: "column", lg: "row" }}>
-      <Box w={{ base: "80wv", lg: "50%" }}>
+    <Stack direction={{ base: "column", md: "row" }}>
+      <Box w={{ base: "80wv", md: "50%" }}>
         <Box p={4} bg="gray.50">
           <Text color="orange.500" fontWeight={"bold"} fontSize="20px"> Người gửi: </Text>
           {isErrorS ? (

@@ -83,7 +83,7 @@ export default function Sidebar() {
           <title>Đơn hàng</title>
       <SidebarContent
         onClose={() => onClose}
-        display={{ base: "none", md: "block" }}
+        display={{ base: "none", md: "none", lg: "block" }}
       />
       {/* <Drawer
         isOpen={isOpen}
@@ -99,7 +99,7 @@ export default function Sidebar() {
       </Drawer> */}
       {/* mobilenav */}
       {/* <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} /> */}
-      <Box ml={{ base: 0, md: 60 }} p={{ base: 2, md: 8 }}>
+      <Box ml={{ base: 0, lg: 60 }} p={{ base: 2, lg: 8 }}>
         <OrderTable/>
       </Box>
     </Box>

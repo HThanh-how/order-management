@@ -81,7 +81,15 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
         duration: 3000,
         isClosable: true,
       })
+      return;
     }
+    toast({
+      title: "Xoá khách hàng thành công",
+      position: 'top',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    })
   }
 
   const handleMasterCheckboxChange = () => {

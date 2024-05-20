@@ -77,23 +77,23 @@ export default function Product() {
         direction={{ base: "column", md: "row" }}
       >
         <VStack
-          m={{ base: 2, md: 8 }}
+          m={{ base: 2, lg: 8 }}
           alignItems={"flex-start"}
-          maxW={{ base: "80vw", md: "full" }}
+          maxW={{ base: "80vw", lg: "full" }}
         >
-          <Text fontSize={{ base: "xl", md: "3xl" }} backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+          <Text fontSize={{ base: "2xl", md: "3xl" }} backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
             backgroundClip="text"
             color="transparent" fontWeight={700}>
             Sản phẩm
           </Text>
-          <Text color={"gray"}>Bạn bán hơn 60 sản phẩm mỗi ngày</Text>
+          <Text display={{base: "none", md:"flex"}} color={"gray"}>Bạn bán hơn 60 sản phẩm mỗi ngày</Text>
         </VStack>
         <Flex>
           <Input
-            m={{ base: 2, md: 8 }}
+            m={{ base: 2, lg: 8 }}
             variant="filled"
-            placeholder="Tìm tên sản phẩm"
-            w={{ base: "70vw", md: "30vw" }}
+            placeholder="Tìm sản phẩm"
+            w={{ base: "70vw", md: "40vw", lg:"25vw", xl: "30vw" }}
             onChange={handleSearchInputChange}
           />
         </Flex>
