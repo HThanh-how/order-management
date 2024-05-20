@@ -597,6 +597,7 @@ export default function OrderForm() {
                   setReceiverValue(e.target.value)
                 }}
               />
+               {errors.receiver && <Text color="red.500" mb={2} mt={-2}>{errors.receiver.message}</Text>}
               {receiverSuggestions.length > 0 && (
                 <VStack
                   alignItems={'flex-start'}

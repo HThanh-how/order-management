@@ -183,10 +183,15 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
           </FormControl>
 
           <FormControl isRequired isInvalid={Boolean(errors.name)} mt={4}>
-            <FormLabel>Số điện thoại (g)</FormLabel>
+            <FormLabel>Số điện thoại </FormLabel>
             <Input type='text' {...register('phoneNumber', {
-              required: 'Trường này không được bỏ trống'
+              required: 'Trường này không được bỏ trống',
+              pattern: {
+                value: /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
+                message: 'Số điện thoại không hợp lệ'
+              }
             })} />
+             {errors.phoneNumber && <Text color="red.500" mb={2} mt={-2}>{errors.phoneNumber.message}</Text>}
             <FormErrorMessage>
               {errors.name && errors.name.message}
             </FormErrorMessage>

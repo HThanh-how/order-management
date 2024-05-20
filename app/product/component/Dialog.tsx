@@ -39,7 +39,7 @@ type FormData = {
   length: number,
   width: number,
   height: number,
-  description:string,
+  description: string,
 }
 
 
@@ -55,39 +55,39 @@ export default function Dialog() {
   } = useForm<FormData>()
 
   const [img, setImg] = useState<any>(null);
-  const [addProduct, {isLoading}] = useAddProductMutation();
+  const [addProduct, { isLoading }] = useAddProductMutation();
 
   useEffect(() => {
-    if(isSubmitSuccessful) reset();
+    if (isSubmitSuccessful) reset();
   }, [isSubmitSuccessful, reset])
 
   const validateFiles = (e: any) => {
-    if(!e.target.files) return 'Trường này không được bỏ trống'
+    if (!e.target.files) return 'Trường này không được bỏ trống'
     const value = e.target.files[0];
     const fsMb = value.size / (1024 * 1024)
     const MAX_FILE_SIZE = 10
     if (fsMb > MAX_FILE_SIZE) {
       return 'Max file size 10mb'
-    }     
+    }
     setImg(value);
   }
 
   const uploadImage = async (value: any) => {
     const formData = new FormData();
     formData.append('file', value);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/user/firebase/image`, 
-    {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${getFromLocalStorage('accessToken')}`,
-      },
-      body: formData, 
-    })
+    const res = await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/user/firebase/image`,
+      {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${getFromLocalStorage('accessToken')}`,
+        },
+        body: formData,
+      })
     return res.json()
   }
 
   const onSubmit = async (data: FormData) => {
-    if(img) {
+    if (img) {
       const tmp = await uploadImage(img);
       data.photoUrl = tmp.base64;
     }
@@ -107,7 +107,7 @@ export default function Dialog() {
         isClosable: true,
       })
     } finally {
-      if(isSuccess) {
+      if (isSuccess) {
         toast({
           title: 'Thêm sản phẩm mới thành công',
           position: 'top',
@@ -121,16 +121,16 @@ export default function Dialog() {
 
   return (
     <>
-      <Button m={{ base: 2, lg: 8 }} ml={4}  color="white"
-                
-                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
-                  sx={{
-                    '@media (hover: hover)': {
-                      _hover: {
-                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
-                      }
-                    }
-                  }} onClick={onOpen}>
+      <Button m={{ base: 2, lg: 8 }} ml={4} color="white"
+
+        backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+        sx={{
+          '@media (hover: hover)': {
+            _hover: {
+              backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+            }
+          }
+        }} onClick={onOpen}>
         Thêm sản phẩm
       </Button>
       <Modal
@@ -138,19 +138,19 @@ export default function Dialog() {
         isOpen={isOpen}
         onClose={onClose}
         isCentered
-        size={{base: 'sm', md: 'md'}}
+        size={{ base: 'sm', md: 'md' }}
       >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Thêm sản phẩm</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            
+
             <FormControl isRequired isInvalid={Boolean(errors.name)}>
               <FormLabel>Tên hàng hóa</FormLabel>
               <Input type='text' id="name" {...register('name', {
                 required: 'Trường này không được bỏ trống',
-              })}/>
+              })} />
               <FormErrorMessage>
                 {errors.name && errors.name.message}
               </FormErrorMessage>
@@ -165,8 +165,12 @@ export default function Dialog() {
 
             <FormControl isRequired isInvalid={Boolean(errors.weight)} mt={4}>
               <FormLabel>Trọng lượng (g)</FormLabel>
-              <Input type='text' {...register('weight', {
-                required: 'Trường này không được bỏ trống'
+              <Input type='text' {...register('price', {
+                required: 'Trường này không được bỏ trống',
+                pattern: {
+                  value: /^[0-9]*$/,
+                  message: 'Giá trị phải là số'
+                }
               })} />
               <FormErrorMessage>
                 {errors.weight && errors.weight.message}
@@ -175,7 +179,11 @@ export default function Dialog() {
             <FormControl isRequired isInvalid={Boolean(errors.price)} mt={4}>
               <FormLabel>Đơn giá (VNĐ)</FormLabel>
               <Input type='text' {...register('price', {
-                required: 'Trường này không được bỏ trống'
+                required: 'Trường này không được bỏ trống',
+                pattern: {
+                  value: /^[0-9]*$/,
+                  message: 'Giá trị phải là số'
+                }
               })} />
               <FormErrorMessage>
                 {errors.price && errors.price.message}
@@ -186,39 +194,39 @@ export default function Dialog() {
               <Select placeholder='Chọn trạng thái' {...register('status', {
                 required: 'Trường này không được bỏ trống'
               })} >
-                  <option value="AVAILABLE">CÒN HÀNG</option>
-                  <option value="BACK_ORDER">DỰ TRỮ</option>
-                  <option value="OUT_OF_STOCK">HẾT HÀNG</option>
+                <option value="AVAILABLE">CÒN HÀNG</option>
+                <option value="BACK_ORDER">DỰ TRỮ</option>
+                <option value="OUT_OF_STOCK">HẾT HÀNG</option>
               </Select>
               <FormErrorMessage>
                 {errors.status && errors.status.message}
               </FormErrorMessage>
             </FormControl>
-            <HStack spacing={{base: 8, md: 12}} mt={4}>
+            <HStack spacing={{ base: 8, md: 12 }} mt={4}>
               <FormControl>
                 <FormLabel>Dài (cm)</FormLabel>
                 <Input type='text' {...register('length')} />
               </FormControl>
               <FormControl>
                 <FormLabel>Rộng (cm)</FormLabel>
-                <Input type='text' {...register('width')}  />
+                <Input type='text' {...register('width')} />
               </FormControl>
               <FormControl>
                 <FormLabel>Cao (cm)</FormLabel>
-                <Input type='text' {...register('height')}  />
+                <Input type='text' {...register('height')} />
               </FormControl>
             </HStack>
-            <Textarea mt={4} 
+            <Textarea mt={4}
               placeholder="Mô tả chi tiết"
-              {...register('description')}            
+              {...register('description')}
             />
-            
-            
+
+
           </ModalBody>
 
           <ModalFooter>
             <Button onClick={onClose} mr={3}>
-              Huỷ 
+              Huỷ
             </Button>
             <Button bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
               color={"white"}
@@ -228,7 +236,7 @@ export default function Dialog() {
               }} onClick={handleSubmit(onSubmit)}>
               Lưu
             </Button>
-            
+
           </ModalFooter>
         </ModalContent>
       </Modal>

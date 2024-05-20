@@ -55,16 +55,16 @@ interface City {
 }
 
 type FormData = {
-  name:string,
-  phoneNumber:string,
+  name: string,
+  phoneNumber: string,
   address: string,
   village: string,
   district: string,
   city: string,
   detailedAddress: string,
-  description:string,
+  description: string,
   isDefault: boolean,
-  sendAtPost: boolean, 
+  sendAtPost: boolean,
 }
 
 export default function AddressSelect() {
@@ -74,7 +74,7 @@ export default function AddressSelect() {
   const [selectedVillage, setSelectedVillage] = useState("");
   const toast = useToast();
 
-  const [addStore, {isLoading}] = useAddStoreMutation();
+  const [addStore, { isLoading }] = useAddStoreMutation();
   const {
     register,
     setValue,
@@ -84,7 +84,7 @@ export default function AddressSelect() {
   } = useForm<FormData>()
 
   useEffect(() => {
-    if(isSubmitSuccessful) reset();
+    if (isSubmitSuccessful) reset();
   }, [isSubmitSuccessful, reset])
 
   const handleCityChange = (event: ChangeEvent<HTMLSelectElement>) => {
@@ -109,8 +109,8 @@ export default function AddressSelect() {
     (district) => district.name === selectedDistrict
   );
 
-  const onSubmit = async(data: FormData) => {
-    const {village, district, city, ...sendData} = data;
+  const onSubmit = async (data: FormData) => {
+    const { village, district, city, ...sendData } = data;
     let isSuccess: boolean = true;
     try {
       await addStore(sendData).unwrap();
@@ -126,7 +126,7 @@ export default function AddressSelect() {
         isClosable: true,
       })
     } finally {
-      if(isSuccess) {
+      if (isSuccess) {
         toast({
           title: 'Thêm cửa hàng mới thành công',
           position: 'top',
@@ -140,31 +140,31 @@ export default function AddressSelect() {
 
   return (
     <>
-      <Button m={{ base: 2, md: 8 }}  color="white"
-                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
-                  sx={{
-                    '@media (hover: hover)': {
-                      _hover: {
-                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
-                      }
-                    }
-                  }} onClick={onOpen}>
+      <Button m={{ base: 2, md: 8 }} color="white"
+        backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+        sx={{
+          '@media (hover: hover)': {
+            _hover: {
+              backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+            }
+          }
+        }} onClick={onOpen}>
         Thêm cửa hàng
       </Button>
-      
+
       <Modal
         closeOnOverlayClick={false}
         isOpen={isOpen}
         onClose={onClose}
         isCentered
-        size={{base: 'sm', md: 'md'}}
+        size={{ base: 'sm', md: 'md' }}
       >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Thêm cửa hàng</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-          <FormControl isRequired isInvalid={Boolean(errors.name)}>
+            <FormControl isRequired isInvalid={Boolean(errors.name)}>
               <FormLabel>Tên cửa hàng</FormLabel>
               <Input type='text' {...register('name', {
                 required: 'Trường này không được bỏ trống',
@@ -173,14 +173,21 @@ export default function AddressSelect() {
                 {errors.name && errors.name.message}
               </FormErrorMessage>
             </FormControl>
-            
+
             <FormControl mt={4} isRequired isInvalid={Boolean(errors.phoneNumber)}>
               <FormLabel>Số điện thoại</FormLabel>
               <Input type='text' {...register('phoneNumber', {
                 required: 'Trường này không được bỏ trống',
+                pattern: {
+                  value: /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
+                  message: 'Số điện thoại không hợp lệ'
+                }
               })} />
+               <FormErrorMessage>
+                {errors.phoneNumber && errors.phoneNumber.message}
+              </FormErrorMessage>
             </FormControl>
-              {/* Dropdown chọn thành phố */}
+            {/* Dropdown chọn thành phố */}
             <FormControl mt={4} isRequired isInvalid={Boolean(errors.city)}>
               <FormLabel>Tỉnh/Thành phố</FormLabel>
               <Select
@@ -260,12 +267,12 @@ export default function AddressSelect() {
             </FormControl>
             <FormControl mt={4} isRequired isInvalid={Boolean(errors.detailedAddress)}>
               <FormLabel>Địa chỉ chi tiết</FormLabel>
-              <Input 
-                type="text" 
+              <Input
+                type="text"
                 placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
                 {...register('detailedAddress', {
                   required: 'Trường này không được bỏ trống',
-                })} 
+                })}
               />
               <FormErrorMessage>
                 {errors.detailedAddress && errors.detailedAddress.message}
@@ -273,16 +280,16 @@ export default function AddressSelect() {
             </FormControl>
             <FormControl mt={4}>
               <FormLabel>Mô tả chi tiết</FormLabel>
-              <Textarea placeholder={"Mô tả"} {...register('description')}/>
+              <Textarea placeholder={"Mô tả"} {...register('description')} />
             </FormControl>
 
             <Checkbox colorScheme="red" {...register('isDefault')}>
               Đặt làm cửa hàng mặc định
-            </Checkbox> 
-            <br />   
+            </Checkbox>
+            <br />
             <Checkbox colorScheme="red" {...register('sendAtPost')}>
               Nhận tại bưu cục
-            </Checkbox>   
+            </Checkbox>
           </ModalBody>
 
           <ModalFooter>

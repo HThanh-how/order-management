@@ -257,10 +257,14 @@ export default function NavBar() {
       <Box
         bg={useColorModeValue("white.100", "#171717")}
         px={4}
+        bgColor={'white'}
         textColor={"black"}
         borderBottom={'1px'}
         borderBottomColor={useColorModeValue("gray.200", "gray.700")}
-        shadow={"2xl"}
+        shadow={"sm"}
+        position="sticky" // Add this line
+        top={0} // And this line
+        zIndex={1}
       // bgGradient={'linear-gradient(90deg, #ff8a00, #ffeb37)'}
       >
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
@@ -278,14 +282,14 @@ export default function NavBar() {
             onClose={onClose}
             returnFocusOnClose={false}
             onOverlayClick={onClose}
-            // size="full"
+          // size="full"
           >
             <DrawerOverlay />
             <DrawerContent>
               <SidebarContent onClose={onClose} />
             </DrawerContent>
           </Drawer>
-          <MobileNav display={{ base: "flex", md: "flex", lg :"none" }} onOpen={onOpen} />
+          <MobileNav display={{ base: "flex", md: "flex", lg: "none" }} onOpen={onOpen} />
           <HStack spacing={{ base: 4, md: 8 }} alignItems={"center"}>
             <Box ml={{ base: 0, md: 0, lg: 8 }} onClick={() => router.push("/")} cursor={"pointer"}>
               <Image
@@ -301,8 +305,8 @@ export default function NavBar() {
             {isLogin ? (
               <>
                 {pathname === "/" && (
-                  <Button 
-                  display={{ base: "none", md: "none", lg :"flex" }}
+                  <Button
+                    display={{ base: "none", md: "none", lg: "flex" }}
                     color="white"
                     backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
                     sx={{
@@ -370,7 +374,7 @@ export default function NavBar() {
                                       await setNotiIsRead(noti.id).unwrap()
                                     if (noti.type === 'EMPLOYEE_REQUEST') router.push("/requests")
                                     if (noti.type === 'ORDER_INFO') router.push("/order")
-                                    notification.onClose();
+                                    // notification.onClose();
                                   }}>
                                   <Flex gap={2}>
                                     {noti.read === false && (
@@ -514,7 +518,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 
   return (
     <Box
-   
+
 
       bg={useColorModeValue("white", "gray.900")}
       borderRight="1px"
@@ -575,12 +579,12 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
   return (
     <Box
       as="a"
-    
+
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
     >
       <Flex
-        w={{base: "90%", md:"50%", lg:"none"}}
+        w={{ base: "90%", md: "50%", lg: "none" }}
         align="center"
         p="4"
         m="4"

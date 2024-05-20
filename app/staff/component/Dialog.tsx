@@ -109,8 +109,14 @@ export default function AddressSelect() {
           <ModalBody pb={6}>
             <Box>
               <Input my={4} placeholder={"Số điện thoại"} {...register('employeePhone', {
-                required: 'Trường này không được bỏ trống'
+                required: 'Trường này không được bỏ trống',
+                pattern: {
+                  value: /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
+                  message: 'Số điện thoại không hợp lệ'
+                }
+                
               })}/>
+              {errors.employeePhone && <Text color="red.500" mb={2} mt={-2}>{errors.employeePhone.message}</Text>}
               {/* <Input mt={4} placeholder={"Họ và tên"} /> */}
               {/* Dropdown chọn thành phố */}
               

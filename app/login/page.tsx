@@ -31,6 +31,17 @@ export default function Login() {
   const toast = useToast()
 
   const handleLogin = async () => {
+    if (password.length<8)
+      {
+        toast({
+          title: `Sai tên đăng nhập hoặc mật khẩu`,
+          status: 'error',
+          position: "top-right",
+          isClosable: true,
+        })
+        return;
+
+      }
     await fetch(`${process.env.NEXT_PUBLIC_HOSTNAME}auth/login`,
       {
         method: "POST",
@@ -54,7 +65,7 @@ export default function Login() {
         window.location.href = '/dashboard'
       })
       .catch((error) => {
-        setUsername('');
+        // setUsername('');
         setPassword('');
         toast({
           title: `Sai tên đăng nhập hoặc mật khẩu`,

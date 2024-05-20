@@ -194,6 +194,10 @@ export default function AddressSelect() {
               <FormLabel>Số điện thoại</FormLabel>
               <Input type='text' {...register('phoneNumber', {
                 required: 'Trường này không được bỏ trống',
+                pattern: {
+                  value: /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
+                  message: 'Số điện thoại không hợp lệ'
+                }
               })} />
             </FormControl>
             {/* Dropdown chọn thành phố */}
