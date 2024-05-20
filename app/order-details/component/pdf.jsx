@@ -49,7 +49,13 @@ const styles = StyleSheet.create({
   },
   halfWidthSection: {
     width: '48%',
-  }
+  },
+  signatureBox: {
+    border: '1px solid #000',
+    margin: 10,
+    padding: 10,
+    height: 50,
+  },
 });
 
 // Tạo component PDF
@@ -114,6 +120,22 @@ const MyDocument = ({ order }) => {
           </View>
         </View>
 
+        <View style={styles.row}>
+          <View style={[styles.section, styles.halfWidthSection]}>
+            <Text style={styles.boldText}>Tiền thu Người nhận:</Text>
+            <Text style={{ fontWeight: 'bold', fontSize: 20, margin: 10, textAlign: 'center' }}>
+              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.data.price?.collectionCharge)}
+            </Text>
+          </View>
+
+          <View style={[styles.section, styles.halfWidthSection]}>
+            <Text style={styles.boldText}>Ngày đặt hàng:</Text>
+            <View style={{ fontWeight: 'bold', fontSize: 14, margin: 10, textAlign: 'center' }}>
+              <Text>{new Date(order.data.createdDate).toLocaleString()}</Text>
+            </View>
+          </View>
+        </View>
+
         <View style={styles.section}>
           <Text style={styles.boldText}>Nội dung hàng:</Text>
           {order.data.orderItemDtos.map((item, index) => (
@@ -123,25 +145,11 @@ const MyDocument = ({ order }) => {
           ))}
         </View>
 
-        <View style={styles.row}>
-          <View style={[styles.section, styles.halfWidthSection]}>
-            <Text style={styles.boldText}>Tiền thu Người nhận:</Text>
-            <Text style={styles.info}>{order.data.totalAmount} VND</Text>
+    
+          <View style={styles.signatureBox}>
+            <Text style={styles.info}>Chữ ký người nhận:</Text>
           </View>
-
-          <View style={[styles.section, styles.halfWidthSection]}>
-            <Text style={styles.boldText}>Ngày đặt hàng:</Text>
-            <Text style={styles.info}>{order.data.createdDate}</Text>
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Image src="barcode-placeholder.png" style={styles.barcode} />
-        </View>
-
-        <View style={styles.section}>
-          <Image src="qrcode-placeholder.png" style={styles.qrCode} />
-        </View>
+     
 
         <View style={styles.footer}>
           <Text style={styles.info}>Chỉ dẫn giao hàng: {order.data.deliveryInstructions}</Text>

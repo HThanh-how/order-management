@@ -94,8 +94,15 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
         duration: 3000,
         isClosable: true,
       })
+      return;
     }
-
+    toast({
+      title: 'Xoá đơn hàng thành công',
+      position: 'top',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    })
   }
 
   const handleMasterCheckboxChange = () => {

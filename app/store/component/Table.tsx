@@ -88,7 +88,16 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
         duration: 3000,
         isClosable: true,
       })
+      return;
     }
+    toast({
+      title: 'Xoá cửa hàng thành công',
+      position: 'top',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    })
+    console.log(removeStore(id).unwrap())
   }
 
   const handleMasterCheckboxChange = () => {

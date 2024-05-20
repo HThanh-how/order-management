@@ -75,6 +75,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
       console.error('Failed to delete customer: ', err)
       toast({
         title: 'Có lỗi khi xóa khách hàng này',
+        
         position: 'top',
         status: 'error',
         duration: 3000,

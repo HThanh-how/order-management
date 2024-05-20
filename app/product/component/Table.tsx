@@ -80,22 +80,30 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
     onOpen();
   }
 
-  const handleDelete = async (id: any) => {
+const handleDelete = async (id: any) => {
+    let response;
     try {
-      await removeProduct(id).unwrap();
+      response = await removeProduct(id).unwrap();
       handleDeleteClose();
     } catch (err) {
       handleDeleteClose();
       console.error('Failed to delete product: ', err)
       toast({
-        title: 'Có lỗi khi xóa sản phẩm này',
+        title: response,
         position: 'top',
         status: 'error',
         duration: 3000,
         isClosable: true,
       })
+      return;
     }
-    
+    toast({
+      title: response,
+      position: 'top',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    })
   }
 
   const handleMasterCheckboxChange = () => {
