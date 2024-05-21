@@ -41,7 +41,7 @@ export default function AddressSelect() {
     setValue,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitSuccessful },
+    formState: { errors, isSubmitSuccessful, isSubmitting },
   } = useForm<FormData>()
 
   const [sendEmployeeRequest, {isLoading}] = useSendEmployeeRequestMutation();
@@ -162,6 +162,23 @@ export default function AddressSelect() {
             <Button onClick={onClose} mr={3}>
               Hủy
             </Button>
+            {isSubmitting ? (
+              <Button
+                isLoading
+                loadingText='Đang gửi'
+                color="white"
+                backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                sx={{
+                  '@media (hover: hover)': {
+                    _hover: {
+                      backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                    }
+                  }
+                }}
+              >
+                Gửi yêu cầu
+              </Button>
+            ) : (
             <Button  color="white"
                   backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
                   sx={{
@@ -173,6 +190,7 @@ export default function AddressSelect() {
                   }} onClick={handleSubmit(onSubmit)}>
               Gửi yêu cầu
             </Button>
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>

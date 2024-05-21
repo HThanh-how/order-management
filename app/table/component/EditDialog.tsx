@@ -78,7 +78,7 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
     reset,
     setValue,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
       name: selectedCustomer?.name || "",
@@ -297,6 +297,23 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
           <Button onClick={onClose} mr={3}>
             Huỷ
           </Button>
+          {isSubmitting ? (
+              <Button
+                isLoading
+                loadingText='Đang lưu'
+                color="white"
+                backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                sx={{
+                  '@media (hover: hover)': {
+                    _hover: {
+                      backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                    }
+                  }
+                }}
+              >
+                Lưu
+              </Button>
+            ) : (
           <Button color="white"
             backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
             sx={{
@@ -308,7 +325,7 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
             }} onClick={handleSubmit(onSubmit)}>
             Lưu
           </Button>
-
+            )}
         </ModalFooter>
       </ModalContent>
     </Modal>
