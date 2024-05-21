@@ -99,13 +99,13 @@ export default function Product() {
             Sản phẩm
           </Text>
           {isSuccessT && (
-            <Text display={{base: "none", md:"flex"}} color={"gray"}>Tuần này bạn có thêm {getToday} sản phẩm mới</Text>
+            <Text display={{base: "none", md:"flex"}} color={"gray"}>Hôm nay thật tuyệt</Text>
           )}
           
         </VStack>
         <Flex>
           <Input
-            m={{ base: 2, lg: 8 }}
+            m={{ base: 2, xl: 8 }}
             variant="filled"
             placeholder="Tìm sản phẩm"
             w={{ base: "70vw", md: "40vw", lg:"25vw", xl: "30vw" }}

@@ -87,7 +87,7 @@ export default function CustomerTable() {
             color="transparent" fontWeight={700}>
             Nhân viên
           </Text>
-          <Text color={"gray"}>Chúc tập thể công ty thành công</Text>
+          <Text color={"gray"}>Đội ngũ tận tâm</Text>
         </VStack>
         <Flex>
           <Input

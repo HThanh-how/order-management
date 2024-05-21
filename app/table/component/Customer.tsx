@@ -93,7 +93,7 @@ export default function CustomerTable() {
         direction={{ base: "column", md: "row" }}
       >
         <VStack
-          m={{ base: 2, md: 8 }}
+          m={{ base: 2, lg: 8 }}
           alignItems={"flex-start"}
           maxW={{ base: "80vw", md: "full" }}
         >
@@ -104,7 +104,7 @@ export default function CustomerTable() {
           </Text>
           {/* <Text color={"gray"}>Tuần này bạn có thêm 20 khách hàng mới</Text> */}
           {isSuccessT && (
-            <Text display={{base: "none", md:"flex"}} color={"gray"}>Tuần này bạn có thêm {getToday} khách hàng mới</Text>
+            <Text display={{base: "none", md:"flex"}} color={"gray"}>Những vị khách quý giá</Text>
           )}
         </VStack>
         <Flex>

@@ -99,7 +99,7 @@ export default function Order() {
                   color="transparent" fontWeight={700}>
             Đơn hàng
           </Text>
-          <Text color={"gray"}>Bạn bán hơn 60 đơn hàng mỗi ngày</Text>
+          <Text color={"gray"}>Dịch vụ hoàn hảo</Text>
         </VStack>
         <Flex>
           <Input

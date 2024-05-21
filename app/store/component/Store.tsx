@@ -103,7 +103,7 @@ export default function StoreTable() {
           </Text>
           {/* <Text color={"gray"}>Tuần này bạn có thêm 20 khách hàng mới</Text> */}
           {isSuccessT && (
-            <Text display={{base: "none", md:"flex"}} color={"gray"}>Mọi đơn sẽ đi đến từng khách hàng</Text>
+            <Text display={{base: "none", md:"flex"}} color={"gray"}>Vươn tầm đi xa</Text>
           )}
         </VStack>
         <Flex>
