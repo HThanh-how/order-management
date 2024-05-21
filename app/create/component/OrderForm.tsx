@@ -21,7 +21,7 @@ import {
   FormErrorMessage,
   Spinner,
   Menu,
-  MenuList, MenuButton, MenuList, MenuItem,
+  MenuList, MenuButton, MenuItem,
   Alert,
   AlertIcon,
   useToast,
