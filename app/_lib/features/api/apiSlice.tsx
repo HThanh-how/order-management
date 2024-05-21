@@ -201,7 +201,7 @@ export const apiSlice = createApi({
         },
         body: newCustomer,
       }),
-      invalidatesTags: ["Customer", "Order"],
+      invalidatesTags: ["Customer"],
     }),
     removeCustomer: builder.mutation({
       query: (id) => ({
@@ -230,7 +230,17 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Store"],
     }),
-    
+    editStore: builder.mutation({
+      query: (newStore) => ({
+        url: `/stores/${newStore.storeId}`,
+        method: "PUT",
+        headers: {
+          userId: `${getFromLocalStorage("userId")}`,
+        },
+        body: newStore,
+      }),
+      invalidatesTags: ["Store"],
+    }),
     removeStore: builder.mutation({
       query: (id) => ({
         url: `/stores/${id}`,
@@ -436,6 +446,7 @@ export const {
   useRemoveCustomerMutation,
   useGetStoresQuery,
   useAddStoreMutation,
+  useEditStoreMutation,
   useRemoveStoreMutation,
   useGetOrdersQuery,
   useGetOrdersForEmployeeQuery,
