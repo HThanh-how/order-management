@@ -334,7 +334,7 @@ export default function OrderForm() {
   ));
 
   const renderReceiverSuggestions = () => receiverSuggestions.slice(0, 5).map((suggestion) => (
-    <option
+    <Button
       key={suggestion.id}
       style={{ cursor: 'pointer' }}
       onClick={() => {
@@ -343,9 +343,11 @@ export default function OrderForm() {
         setValue('receiver', suggestion);
         setReceiverSuggestions([]);
       }}
+      width={"full"}
+      m={1}
     >
       {suggestion.name}  {suggestion.phoneNumber}
-    </option>
+    </Button>
   ));
 
   return (
@@ -603,7 +605,7 @@ export default function OrderForm() {
                   />
                 </PopoverTrigger>
                 {errors.receiver && <Text color="red.500" mb={2} mt={-2}>{errors.receiver.message}</Text>}
-                <PopoverContent w="100%">
+                <PopoverContent pr={2}>
                   <Box>
                     {renderReceiverSuggestions()}
                   </Box>
