@@ -31,12 +31,14 @@ import {
   ModalCloseButton,
   useToast,
   Select,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useState } from "react";
 import { useRemoveStoreMutation } from "@/app/_lib/features/api/apiSlice"
 import { Store } from "@/app/type";
 import { useAppSelector } from "@/app/_lib/hooks";
+import EditDialog from "./EditDialog";
 
 interface StoreTableProps {
   stores: Store[];
@@ -63,6 +65,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
   const role = useAppSelector((state: any) => state.role.value)
   const [removeStore, { isLoading }] = useRemoveStoreMutation();
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleDeleteClose = async () => {
     setDeleteOpen(false);
@@ -147,6 +150,12 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
 
   const totalPages = Math.ceil(stores.length / storesPerPage);
 
+  const handleUpdate = async (id: any) => {
+    const p = stores.find((tmp) => tmp.id === id);
+    setSelectedStore({...p});
+    onOpen()
+  }
+
   return (
     <Box overflowX={{ base: 'scroll', md: "scroll" }} p={8}>
       <Table variant="simple" size={{ base: 'sm', md: 'md' }}>
@@ -225,7 +234,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
                       <Icon as={SlOptionsVertical} color={"gray"} />
                     </MenuButton>
                     <MenuList>
-                      {/* <MenuItem>Sửa</MenuItem> */}
+                      <MenuItem onClick={() => handleUpdate(store.id)}>Sửa</MenuItem>
                       <MenuItem onClick={() => handleDeleteOpen(store.id)}>Xoá</MenuItem>
                     </MenuList>
                   </Menu>
@@ -235,6 +244,12 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
           ))}
         </Tbody>
       </Table>
+
+      <EditDialog 
+        isOpen={isOpen}
+        onClose={onClose}
+        selectedStore={selectedStore}
+      />
 
       <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered size={{ base: 'sm', md: 'md' }}>
         <ModalOverlay />
