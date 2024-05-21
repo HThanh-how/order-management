@@ -34,7 +34,7 @@ import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
 import ProductTable from "./Table";
 import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
-import { useGetProductsQuery } from "@/app/_lib/features/api/apiSlice"
+import { useGetProductsQuery, useGetTodayProductQuery } from "@/app/_lib/features/api/apiSlice"
 // import { Product } from "@/app/type";
 
 export default function Product() {
@@ -52,6 +52,18 @@ export default function Product() {
   const getProducts = useMemo(() => {
     if (isSuccess) return products.data
   }, [products])
+
+  const {
+    data: today,
+    isLoading: isLoadingT,
+    isSuccess: isSuccessT,
+    isError: isErrorT,
+    error: errorT,
+  } = useGetTodayProductQuery(1)
+
+  const getToday = useMemo(() => {
+    if (isSuccessT) return today.data
+  }, [today])
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
     const inputValue = event.target.value;
@@ -86,7 +98,10 @@ export default function Product() {
             color="transparent" fontWeight={700}>
             Sản phẩm
           </Text>
-          <Text display={{base: "none", md:"flex"}} color={"gray"}>Bạn bán hơn 60 sản phẩm mỗi ngày</Text>
+          {isSuccessT && (
+            <Text display={{base: "none", md:"flex"}} color={"gray"}>Tuần này bạn có thêm {getToday} sản phẩm mới</Text>
+          )}
+          
         </VStack>
         <Flex>
           <Input

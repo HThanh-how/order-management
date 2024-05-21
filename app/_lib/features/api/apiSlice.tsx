@@ -398,6 +398,27 @@ export const apiSlice = createApi({
       }),
       
     }),
+    getTodayReceiver: builder.query({
+      // The URL for the request is '/fakeApi/posts'
+      query: () => ({
+        url: `receivers/statistics`,
+      }),
+      
+    }),
+    getTodayStore: builder.query({
+      // The URL for the request is '/fakeApi/posts'
+      query: () => ({
+        url: `stores/statistics`,
+      }),
+      
+    }),
+    getTodayProduct: builder.query({
+      // The URL for the request is '/fakeApi/posts'
+      query: () => ({
+        url: `products/statistics`,
+      }),
+      
+    }),
   }),
 });
 
@@ -437,4 +458,7 @@ export const {
   useSetNotiIsReadMutation,
   useGetStatisticQuery,
   useGetStatistic2Query,
+  useGetTodayProductQuery,
+  useGetTodayReceiverQuery,
+  useGetTodayStoreQuery,
 } = apiSlice;

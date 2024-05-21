@@ -33,7 +33,7 @@ import {
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
 import StoreList from "./Table";
-import { useGetStoresQuery } from "@/app/_lib/features/api/apiSlice"
+import { useGetStoresQuery, useGetTodayStoreQuery } from "@/app/_lib/features/api/apiSlice"
 import { Store } from "@/app/type";
 import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
 
@@ -52,6 +52,18 @@ export default function StoreTable() {
   const getStores = useMemo(() => {
     if (isSuccess) return stores.data
   }, [stores])
+
+  const {
+    data: today,
+    isLoading: isLoadingT,
+    isSuccess: isSuccessT,
+    isError: isErrorT,
+    error: errorT,
+  } = useGetTodayStoreQuery(1)
+
+  const getToday = useMemo(() => {
+    if (isSuccessT) return today.data
+  }, [today])
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
 
@@ -89,7 +101,10 @@ export default function StoreTable() {
             color="transparent" fontWeight={700}>
             Cửa hàng
           </Text>
-          <Text color={"gray"}>Tuần này bạn có thêm 20 khách hàng mới</Text>
+          {/* <Text color={"gray"}>Tuần này bạn có thêm 20 khách hàng mới</Text> */}
+          {isSuccessT && (
+            <Text display={{base: "none", md:"flex"}} color={"gray"}>Tuần này bạn có thêm {getToday} cửa hàng mới</Text>
+          )}
         </VStack>
         <Flex>
           <Input
