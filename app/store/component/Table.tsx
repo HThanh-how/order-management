@@ -148,9 +148,9 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
   const totalPages = Math.ceil(stores.length / storesPerPage);
 
   return (
-    <Box overflowX={{ base: 'scroll', md: "scroll" }} p={8}>
+    <Box overflowX={"auto"} p={8} m={2}>
       <Table variant="simple" size={{ base: 'sm', md: 'md' }}>
-        <Thead bgColor={"gray.50"} rounded={"xl"}>
+        <Thead bgColor={"gray.50"} rounded={"xl"} >
           <Tr>
             <Th width={"1vw"}>
               <Checkbox
@@ -158,9 +158,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
                 onChange={handleMasterCheckboxChange}
               />
             </Th>
-            <Th>Name</Th>
-            {/* <Th>Trạng thái</Th>
-            <Th>Tags</Th> */}
+            <Th >Name</Th>
             <Th>Số điện thoại</Th>
             <Th>Địa chỉ</Th>
             <Th>Ghi chú</Th>
@@ -170,10 +168,6 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
                   <MenuButton>
                     <Icon as={SlOptionsVertical} />
                   </MenuButton>
-                  {/* <MenuList>
-                  <MenuItem>Sửa</MenuItem>                  
-                  <MenuItem>Xoá</MenuItem>
-                </MenuList> */}
                 </Menu>
               </Th>
             )}
@@ -188,36 +182,10 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
                   onChange={() => handleCheckboxChange(store.id)}
                 />
               </Td>
-              <Td>{store.name}</Td>
-              {/* <Td> <Badge
-                colorScheme={
-                  store.status === "warning"
-                    ? "yellow"
-                    : store.status === "report"
-                    ? "orange"
-                    : store.status === "blacklist"
-                    ? "red"
-                    : "green"
-                }
-                borderRadius={"xl"}
-              >
-                {store.status}
-              </Badge></Td>
-              <Td>
-                <Flex>
-                  {store.tags.slice(0, 3).map((tag, index) => (
-                    <Badge key={index} mr={2} colorScheme="blue">
-                      {tag}
-                    </Badge>
-                  ))}
-                  {store.tags.length > 3 && (
-                    <Badge colorScheme="purple">+{store.tags.length - 3}</Badge>
-                  )}
-                </Flex>
-              </Td> */}
-              <Td>{store.phoneNumber}</Td>
-              <Td>{store.detailedAddress}, {store.address}</Td>
-              <Td>{store.description}</Td>
+              <Td><Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{store.name}</Text></Td>
+              <Td><Text maxW={'120px'} minW={"100px"} whiteSpace="normal">{store.phoneNumber}</Text></Td>
+              <Td ><Text  whiteSpace="normal">{store.detailedAddress}, {store.address}</Text></Td>
+              <Td><Text maxW={'100px'} whiteSpace="normal">{store.description}</Text></Td>
               {role === 'ROLE_USER' && (
                 <Td>
                   <Menu>
@@ -242,10 +210,10 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
           <ModalCloseButton />
           <ModalHeader>Xác nhận xoá cửa hàng</ModalHeader>
           <ModalBody>
-            
-<Flex  alignItems="center">
-  <Text >Bạn có chắc chắn muốn xoá cửa hàng này không?</Text>
-</Flex>
+
+            <Flex alignItems="center">
+              <Text >Bạn có chắc chắn muốn xoá cửa hàng này không?</Text>
+            </Flex>
             Đây là yêu cầu không thể hoàn tác.
           </ModalBody>
           <ModalFooter>
