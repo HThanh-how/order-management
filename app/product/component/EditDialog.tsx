@@ -49,7 +49,7 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
     setValue,
     watch,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormData>({defaultValues: {
     name: selectedProduct.name || "",
     status: selectedProduct.status || "",
@@ -248,6 +248,23 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
             <Button onClick={onClose} mr={3}>
               Huỷ
             </Button>
+            {isSubmitting ? (
+              <Button
+                isLoading
+                loadingText='Đang lưu'
+                color="white"
+                backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                sx={{
+                  '@media (hover: hover)': {
+                    _hover: {
+                      backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                    }
+                  }
+                }}
+              >
+                Lưu
+              </Button>
+            ) : (
             <Button bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
               color={"white"}
               _hover={{
@@ -256,7 +273,7 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
               }} onClick={handleSubmit(onSubmit)}>
               Lưu
             </Button>
-            
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>

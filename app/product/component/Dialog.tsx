@@ -51,7 +51,7 @@ export default function Dialog() {
     setValue,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitSuccessful, isValid },
+    formState: { errors, isSubmitSuccessful, isSubmitting },
   } = useForm<FormData>()
 
   const [img, setImg] = useState<any>(null);
@@ -252,6 +252,23 @@ export default function Dialog() {
             <Button onClick={onClose} mr={3}>
               Huỷ
             </Button>
+            {isSubmitting ? (
+              <Button
+                isLoading
+                loadingText='Đang lưu'
+                color="white"
+                backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                sx={{
+                  '@media (hover: hover)': {
+                    _hover: {
+                      backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                    }
+                  }
+                }}
+              >
+                Lưu
+              </Button>
+            ) : (
             <Button bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
               color={"white"}
               _hover={{
@@ -260,7 +277,7 @@ export default function Dialog() {
               }} onClick={handleSubmit(onSubmit)}>
               Lưu
             </Button>
-
+            )}
           </ModalFooter>
         </ModalContent>
       </Modal>

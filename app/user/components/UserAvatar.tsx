@@ -49,7 +49,7 @@ export default function UserAvatar({ user }: UserAvatarProps) {
     setValue,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitSuccessful, isValid },
+    formState: { errors, isSubmitSuccessful, isSubmitting },
   } = useForm<FormData>({
     defaultValues: {
       firstName: user.firstName || "",
@@ -232,6 +232,23 @@ export default function UserAvatar({ user }: UserAvatarProps) {
               <Button onClick={onClose} mr={3}>
                 Huỷ
               </Button>
+              {isSubmitting ? (
+              <Button
+                isLoading
+                loadingText='Đang lưu'
+                color="white"
+                backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                sx={{
+                  '@media (hover: hover)': {
+                    _hover: {
+                      backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                    }
+                  }
+                }}
+              >
+                Lưu
+              </Button>
+            ) : (
               <Button bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
                 color={"white"}
                 _hover={{
@@ -240,7 +257,7 @@ export default function UserAvatar({ user }: UserAvatarProps) {
                 }} onClick={handleSubmit(onSubmit)}>
                 Lưu
               </Button>
-
+            )}
             </ModalFooter>
           </ModalContent>
         </Modal>
