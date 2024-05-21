@@ -33,7 +33,7 @@ import {
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
 import CustomerList from "./Table";
-import { useGetCustomersQuery, useGetCustomersForEmployeeQuery } from "@/app/_lib/features/api/apiSlice"
+import { useGetCustomersQuery, useGetCustomersForEmployeeQuery, useGetTodayReceiverQuery } from "@/app/_lib/features/api/apiSlice"
 import { Customer } from "@/app/type";
 import { useAppSelector } from "@/app/_lib/hooks";
 
@@ -55,6 +55,18 @@ export default function CustomerTable() {
   const getCustomers = useMemo(() => {
     if (isSuccess) return customers.data
   }, [customers])
+
+  const {
+    data: today,
+    isLoading: isLoadingT,
+    isSuccess: isSuccessT,
+    isError: isErrorT,
+    error: errorT,
+  } = useGetTodayReceiverQuery(1)
+
+  const getToday = useMemo(() => {
+    if (isSuccessT) return today.data
+  }, [today])
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
 
@@ -90,7 +102,10 @@ export default function CustomerTable() {
             color="transparent" fontWeight={700}>
             Khách hàng
           </Text>
-          <Text color={"gray"}>Tuần này bạn có thêm 20 khách hàng mới</Text>
+          {/* <Text color={"gray"}>Tuần này bạn có thêm 20 khách hàng mới</Text> */}
+          {isSuccessT && (
+            <Text display={{base: "none", md:"flex"}} color={"gray"}>Tuần này bạn có thêm {getToday} khách hàng mới</Text>
+          )}
         </VStack>
         <Flex>
           <Input
