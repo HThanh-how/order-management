@@ -47,8 +47,8 @@ export default function Login() {
   });
 
   const validateUsername = () => {
-    
-    if (username.length ==0) {
+
+    if (username.length == 0) {
       setErrors((errors) => ({
         ...errors,
         username: "Vui lòng nhập tên người dùng",
@@ -68,7 +68,7 @@ export default function Login() {
     }
   };
 
-  const existUsername =() =>{
+  const existUsername = () => {
     setErrors((errors) => ({
       ...errors,
       username: "Tên người dùng đã tồn tại",
@@ -88,7 +88,7 @@ export default function Login() {
   const validatePhoneNumber = () => {
     if (!phoneNumber) {
       setErrors((errors) => ({ ...errors, phoneNumber: "Vui lòng nhập số điện thoại" }));
-    } else if (!/[0-9]{10}$/.test(phoneNumber)) {
+    } else if (!/(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/.test(phoneNumber)) {
       setErrors((errors) => ({ ...errors, phoneNumber: "Số điện thoại không hợp lệ" }));
     } else {
       setErrors((errors) => ({ ...errors, phoneNumber: "" }));
@@ -131,7 +131,7 @@ export default function Login() {
     if (!firstName) {
       setErrors((errors) => ({ ...errors, firstName: "Vui lòng nhập tên" }));
     } else if (!/^[^~`!@#$%^&*()_+={}[\]|;:'",.<>?]+$/u
-    .test(firstName)) {
+      .test(firstName)) {
       setErrors((errors) => ({ ...errors, firstName: "Tên không hợp lệ" }));
     } else {
       setErrors((errors) => ({ ...errors, firstName: "" }));
@@ -141,7 +141,7 @@ export default function Login() {
     if (!lastName) {
       setErrors((errors) => ({ ...errors, lastName: "Vui lòng nhập tên" }));
     } else if (!/^[^~`!@#$%^&*()_+={}[\]|;:'",.<>?]+$/u
-    .test(lastName)) {
+      .test(lastName)) {
       setErrors((errors) => ({ ...errors, lastName: "Tên không hợp lệ" }));
     } else {
       setErrors((errors) => ({ ...errors, lastName: "" }));
@@ -204,7 +204,7 @@ export default function Login() {
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat'
     }}>
-          <title>Đăng ký</title>
+      <title>Đăng ký</title>
       <Container
         as={SimpleGrid}
         maxW={"7xl"}
@@ -254,10 +254,10 @@ export default function Login() {
             </Heading>
             <Text color={"gray.500"} fontSize={{ base: "sm", sm: "md" }}></Text>
           </Stack>
-   
+
           <Box as={"form"} mt={2} onSubmit={handleRegister}>
             <Stack spacing={4}>
-            {/* <FormControl isInvalid={!!errors.firstName}>
+              {/* <FormControl isInvalid={!!errors.firstName}>
                 <Input
                   placeholder="Họ và tên"
                   bg={"#0a0a0a"}

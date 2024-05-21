@@ -669,7 +669,7 @@ export default function OrderForm() {
                   required: 'This is required',
                 })}
               >
-                <option value="MOT_TIENG">MỘT GIỜ</option>
+                <option value="MOT_TIENG">Hoả tốc</option>
                 <option value="BA_GIO">BA GIỜ</option>
                 <option value="MOT_NGAY">MỘT NGÀY</option>
               </Select>

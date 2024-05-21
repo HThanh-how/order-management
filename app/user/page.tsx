@@ -82,6 +82,7 @@ export default function Sidebar() {
 
   return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
+      <title>Trang cá nhân</title>
       <SidebarContent
         onClose={() => onClose}
         display={{ base: "none", md: "none", lg: "block" }}
