@@ -83,14 +83,14 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
 const handleDelete = async (id: any) => {
     let response;
     try {
-      response = await removeProduct(id).unwrap();
-      
+      response = await removeProduct(id).unwrap();     
+      // console.log(response.message);
       handleDeleteClose();
     } catch (err) {
       handleDeleteClose();
       console.error('Failed to delete product: ', err)
       toast({
-        title: "Có lỗi khi xoá sản phẩm này",
+        title: response?.message,
         position: 'top',
         status: 'error',
         duration: 3000,
@@ -99,7 +99,7 @@ const handleDelete = async (id: any) => {
       return;
     }
     toast({
-      title: "Xoá sản phẩm thành công",
+      title: response?.message,
       position: 'top',
       status: 'success',
       duration: 3000,

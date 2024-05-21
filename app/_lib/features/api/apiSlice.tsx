@@ -194,7 +194,7 @@ export const apiSlice = createApi({
     }),
     editCustomer: builder.mutation({
       query: (newCustomer) => ({
-        url: `/receivers/${newCustomer.id}`,
+        url: `/receivers/${newCustomer.receiverId}`,
         method: "PUT",
         headers: {
           userId: `${getFromLocalStorage("userId")}`,

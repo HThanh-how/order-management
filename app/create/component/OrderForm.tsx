@@ -186,6 +186,7 @@ export default function OrderForm() {
       data.price.shippingFee = shippingFee + optionValuable + optionBulky;
       data.price.collectionCharge = totalPriceItems + data.price.shippingFee;
       data.store = { ...selectedStore };
+      data.receiver = { ...selectedReceiver};
       if (role === "ROLE_USER") {
         result = await addOrder(data).unwrap();
       }

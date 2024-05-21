@@ -303,9 +303,6 @@ export default function CustomerTable() {
                 <CardHeader>
                   <Flex justify={'space-between'}>
                     <Heading size='md' ><GradientText>Thông tin người nhận</GradientText></Heading>
-                    {getOrder.orderStatus !== 'CANCELLED' && (
-                      <EditIcon color="#ff0348" boxSize={6} style={{ cursor: 'pointer' }} onClick={receiverDialog.onOpen} />
-                    )}
                   </Flex>
                 </CardHeader>
                 <CardBody>
