@@ -131,7 +131,7 @@ export default function Dialog() {
             }
           }
         }} onClick={onOpen}>
-        Thêm sản phẩm
+        Tạo sản phẩm mới
       </Button>
       <Modal
         closeOnOverlayClick={false}
@@ -142,7 +142,7 @@ export default function Dialog() {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Thêm sản phẩm</ModalHeader>
+          <ModalHeader>Tạo sản phẩm mới</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
 

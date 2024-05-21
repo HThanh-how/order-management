@@ -20,11 +20,13 @@ import {
   FormLabel,
   FormErrorMessage,
   Spinner,
+  Menu,
+  MenuList,
   Alert,
   AlertIcon,
   useToast,
   StackDivider,
-  Link,
+  Link,  Popover, PopoverTrigger, PopoverContent,
   Skeleton,
 } from "@chakra-ui/react";
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
@@ -331,7 +333,7 @@ export default function OrderForm() {
     </option>
   ));
 
-  const renderReceiverSuggestions = () => receiverSuggestions.map((suggestion): any => (
+  const renderReceiverSuggestions = () => receiverSuggestions.slice(0, 5).map((suggestion) => (
     <option
       key={suggestion.id}
       style={{ cursor: 'pointer' }}
@@ -581,32 +583,32 @@ export default function OrderForm() {
           <Text color="orange.500" fontWeight={"bold"} fontSize="20px">Người nhận</Text>
           <FormControl isRequired isInvalid={Boolean(errors.receiver)}>
             <div>
-              <Input
-                mt={4}
-                placeholder={"Số điện thoại"}
-                value={receiverValue}
-                {...register('receiver', {
-                  required: 'Người nhận không được bỏ trống',
-                  pattern: {
-                    value: /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
-                    message: 'Số điện thoại không hợp lệ'
-                  }
-                })}
-                onChange={(e) => {
-                  handleReceiverInputChange(e.target.value);
-                  setReceiverValue(e.target.value)
-                }}
-              />
-               {errors.receiver && <Text color="red.500" mb={2} mt={-2}>{errors.receiver.message}</Text>}
-              {receiverSuggestions.length > 0 && (
-                <VStack
-                  alignItems={'flex-start'}
-                  divider={<StackDivider borderColor='gray.200' />}
-                  spacing={2}
-                >
-                  {renderReceiverSuggestions()}
-                </VStack>
-              )}
+              <Popover isOpen={receiverSuggestions.length > 0} placement="bottom-start">
+                <PopoverTrigger>
+                  <Input
+                    mt={4}
+                    placeholder={"Số điện thoại"}
+                    value={receiverValue}
+                    {...register('receiver', {
+                      required: 'Người nhận không được bỏ trống',
+                      pattern: {
+                        value: /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
+                        message: 'Số điện thoại không hợp lệ'
+                      }
+                    })}
+                    onChange={(e) => {
+                      handleReceiverInputChange(e.target.value);
+                      setReceiverValue(e.target.value)
+                    }}
+                  />
+                </PopoverTrigger>
+                {errors.receiver && <Text color="red.500" mb={2} mt={-2}>{errors.receiver.message}</Text>}
+                <PopoverContent w="100%">
+                  <Box>
+                    {renderReceiverSuggestions()}
+                  </Box>
+                </PopoverContent>
+              </Popover>
             </div>
             <FormErrorMessage>
               {errors.receiver && errors.receiver.message}
