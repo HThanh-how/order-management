@@ -78,7 +78,7 @@ export default function CustomerTable() {
         direction={{ base: "column", md: "row" }}
       >
         <VStack
-          m={{ base: 2, md: 8 }}
+          m={{ base: 2, xl: 8 }}
           alignItems={"flex-start"}
           maxW={{ base: "80vw", md: "full" }}
         >

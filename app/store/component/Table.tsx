@@ -193,7 +193,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
               </Td>
               <Td><Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{store.name}</Text></Td>
               <Td><Text maxW={'120px'} minW={"100px"} whiteSpace="normal">{store.phoneNumber}</Text></Td>
-              <Td ><Text  whiteSpace="normal">{store.detailedAddress}, {store.address}</Text></Td>
+              <Td ><Text  whiteSpace="normal" minW={"200px"}>{store.detailedAddress}, {store.address}</Text></Td>
               <Td><Text maxW={'100px'} whiteSpace="normal">{store.description}</Text></Td>
               {role === 'ROLE_USER' && (
                 <Td>

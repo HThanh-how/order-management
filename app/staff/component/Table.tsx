@@ -88,7 +88,7 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
 
   return (
     
-    <Box overflowX={{base: 'scroll', md: "hidden"}} p={8}>
+    <Box overflowX={{base: 'scroll', md: "scroll"}} p={8}>
       <Table variant="simple" size={{base: 'sm', md: 'md'}}>
         <Thead bgColor={"gray.50"} rounded={"xl"}>
           <Tr>

@@ -53,7 +53,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [removeCustomer, {isLoading}] = useRemoveCustomerMutation();
+  const [removeCustomer, { isLoading }] = useRemoveCustomerMutation();
   const toast = useToast();
   const role = useAppSelector((state) => state.role.value);
   const isEmployee: boolean = role === 'ROLE_EMPLOYEE' ? true : false;
@@ -65,7 +65,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
   }
   const handleDeleteOpen = async (id: any) => {
     const p = customers.find((tmp) => tmp.id === id);
-    setSelectedCustomer({...p});
+    setSelectedCustomer({ ...p });
     setDeleteOpen(true);
   }
 
@@ -78,7 +78,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
       console.error('Failed to delete customer: ', err)
       toast({
         title: 'Có lỗi khi xóa khách hàng này',
-        
+
         position: 'top',
         status: 'error',
         duration: 3000,
@@ -144,13 +144,13 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
 
   const handleUpdate = async (id: any) => {
     const p = customers.find((tmp) => tmp.id === id);
-    setSelectedCustomer({...p});
+    setSelectedCustomer({ ...p });
     onOpen();
   }
 
   return (
-    <Box overflowX={{base: 'scroll', md: "hidden"}} p={8}>
-      <Table variant="simple" size={{base: 'sm', md: 'md'}}>
+    <Box overflowX={"scroll"} p={8}>
+      <Table variant="simple" size={{ base: 'sm', md: 'md' }}>
         <Thead bgColor={"gray.50"} rounded={"xl"}>
           <Tr>
             <Th width={"1vw"}>
@@ -163,14 +163,14 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
             <Th>Số điện thoại</Th>
             <Th>Địa chỉ</Th>
             <Th>Ghi chú</Th>
-            { role === 'ROLE_USER' && (
-            <Th w={"1vw"}>
-              <Menu>
-                <MenuButton>
-                  <Icon as={SlOptionsVertical} />
-                </MenuButton>
-              </Menu>
-            </Th>
+            {role === 'ROLE_USER' && (
+              <Th w={"1vw"}>
+                <Menu>
+                  <MenuButton>
+                    <Icon as={SlOptionsVertical} />
+                  </MenuButton>
+                </Menu>
+              </Th>
             )}
           </Tr>
         </Thead>
@@ -183,80 +183,54 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
                   onChange={() => handleCheckboxChange(customer.id)}
                 />
               </Td>
-              <Td>{customer.name}</Td>
-              {/* <Td> <Badge
-                colorScheme={
-                  customer.status === "warning"
-                    ? "yellow"
-                    : customer.status === "report"
-                    ? "orange"
-                    : customer.status === "blacklist"
-                    ? "red"
-                    : "green"
-                }
-                borderRadius={"xl"}
-              >
-                {customer.status}
-              </Badge></Td>
-              <Td>
-                <Flex>
-                  {customer.tags.slice(0, 3).map((tag, index) => (
-                    <Badge key={index} mr={2} colorScheme="blue">
-                      {tag}
-                    </Badge>
-                  ))}
-                  {customer.tags.length > 3 && (
-                    <Badge colorScheme="purple">+{customer.tags.length - 3}</Badge>
-                  )}
-                </Flex>
-              </Td> */}
-              <Td>{customer.phoneNumber}</Td>
-              <Td>{customer.detailedAddress}, {customer.address}</Td>
-              <Td>{customer.note}</Td>
-              { role === 'ROLE_USER' && (
-              <Td>
-                <Menu>
-                  <MenuButton>
-                    <Icon as={SlOptionsVertical} color={"gray"} />
-                  </MenuButton>
-                  <MenuList>
-                    <MenuItem onClick={() => handleUpdate(customer.id)}>Sửa</MenuItem>
-                    <MenuItem onClick={() => handleDeleteOpen(customer.id)}>Xoá</MenuItem>
-                  </MenuList>
-                </Menu>
-              </Td>
+              <Td><Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{customer.name}</Text></Td>
+              <Td><Text maxW={'120px'} minW={"100px"} whiteSpace="normal">{customer.phoneNumber}</Text></Td>
+              <Td><Text whiteSpace="normal" minW={"200px"}>{customer.detailedAddress}, {customer.address}</Text></Td>
+              <Td><Text maxW={'100px'} whiteSpace="normal">{customer.note}</Text></Td>
+              {role === 'ROLE_USER' && (
+                <Td>
+                  <Menu>
+                    <MenuButton>
+                      <Icon as={SlOptionsVertical} color={"gray"} />
+                    </MenuButton>
+                    <MenuList>
+                      <MenuItem onClick={() => handleUpdate(customer.id)}>Sửa</MenuItem>
+                      <MenuItem onClick={() => handleDeleteOpen(customer.id)}>Xoá</MenuItem>
+                    </MenuList>
+                  </Menu>
+                </Td>
               )}
             </Tr>
           ))}
         </Tbody>
       </Table>
 
-      <EditDialog 
+      <EditDialog
         isOpen={isOpen}
         onClose={onClose}
         //setProducts={setProducts}
         selectedCustomer={selectedCustomer}
       />
 
-      <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered size={{base: 'sm', md: 'md'}}>
+      <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered size={{ base: 'sm', md: 'md' }}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
           <ModalHeader>Xác nhận Xóa khách hàng</ModalHeader>
           <ModalBody>
-              Bạn có chắc chắn xóa khách hàng này?
+            Bạn có chắc chắn xóa khách hàng này?
           </ModalBody>
           <ModalFooter>
             <Button mr={3} onClick={() => handleDeleteClose()}>Đóng</Button>
-            <Button                   color="white"
-                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
-                  sx={{
-                    '@media (hover: hover)': {
-                      _hover: {
-                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
-                      }
-                    }
-                  }} onClick={() => handleDelete(selectedCustomer.id)}>Xác nhận</Button>
+            <Button color="white"
+              backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+              sx={{
+                '@media (hover: hover)': {
+                  _hover: {
+                    backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                  }
+                }
+              }} onClick={() => handleDelete(selectedCustomer.id)}>Xác nhận</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -294,14 +268,14 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
             25
           </Button>
         </ButtonGroup> */}
-        <Select ml={2} fontSize={{base: 10, md: 16}} w={{base: '15%', md:'20%'}} onChange={(e) => handleCustomersPerPageChange(Number(e.target.value))}>
+        <Select ml={2} fontSize={{ base: 10, md: 16 }} w={{ base: '15%', md: '20%' }} onChange={(e) => handleCustomersPerPageChange(Number(e.target.value))}>
           <option defaultChecked value='5' >5 khách hàng</option>
           <option value='10' >10 khách hàng</option>
           <option value='15' >15 khách hàng</option>
           <option value='20' >20 khách hàng</option>
         </Select>
 
-        <Flex ml={{base: 6}} align="center">
+        <Flex ml={{ base: 6 }} align="center">
           <Text>{`Page `}</Text>
           <Input
             mx={2}
