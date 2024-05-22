@@ -22,6 +22,7 @@ import {
   MenuGroup,
   MenuOptionGroup,
   MenuDivider,
+  Tooltip,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -186,7 +187,13 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
               <Td><Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{customer.name}</Text></Td>
               <Td><Text maxW={'120px'} minW={"100px"} whiteSpace="normal">{customer.phoneNumber}</Text></Td>
               <Td><Text whiteSpace="normal" minW={"200px"}>{customer.detailedAddress}, {customer.address}</Text></Td>
-              <Td><Text maxW={'100px'} whiteSpace="normal">{customer.note}</Text></Td>
+              <Td>
+                <Tooltip label={customer.note} placement="bottom">
+                  <Text maxW={'100px'} whiteSpace="normal" isTruncated>
+                    {customer.note}
+                  </Text>
+                </Tooltip>
+              </Td>
               {role === 'ROLE_USER' && (
                 <Td>
                   <Menu>

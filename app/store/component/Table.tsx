@@ -6,6 +6,7 @@ import {
   Tbody,
   Td,
   Text,
+  Tooltip,
   Th,
   Thead,
   Badge,
@@ -152,7 +153,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
 
   const handleUpdate = async (id: any) => {
     const p = stores.find((tmp) => tmp.id === id);
-    setSelectedStore({...p});
+    setSelectedStore({ ...p });
     onOpen()
   }
 
@@ -192,9 +193,17 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
                 />
               </Td>
               <Td><Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{store.name}</Text></Td>
-              <Td><Text maxW={'120px'} minW={"100px"} whiteSpace="normal">{store.phoneNumber}</Text></Td>
-              <Td ><Text  whiteSpace="normal" minW={"200px"}>{store.detailedAddress}, {store.address}</Text></Td>
-              <Td><Text maxW={'100px'} whiteSpace="normal">{store.description}</Text></Td>
+              <Td><Text maxW={'120px'} minW={"100px"} whiteSpace="normal" >{store.phoneNumber}</Text></Td>
+              <Td ><Text whiteSpace="normal" minW={"200px"}>{store.detailedAddress}, {store.address}</Text></Td>
+   
+
+              <Td>
+                <Tooltip label={store.description} placement="bottom">
+                  <Text maxW={'100px'} whiteSpace="normal" isTruncated>
+                    {store.description}
+                  </Text>
+                </Tooltip>
+              </Td>
               {role === 'ROLE_USER' && (
                 <Td>
                   <Menu>
@@ -213,7 +222,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
         </Tbody>
       </Table>
 
-      <EditDialog 
+      <EditDialog
         isOpen={isOpen}
         onClose={onClose}
         selectedStore={selectedStore}

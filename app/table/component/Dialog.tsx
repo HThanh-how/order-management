@@ -293,7 +293,7 @@ export default function AddressSelect() {
             </FormControl>
             <FormControl mt={4}>
               <FormLabel>Ghi chú</FormLabel>
-              <Textarea placeholder={"Ghi chú"} {...register('note')} />
+              <Textarea placeholder={"Ghi chú"} {...register('note')} maxLength={255} />
             </FormControl>
 
             <Checkbox id="checkbox1" colorScheme="red" isChecked={checkbox1Checked} {...register('receiveAtPost')} onChange={() => handleCheckboxChange('checkbox1')}>
@@ -326,17 +326,17 @@ export default function AddressSelect() {
                 Lưu
               </Button>
             ) : (
-            <Button                   color="white"
-                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
-                  sx={{
-                    '@media (hover: hover)': {
-                      _hover: {
-                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
-                      }
+              <Button color="white"
+                backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                sx={{
+                  '@media (hover: hover)': {
+                    _hover: {
+                      backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
                     }
-                  }} onClick={handleSubmit(onSubmit)}>
-              Lưu
-            </Button>
+                  }
+                }} onClick={handleSubmit(onSubmit)}>
+                Lưu
+              </Button>
             )}
           </ModalFooter>
         </ModalContent>
