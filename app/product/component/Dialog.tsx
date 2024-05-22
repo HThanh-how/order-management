@@ -131,7 +131,7 @@ export default function Dialog() {
             }
           }
         }} onClick={onOpen}>
-        Thêm sản phẩm
+        Tạo sản phẩm mới
       </Button>
       <Modal
         closeOnOverlayClick={false}
