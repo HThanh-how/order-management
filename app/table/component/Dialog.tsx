@@ -74,8 +74,8 @@ export default function AddressSelect() {
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedVillage, setSelectedVillage] = useState("");
   //only 1 checkbox be checked
-  const [checkbox1Checked, setCheckbox1Checked] = useState(true);
-  const [checkbox2Checked, setCheckbox2Checked] = useState(false);
+  // const [checkbox1Checked, setCheckbox1Checked] = useState(true);
+  // const [checkbox2Checked, setCheckbox2Checked] = useState(false);
   const toast = useToast();
 
   const [addCustomer, { isLoading }] = useAddCustomerMutation();
@@ -113,17 +113,17 @@ export default function AddressSelect() {
     (district) => district.name === selectedDistrict
   );
 
-  const handleCheckboxChange = (checkboxId: string) => {
-    if (checkboxId === 'checkbox1') {
-      setCheckbox1Checked(true);
-      setCheckbox2Checked(false);
-      setValue('callBeforeSend', false);
-    } else if (checkboxId === 'checkbox2') {
-      setCheckbox1Checked(false);
-      setCheckbox2Checked(true);
-      setValue('receiveAtPost', false);
-    }
-  };
+  // const handleCheckboxChange = (checkboxId: string) => {
+  //   if (checkboxId === 'checkbox1') {
+  //     setCheckbox1Checked(true);
+  //     setCheckbox2Checked(false);
+  //     setValue('callBeforeSend', false);
+  //   } else if (checkboxId === 'checkbox2') {
+  //     setCheckbox1Checked(false);
+  //     setCheckbox2Checked(true);
+  //     setValue('receiveAtPost', false);
+  //   }
+  // };
 
   const onSubmit = async (data: FormData) => {
     const { village, district, city, ...sendData } = data;
@@ -297,11 +297,11 @@ export default function AddressSelect() {
               <Textarea placeholder={"Ghi chú"} {...register('note')} maxLength={255} />
             </FormControl>
 
-            <Checkbox id="checkbox1" colorScheme="red" isChecked={checkbox1Checked} {...register('receiveAtPost')} onChange={() => handleCheckboxChange('checkbox1')}>
+            <Checkbox id="checkbox1" colorScheme="red" isChecked={true} {...register('receiveAtPost')}>
               Nhận tại bưu cục
             </Checkbox>
             <br />
-            <Checkbox id="checkbox2" colorScheme="red" isChecked={checkbox2Checked} {...register('callBeforeSend')} onChange={() => handleCheckboxChange('checkbox2')}>
+            <Checkbox id="checkbox2" colorScheme="red" {...register('callBeforeSend')}>
               Liên hệ trước khi gửi
             </Checkbox>
           </ModalBody>
