@@ -95,8 +95,8 @@ export default function OrderForm() {
   const [optionBulky, setOptionBulky] = useState<number>(0);
 
   //only 1 checkbox of receiver box be checked
-  const [checkbox1Checked, setCheckbox1Checked] = useState(true);
-  const [checkbox2Checked, setCheckbox2Checked] = useState(false);
+  // const [checkbox1Checked, setCheckbox1Checked] = useState(true);
+  // const [checkbox2Checked, setCheckbox2Checked] = useState(false);
 
   const [selectedStore, setSelectedStore] = useState<any>(null);
   const [selectedReceiver, setSelectedReceiver] = useState<any>(null);
@@ -270,15 +270,15 @@ export default function OrderForm() {
     //setValue('store', tmp);
   }
 
-  const handleCheckboxChange = (checkboxId: string) => {
-    if (checkboxId === 'checkbox1') {
-      setCheckbox1Checked(true);
-      setCheckbox2Checked(false);
-    } else if (checkboxId === 'checkbox2') {
-      setCheckbox1Checked(false);
-      setCheckbox2Checked(true);
-    }
-  };
+  // const handleCheckboxChange = (checkboxId: string) => {
+  //   if (checkboxId === 'checkbox1') {
+  //     setCheckbox1Checked(true);
+  //     setCheckbox2Checked(false);
+  //   } else if (checkboxId === 'checkbox2') {
+  //     setCheckbox1Checked(false);
+  //     setCheckbox2Checked(true);
+  //   }
+  // };
 
   const updatePriceItem = (index: any, newValue: number) => {
     // Create a copy of the array
@@ -629,9 +629,9 @@ export default function OrderForm() {
                 id="checkbox1"
                 m={4}
                 colorScheme="red"
-                isChecked={checkbox1Checked}
+                // isChecked={checkbox1Checked}
                 {...register('receiver.receiveAtPost')}
-                onChange={() => handleCheckboxChange('checkbox1')}
+                // onChange={() => handleCheckboxChange('checkbox1')}
               >
                 Nhận tại bưu cục
               </Checkbox>
@@ -639,9 +639,9 @@ export default function OrderForm() {
                 id="checkbox2"
                 m={4}
                 colorScheme="red"
-                isChecked={checkbox2Checked}
+                // isChecked={checkbox2Checked}
                 {...register('receiver.callBeforeSend')}
-                onChange={() => handleCheckboxChange('checkbox2')}
+                // onChange={() => handleCheckboxChange('checkbox2')}
               >
                 Liên hệ trước khi gửi
               </Checkbox>
