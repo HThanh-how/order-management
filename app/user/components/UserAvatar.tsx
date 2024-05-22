@@ -71,7 +71,7 @@ export default function UserAvatar({ user }: UserAvatarProps) {
       const fsMb = value.size / (1024 * 1024)
       const MAX_FILE_SIZE = 2
       if (fsMb > MAX_FILE_SIZE) {
-        return 'File không vượt quá 10MB'
+        return 'File không vượt quá 2MB'
       }
       setImg(value);
     }
