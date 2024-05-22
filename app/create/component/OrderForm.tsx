@@ -406,7 +406,7 @@ export default function OrderForm() {
           {selectedStore && (
             <>
               <Input mt={4} value={selectedStore?.address} placeholder={"Địa chỉ"} readOnly />
-              <Input mt={4} value={selectedStore?.detailedAddress} placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} readOnly />
+              <Input maxLength={255} mt={4} value={selectedStore?.detailedAddress} placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} readOnly />
             </>
 
           )}
