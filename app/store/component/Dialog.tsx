@@ -140,7 +140,7 @@ export default function AddressSelect() {
 
   return (
     <>
-      <Button m={{ base: 2, xl: 8 }} color="white"  ml={{base:0, md:-4}}
+      <Button m={{ base: 2, xl: 8 }} color="white" ml={{ base: 0, md: -4 }}
         backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
         sx={{
           '@media (hover: hover)': {
@@ -183,7 +183,7 @@ export default function AddressSelect() {
                   message: 'Số điện thoại không hợp lệ'
                 }
               })} />
-               <FormErrorMessage>
+              <FormErrorMessage>
                 {errors.phoneNumber && errors.phoneNumber.message}
               </FormErrorMessage>
             </FormControl>
@@ -268,6 +268,7 @@ export default function AddressSelect() {
             <FormControl mt={4} isRequired isInvalid={Boolean(errors.detailedAddress)}>
               <FormLabel>Địa chỉ chi tiết</FormLabel>
               <Input
+                maxLength={255}
                 type="text"
                 placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
                 {...register('detailedAddress', {
@@ -313,14 +314,14 @@ export default function AddressSelect() {
                 Lưu
               </Button>
             ) : (
-            <Button bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
-              color={"white"}
-              _hover={{
-                bgGradient: "linear-gradient(to right, #df5207, #d80740)",
-                boxShadow: "xl",
-              }} onClick={handleSubmit(onSubmit)}>
-              Lưu
-            </Button>
+              <Button bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
+                color={"white"}
+                _hover={{
+                  bgGradient: "linear-gradient(to right, #df5207, #d80740)",
+                  boxShadow: "xl",
+                }} onClick={handleSubmit(onSubmit)}>
+                Lưu
+              </Button>
             )}
           </ModalFooter>
         </ModalContent>

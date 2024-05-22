@@ -26,7 +26,7 @@ import {
   AlertIcon,
   useToast,
   StackDivider,
-  Link,  Popover, PopoverTrigger, PopoverContent,
+  Link, Popover, PopoverTrigger, PopoverContent,
   Skeleton,
 } from "@chakra-ui/react";
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
@@ -186,7 +186,7 @@ export default function OrderForm() {
       data.price.shippingFee = shippingFee + optionValuable + optionBulky;
       data.price.collectionCharge = totalPriceItems + data.price.shippingFee;
       data.store = { ...selectedStore };
-      data.receiver = { ...selectedReceiver};
+      data.receiver = { ...selectedReceiver };
       if (role === "ROLE_USER") {
         result = await addOrder(data).unwrap();
       }
@@ -428,6 +428,7 @@ export default function OrderForm() {
                     <FormControl isInvalid={Boolean(errors.items)}>
                       <div>
                         <Input {...field}
+                          maxLength={255}
                           placeholder="Tên sản phẩm"
                           value={selectedItems[index]?.product.name}
                           onChange={(e) => {
@@ -468,6 +469,7 @@ export default function OrderForm() {
                   mt={4}
                   w={{ base: '50%', md: '25%' }}
                   placeholder={"Số lượng "}
+                  maxLength={255}
                   type="number"
                   onChange={(e) => {
                     // setQuantityItem([...quantityItem.slice(0, quantityItem.length-1), Number(e.target.value)]);
@@ -490,7 +492,7 @@ export default function OrderForm() {
                     color="teal.400"
                     fontSize="1.2em"
                   >$</InputLeftElement>
-                  <Input placeholder="Tiền hàng" value={priceItem[index] ? String(priceItem[index]) : ""} readOnly />
+                  <Input maxLength={255} placeholder="Tiền hàng" value={priceItem[index] ? String(priceItem[index]) : ""} readOnly />
                 </InputGroup>
               </Flex>
             </Box>
@@ -551,9 +553,9 @@ export default function OrderForm() {
           <Divider my={2} orientation="horizontal" color={"gray.800"} />
           <Text fontWeight={"500"} color="orange.500">Kích thước</Text>
           <Stack direction={{ base: 'column', md: 'row' }}>
-            <Input mt={{ base: 2, md: 4 }} placeholder={"Dài - cm"} {...register('length')} />
-            <Input mt={{ base: 2, md: 4 }} placeholder={"Rộng - cm"} {...register('width')} />
-            <Input mt={{ base: 2, md: 4 }} placeholder={" Cao - cm"} {...register('height')} />
+            <Input mt={{ base: 2, md: 4 }} maxLength={255} placeholder={"Dài - cm"} {...register('length')} />
+            <Input mt={{ base: 2, md: 4 }} maxLength={255} placeholder={"Rộng - cm"} {...register('width')} />
+            <Input mt={{ base: 2, md: 4 }} maxLength={255} placeholder={" Cao - cm"} {...register('height')} />
           </Stack>
           <HStack mt={{ base: 2, md: 4 }} justifyContent={'space-between'} >
             <Checkbox colorScheme="red" {...register('isDocument')}>
@@ -590,6 +592,7 @@ export default function OrderForm() {
                 <PopoverTrigger>
                   <Input
                     mt={4}
+                    maxLength={255}
                     placeholder={"Số điện thoại"}
                     value={receiverValue}
                     {...register('receiver', {
@@ -621,7 +624,7 @@ export default function OrderForm() {
             <>
               <Input mt={4} value={selectedReceiver?.name} placeholder={"Họ và tên"} readOnly />
               <Input mt={4} value={selectedReceiver?.address} placeholder={"Địa chỉ"} readOnly />
-              <Input mt={4} value={selectedReceiver?.detailedAddress} placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} readOnly />
+              <Input mt={4} value={selectedReceiver?.detailedAddress}  placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} readOnly />
               <Checkbox
                 id="checkbox1"
                 m={4}
@@ -732,7 +735,7 @@ export default function OrderForm() {
           <Checkbox m={4} fontWeight={"500"} colorScheme="red"{...register('delivery.hasLostInsurance')}>Bảo hiểm thất lạc</Checkbox>
 
           <Text mx={4} my={2} fontWeight={"500"}>Ghi chú </Text>
-          <Textarea ml={4} mb={4} placeholder='Ghi chú' w={"95%"} {...register('delivery.note')} />
+          <Textarea ml={4} mb={4} placeholder='Ghi chú' w={"95%"} {...register('delivery.note')} maxLength={255}/>
           <Flex m={4} justifyContent={'space-between'}>
             <Text color="orange.500" fontWeight={"bold"} fontSize="18px">Phí ship: {shippingFee} {optionValuable + optionBulky !== 0 ? `+ ${optionValuable + optionBulky} (phí tuỳ chọn)` : ""} VNĐ</Text>
 

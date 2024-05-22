@@ -133,7 +133,7 @@ export default function AddressSelect() {
           </Stack>
         </RadioGroup>
         <Text fontWeight={"500"}>Ghi chú: </Text>
-        <Textarea m={4} placeholder="Ghi chú" w={"95%"} />
+        <Textarea m={4} placeholder="Ghi chú" w={"95%"} maxLength={255} />
       </Box>
     </Box>
   );

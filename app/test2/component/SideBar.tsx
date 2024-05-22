@@ -69,7 +69,7 @@ export default function Sidebar() {
           <Box w={{ base: "80wv", lg: "50%" }}>
             <Box p={4} bg="gray.50">
               <Text fontWeight={"700"}> Người gửi: </Text>
-              <Select mt={4} placeholder="Địa chi nơi gửi" variant="filled">
+              <Select mt={4} placeholder="Địa chi nơi gửi"  variant="filled">
                 <option value="option1">Option 1</option>
                 <option value="option2">Option 2</option>
                 <option value="option3">Option 3</option>

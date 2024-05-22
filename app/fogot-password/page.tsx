@@ -162,6 +162,7 @@ export default function JoinOurTeam() {
             <Stack spacing={4}>
               <Input
                 placeholder="Username"
+                maxLength={255}
                 bg={'#0a0a0a'}
                 border={0}
                 color={'white'}
@@ -171,6 +172,7 @@ export default function JoinOurTeam() {
               />
               <Input
                 placeholder="Password"
+                maxLength={255}
                 bg={'#0a0a0a'}
                 type='password'
                 border={0}

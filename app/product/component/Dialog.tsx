@@ -241,6 +241,7 @@ export default function Dialog() {
               </FormControl>
             </HStack>
             <Textarea mt={4}
+              maxLength={255}
               placeholder="Mô tả chi tiết"
               {...register('description')}
             />
@@ -269,14 +270,14 @@ export default function Dialog() {
                 Lưu
               </Button>
             ) : (
-            <Button bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
-              color={"white"}
-              _hover={{
-                bgGradient: "linear-gradient(to right, #df5207, #d80740)",
-                boxShadow: "xl",
-              }} onClick={handleSubmit(onSubmit)}>
-              Lưu
-            </Button>
+              <Button bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
+                color={"white"}
+                _hover={{
+                  bgGradient: "linear-gradient(to right, #df5207, #d80740)",
+                  boxShadow: "xl",
+                }} onClick={handleSubmit(onSubmit)}>
+                Lưu
+              </Button>
             )}
           </ModalFooter>
         </ModalContent>

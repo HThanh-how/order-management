@@ -316,6 +316,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
             type="number"
             min={1}
             max={totalPages}
+            maxLength={255}
             placeholder={currentPage.toString()}
             onChange={(e) => handlePageChange(Number(e.target.value))}
           />

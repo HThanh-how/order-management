@@ -97,6 +97,7 @@ const MyBox = () => {
                   variant="filled"
                   type="text"
                   placeholder="Nhập mã vận đơn"
+                  maxLength={255}
                 />
                 <Button
                   my={{ base: 2, md: 4 }}

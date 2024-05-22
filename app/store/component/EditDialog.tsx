@@ -187,7 +187,7 @@ export default function EditDialog({ isOpen, onClose, selectedStore }: any) {
                 message: 'Số điện thoại không hợp lệ'
               }
             })} />
-             {errors.phoneNumber && <Text color="red.500" mb={2} mt={-2}>{errors.phoneNumber.message}</Text>}
+            {errors.phoneNumber && <Text color="red.500" mb={2} mt={-2}>{errors.phoneNumber.message}</Text>}
             <FormErrorMessage>
               {errors.name && errors.name.message}
             </FormErrorMessage>
@@ -272,6 +272,7 @@ export default function EditDialog({ isOpen, onClose, selectedStore }: any) {
           <FormControl mt={4} isRequired isInvalid={Boolean(errors.detailedAddress)}>
             <FormLabel>Địa chỉ chi tiết</FormLabel>
             <Input
+              maxLength={255}
               type="text"
               placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
               {...register('detailedAddress', {
@@ -294,34 +295,34 @@ export default function EditDialog({ isOpen, onClose, selectedStore }: any) {
             Huỷ
           </Button>
           {isSubmitting ? (
-              <Button
-                isLoading
-                loadingText='Đang lưu'
-                color="white"
-                backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
-                sx={{
-                  '@media (hover: hover)': {
-                    _hover: {
-                      backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
-                    }
+            <Button
+              isLoading
+              loadingText='Đang lưu'
+              color="white"
+              backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+              sx={{
+                '@media (hover: hover)': {
+                  _hover: {
+                    backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
                   }
-                }}
-              >
-                Lưu
-              </Button>
-            ) : (
-          <Button color="white"
-            backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
-            sx={{
-              '@media (hover: hover)': {
-                _hover: {
-                  backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
                 }
-              }
-            }} onClick={handleSubmit(onSubmit)}>
-            Lưu
-          </Button>
-            )}
+              }}
+            >
+              Lưu
+            </Button>
+          ) : (
+            <Button color="white"
+              backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+              sx={{
+                '@media (hover: hover)': {
+                  _hover: {
+                    backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                  }
+                }
+              }} onClick={handleSubmit(onSubmit)}>
+              Lưu
+            </Button>
+          )}
         </ModalFooter>
       </ModalContent>
     </Modal>

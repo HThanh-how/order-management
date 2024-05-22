@@ -107,6 +107,7 @@ export default function Product() {
           <Input
             m={{ base: 2, xl: 8 }}
             variant="filled"
+            maxLength={255}
             placeholder="Tìm sản phẩm"
             w={{ base: "70vw", md: "40vw", lg:"25vw", xl: "30vw" }}
             onChange={handleSearchInputChange}

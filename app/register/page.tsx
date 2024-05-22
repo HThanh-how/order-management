@@ -293,6 +293,7 @@ export default function Login() {
               <FormControl isInvalid={!!errors.email}>
                 <Input
                   placeholder="Email"
+                  maxLength={255}
                   bg={"#0a0a0a"}
                   border={0}
                   color={"white"}
@@ -311,6 +312,7 @@ export default function Login() {
                 <Input
                   placeholder="Số điện thoại"
                   bg={"#0a0a0a"}
+                  maxLength={255}
                   border={0}
                   color={"white"}
                   _placeholder={{

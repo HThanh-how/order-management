@@ -283,6 +283,7 @@ export default function AddressSelect() {
               <Input
                 type="text"
                 placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
+                maxLength={255}
                 {...register('detailedAddress', {
                   required: 'Trường này không được bỏ trống',
                 })}

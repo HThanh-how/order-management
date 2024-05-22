@@ -123,7 +123,7 @@ export default function AddressSelect() {
       <Checkbox m={4} colorScheme="green" defaultChecked>
         Nhận tại bưu cục
       </Checkbox>
-      <Input placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} />
+      <Input placeholder={"Số nhà, tên đường, địa chỉ chi tiết"} maxLength={255}/>
     </Box>
   );
 }

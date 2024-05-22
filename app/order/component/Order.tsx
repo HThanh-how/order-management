@@ -105,6 +105,7 @@ export default function Order() {
           <Input
             m={{ base: 2, md: 8 }}
             variant="filled"
+            maxLength={255}
             placeholder="Tìm mã đơn hàng"
             w={{ base: "70vw", md: "30vw" }}
             onChange={handleSearchInputChange}

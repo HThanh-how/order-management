@@ -94,6 +94,7 @@ export default function CustomerTable() {
             m={{ base: 2, md: 8 }}
             variant="filled"
             placeholder="Tìm nhân viên"
+            maxLength={255}
             w={{ base: "70vw", md: "30vw" }}
             onChange={handleSearchInputChange}
           />
