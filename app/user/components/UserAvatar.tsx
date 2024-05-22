@@ -69,7 +69,7 @@ export default function UserAvatar({ user }: UserAvatarProps) {
     if (e.target.files[0]) {
       const value = e.target.files[0];
       const fsMb = value.size / (1024 * 1024)
-      const MAX_FILE_SIZE = 10
+      const MAX_FILE_SIZE = 2
       if (fsMb > MAX_FILE_SIZE) {
         return 'File không vượt quá 10MB'
       }
