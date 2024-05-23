@@ -418,7 +418,7 @@ export default function OrderForm() {
           - <Text m={1}> {suggestion.phoneNumber}</Text>
         </Button>
       ))}
-      <AddCustomerDialog />
+     
     </>
   );
 
@@ -726,7 +726,7 @@ export default function OrderForm() {
           <FormControl isRequired isInvalid={Boolean(errors.receiver)}>
             <div>
               <Popover
-                isOpen={receiverValue.length > 0}
+                isOpen={receiverValue.length > 1}
                 placement="bottom-start"
                 matchWidth
               >
@@ -755,7 +755,7 @@ export default function OrderForm() {
                   </Text>
                 )}
                 <PopoverContent pr={2} w="full">
-                  <Box>{renderReceiverSuggestions()}</Box>
+                  <Box>{renderReceiverSuggestions()} {!(receiverValue.length ==10)&&<AddCustomerDialog/>} </Box>
                 </PopoverContent>
               </Popover>
             </div>
