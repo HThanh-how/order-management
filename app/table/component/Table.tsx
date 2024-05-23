@@ -237,7 +237,9 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
                     backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
                   }
                 }
-              }} onClick={() => handleDelete(selectedCustomer.id)}>Xác nhận</Button>
+              }} 
+              isLoading={isLoading}
+              onClick={() => handleDelete(selectedCustomer.id)}>Xác nhận</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

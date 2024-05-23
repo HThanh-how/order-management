@@ -67,6 +67,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
   const [removeStore, { isLoading }] = useRemoveStoreMutation();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  // const [isLoading, setIsLoading] = useState(false);
 
   const handleDeleteClose = async () => {
     setDeleteOpen(false);
@@ -279,7 +280,11 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
                   },
                 },
               }}
-              onClick={() => handleDelete(selectedStore.id)}
+              isLoading={isLoading}
+              onClick={() => {
+                // setIsLoading(true)
+                handleDelete(selectedStore.id)
+              }}
             >
               Xác nhận
             </Button>

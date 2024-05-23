@@ -320,7 +320,9 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
                     backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
                   }
                 }
-              }} onClick={() => handleDelete(selectedProduct.id)}>Xác nhận</Button>
+              }} 
+              isLoading={isLoading}
+              onClick={() => handleDelete(selectedProduct.id)}>Xác nhận</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

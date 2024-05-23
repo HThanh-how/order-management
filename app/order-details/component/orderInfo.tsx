@@ -114,7 +114,7 @@ export default function CustomerTable() {
     if (isSuccessE) return orderE.data;
   }, [orderU, orderE]);
 
-  const [editOrderStatus] = useEditOrderStatusMutation();
+  const [editOrderStatus, {isLoading}] = useEditOrderStatusMutation();
 
   useEffect(() => {
     if (isSuccessU || isSuccessE) {
@@ -334,8 +334,6 @@ export default function CustomerTable() {
 
             </Flex>
 
-
-
             <Flex
               alignItems="flex-start"
               justify="space-between"
@@ -481,7 +479,9 @@ export default function CustomerTable() {
                             backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
                           }
                         }
-                      }} onClick={() => handleCancelOrder(getOrder.id)} ml={3}>
+                      }} 
+                      isLoading={isLoading}
+                      onClick={() => handleCancelOrder(getOrder.id)} ml={3}>
                       Xác nhận
                     </Button>
                   </AlertDialogFooter>
