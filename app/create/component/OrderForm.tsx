@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useMemo } from "react";
 import {
   Box,
   Select,
@@ -39,7 +40,6 @@ import {
   PopoverContent,
   Skeleton,
 } from "@chakra-ui/react";
-import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import ProductDialog from "@/app/product/component/Dialog";
@@ -119,6 +119,7 @@ export default function OrderForm() {
 
   const [selectedStore, setSelectedStore] = useState<any>(null);
   const [selectedReceiver, setSelectedReceiver] = useState<any>(null);
+  const [payer, setPayer] = useState<string>("SENDER");
 
   const [receiverValue, setReceiverValue] = useState<string>("");
   const [receiverSuggestions, setReceiverSuggestions] = useState<Customer[]>(
@@ -199,6 +200,10 @@ export default function OrderForm() {
     }
   }, [isCollected, totalPriceItems]);
 
+  const handlePayerChange = (value: string) => {
+    setPayer(value);
+  };
+
   const onSubmit = async (data: FormData) => {
     let isSuccess: boolean = true;
     //handle option fee
@@ -216,7 +221,7 @@ export default function OrderForm() {
 
       data.price.itemsPrice = totalPriceItems;
       data.price.shippingFee = shippingFee + optionValuable + optionBulky;
-      data.price.collectionCharge = data.price.shippingFee;
+      data.price.collectionCharge = collectedMoney;
       data.store = { ...selectedStore };
       data.receiver = { ...selectedReceiver };
       if (role === "ROLE_USER") {
@@ -310,16 +315,6 @@ export default function OrderForm() {
     setSelectedStore(tmp);
     //setValue('store', tmp);
   };
-
-  // const handleCheckboxChange = (checkboxId: string) => {
-  //   if (checkboxId === 'checkbox1') {
-  //     setCheckbox1Checked(true);
-  //     setCheckbox2Checked(false);
-  //   } else if (checkboxId === 'checkbox2') {
-  //     setCheckbox1Checked(false);
-  //     setCheckbox2Checked(true);
-  //   }
-  // };
 
   const updatePriceItem = (index: any, newValue: number) => {
     // Create a copy of the array
@@ -527,7 +522,8 @@ export default function OrderForm() {
                 </Button>
               </Flex>
               <Flex>
-                <NumberInput allowMouseWheel
+                <NumberInput
+                  allowMouseWheel
                   size="md"
                   mt={4}
                   w={{ base: "50%", md: "25%" }}
@@ -548,14 +544,6 @@ export default function OrderForm() {
                     <NumberDecrementStepper />
                   </NumberInputStepper>
                 </NumberInput>
-                {/* <FormControl isRequired isInvalid={Boolean(errors.depth)}>
-                <Input m={4} value={selectedProduct[index]?.weight} placeholder={"Khối lượng"} {...register('depth', {
-                  required: 'This is required'
-                })} />
-                <FormErrorMessage>
-                  {errors.depth && errors.depth.message}
-                </FormErrorMessage>
-              </FormControl> */}
                 <InputGroup m={4}>
                   <InputLeftElement
                     pointerEvents="none"
@@ -568,6 +556,9 @@ export default function OrderForm() {
                     maxLength={255}
                     placeholder="Tiền hàng"
                     value={priceItem[index] ? String(priceItem[index]) : ""}
+                    onChange={(e) =>
+                      updatePriceItem(index, Number(e.target.value))
+                    }
                   />
                 </InputGroup>
               </Flex>
@@ -684,11 +675,15 @@ export default function OrderForm() {
           </HStack>
           <Box my={4}>
             <Text color="orange.500" fontWeight={"bold"} fontSize="18px">
-              Tổng tiền hàng: {totalPriceItems} VNĐ
+              Tổng tiền hàng: {totalPriceItems.toLocaleString()} VNĐ
             </Text>
             <br />
             <Text color="orange.500" fontWeight={"bold"} fontSize="18px">
-              Tổng khối lượng: {totalWeight} g
+              Tổng khối lượng:{" "}
+              {totalWeight > 1000
+                ? (Math.round((totalWeight / 1000) * 10) / 10).toFixed(1) +
+                  " kg"
+                : totalWeight + " g"}
             </Text>
           </Box>
         </Box>
@@ -762,7 +757,7 @@ export default function OrderForm() {
                 m={4}
                 colorScheme="red"
                 // isChecked={checkbox1Checked}
-                {...register('receiver.receiveAtPost')}
+                {...register("receiver.receiveAtPost")}
                 // onChange={() => handleCheckboxChange('checkbox1')}
               >
                 Nhận tại bưu cục
@@ -772,7 +767,7 @@ export default function OrderForm() {
                 m={4}
                 colorScheme="red"
                 // isChecked={checkbox2Checked}
-                {...register('receiver.callBeforeSend')}
+                {...register("receiver.callBeforeSend")}
                 // onChange={() => handleCheckboxChange('checkbox2')}
               >
                 Liên hệ trước khi gửi
@@ -786,7 +781,11 @@ export default function OrderForm() {
           <Text color="orange.500" fontWeight={"bold"} fontSize="20px">
             Vận chuyển
           </Text>
-          <RadioGroup defaultValue="RECEIVER" m={4}>
+          <RadioGroup
+            defaultValue="RECEIVER"
+            m={4}
+            onChange={handlePayerChange}
+          >
             <Stack spacing={10} direction="row">
               <Text fontWeight={"500"}>Người trả cước</Text>
               <Radio
@@ -853,7 +852,7 @@ export default function OrderForm() {
                 })}
               >
                 <option value="CA_NGAY">MỘT NGÀY</option>
-                <option value="BA_NGAY">BA NGÀY</option>
+                <option value="BA_NGÀY">BA NGÀY</option>
               </Select>
               <FormErrorMessage>
                 {errors.delivery && errors.delivery.message}
@@ -869,7 +868,7 @@ export default function OrderForm() {
                 })}
               >
                 <option value="CA_NGAY">MỘT NGÀY</option>
-                <option value="BA_NGAY">BA NGÀY</option>
+                <option value="BA_NGÀY">BA NGÀY</option>
               </Select>
               <FormErrorMessage>
                 {errors.delivery && errors.delivery.message}
@@ -949,17 +948,31 @@ export default function OrderForm() {
           </Flex>
           <Flex m={4}>
             <Text fontWeight={"bold"}>
-              Tổng tiền đơn: {shippingFee + optionValuable + optionBulky} VNĐ
+              Tổng tiền đơn:{" "}
+              {(shippingFee + optionValuable + optionBulky).toLocaleString()}{" "}
+              VNĐ
             </Text>
           </Flex>
           <Flex m={4}>
             <Text color="orange.500" fontWeight={"bold"} fontSize="18px">
-              Người gửi trả: {shippingFee + optionValuable + optionBulky} VNĐ
+              Người gửi trả:{" "}
+              {(payer === "SENDER"
+                ? shippingFee + optionValuable + optionBulky
+                : 0
+              ).toLocaleString()}{" "}
+              VNĐ
             </Text>
           </Flex>
           <Flex m={4}>
             <Text color="orange.500" fontWeight={"bold"} fontSize="18px">
-              Người nhận trả: {shippingFee + optionValuable + optionBulky} VNĐ
+              Người nhận trả:{" "}
+              {(
+                collectedMoney +
+                (payer === "RECEIVER"
+                  ? shippingFee + optionValuable + optionBulky
+                  : 0)
+              ).toLocaleString()}{" "}
+              VNĐ
             </Text>
           </Flex>
           <Flex justifyContent={"right"} m={4}>
