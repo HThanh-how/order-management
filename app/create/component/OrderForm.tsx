@@ -58,7 +58,6 @@ import { Product, Customer, Store } from "@/app/type";
 import { cityData } from "@/component/HeroSection/CityData";
 import { calculateShippingCost } from "@/pages/api/cost";
 
-
 type OrderItem = {
   quantity: number;
   price: number;
@@ -98,14 +97,14 @@ type FormData = {
   };
 };
 
-const GradientText = chakra('span', {
+const GradientText = chakra("span", {
   baseStyle: {
-    fontWeight: 'bold',
-    background: 'linear-gradient(90deg, #ff5e09, #ff0348)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
+    fontWeight: "bold",
+    background: "linear-gradient(90deg, #ff5e09, #ff0348)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
   },
-})
+});
 export default function OrderForm() {
   const [items, setItems] = useState([0]);
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
@@ -305,7 +304,6 @@ export default function OrderForm() {
   };
 
   const handleReceiverInputChange = async (value: string) => {
-
     if (getReceivers && value.length > 1) {
       // Typically, we look for suggestions after 2 characters have been typed.
       const results = getReceivers.filter((receiver: any) =>
@@ -359,10 +357,10 @@ export default function OrderForm() {
   };
 
   const renderProductSuggestions = () =>
-    productSuggestions.map((suggestion): any => (
-      <option
+    productSuggestions.slice(0,5).map((suggestion): any => (
+      <Button
         key={suggestion.id}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer", textAlign: "left", justifyContent: "left" }}
         onClick={() => {
           setSelectedItems([
             ...selectedItems,
@@ -385,35 +383,44 @@ export default function OrderForm() {
 
           setProductSuggestions([]);
         }}
+        width={"100%"}
+        m={1}
       >
-        {suggestion.name} ({suggestion.price} VNĐ)
-      </option>
+        <Text m={1} style={{ textAlign: "left" }} isTruncated>
+          {suggestion.name}
+        </Text>{" "}
+        - <Text m={1}> {suggestion.price} VNĐ</Text>
+      </Button>
     ));
 
-  const renderReceiverSuggestions = () =>
-
-<>
-  {receiverSuggestions.slice(0, 4).map((suggestion) => (
-    <Button
-      key={suggestion.receiverId}
-      style={{ cursor: "pointer", textAlign: "left", justifyContent: "left" }}
-      onClick={() => {
-        setReceiverValue(suggestion.phoneNumber);
-        setSelectedReceiver(suggestion);
-        setValue("receiver", suggestion);
-        setReceiverSuggestions([]);
-      }}
-      width={"100%"}
-      m={1}
-    >
-      <Text m={1} style={{ textAlign: "left" }} isTruncated>
-        {suggestion.name}
-      </Text> - <Text m={1}> {suggestion.phoneNumber}</Text>
-    </Button>
-  ))}
-  <AddCustomerDialog />
-</>
-  
+  const renderReceiverSuggestions = () => (
+    <>
+      {receiverSuggestions.slice(0, 4).map((suggestion) => (
+        <Button
+          key={suggestion.receiverId}
+          style={{
+            cursor: "pointer",
+            textAlign: "left",
+            justifyContent: "left",
+          }}
+          onClick={() => {
+            setReceiverValue(suggestion.phoneNumber);
+            setSelectedReceiver(suggestion);
+            setValue("receiver", suggestion);
+            setReceiverSuggestions([]);
+          }}
+          width={"100%"}
+          m={1}
+        >
+          <Text m={1} style={{ textAlign: "left" }} isTruncated>
+            {suggestion.name}
+          </Text>{" "}
+          - <Text m={1}> {suggestion.phoneNumber}</Text>
+        </Button>
+      ))}
+      <AddCustomerDialog />
+    </>
+  );
 
   return (
     <Stack direction={{ base: "column", md: "row" }}>
@@ -497,31 +504,36 @@ export default function OrderForm() {
                 <Controller
                   name="items"
                   control={control}
-                  rules={{ required: "Trường này không được bỏ trống" }}
+                  rules={{ required: "Tên sản phẩm không được bỏ trống" }}
                   defaultValue={[]}
                   render={({ field }) => (
                     <FormControl isInvalid={Boolean(errors.items)}>
                       <div>
-                        <Input
-                          {...field}
-                          maxLength={255}
-                          placeholder="Tên sản phẩm"
-                          value={selectedItems[index]?.product.name}
-                          onChange={(e) => {
-                            handleProductInputChange(e.target.value);
-                            field.onChange(e.target.value); // important to update the form state
-                          }}
-                        />
-                        {productSuggestions.length > 0 &&
-                          index === selectedItems.length && (
-                            <VStack
-                              alignItems={"flex-start"}
-                              divider={<StackDivider borderColor="gray.200" />}
-                              spacing={2}
-                            >
-                              {renderProductSuggestions()}
-                            </VStack>
-                          )}
+                        <Popover
+                          isOpen={field.value.length > 0}
+                          placement="bottom-start"
+                          matchWidth
+                        >
+                          <PopoverTrigger>
+                            <Input
+                              {...field}
+                              maxLength={255}
+                              placeholder="Tên sản phẩm"
+                              value={selectedItems[index]?.product.name}
+                              onChange={(e) => {
+                                handleProductInputChange(e.target.value);
+                                field.onChange(e.target.value); // set the field value
+                              }}
+                              isReadOnly={false}
+                            />
+                          </PopoverTrigger>
+                          {productSuggestions.length > 0 &&
+                            index === selectedItems.length && (
+                              <PopoverContent pr={2} w="full">
+                                <Box>{renderProductSuggestions()}</Box>
+                              </PopoverContent>
+                            )}
+                        </Popover>
                       </div>
                       <FormErrorMessage>
                         Tên sản phẩm không được bỏ trống
@@ -716,7 +728,7 @@ export default function OrderForm() {
               <Popover
                 isOpen={receiverValue.length > 0}
                 placement="bottom-start"
-                matchWidth 
+                matchWidth
               >
                 <PopoverTrigger>
                   <Input
@@ -852,7 +864,9 @@ export default function OrderForm() {
                 })}
               >
                 <option value="GIO_HANH_CHINH">Giờ Hành Chính</option>
-                <option value="NGOAI_GIO_HANH_CHINH">Ngoài Giờ Hành Chính</option>
+                <option value="NGOAI_GIO_HANH_CHINH">
+                  Ngoài Giờ Hành Chính
+                </option>
                 <option value="BUOI_SANG">Buổi Sáng</option>
                 <option value="BUOI_CHIEU">Buổi Chiều</option>
                 <option value="CA_NGAY">Cả Ngày</option>
@@ -891,7 +905,9 @@ export default function OrderForm() {
                 })}
               >
                 <option value="GIO_HANH_CHINH">Giờ Hành Chính</option>
-                <option value="NGOAI_GIO_HANH_CHINH">Ngoài Giờ Hành Chính</option>
+                <option value="NGOAI_GIO_HANH_CHINH">
+                  Ngoài Giờ Hành Chính
+                </option>
                 <option value="BUOI_SANG">Buổi Sáng</option>
                 <option value="BUOI_CHIEU">Buổi Chiều</option>
                 <option value="CA_NGAY">Cả Ngày</option>
