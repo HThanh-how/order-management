@@ -285,7 +285,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
 
               <Td
                 onClick={() => router.push(`/order-details?id=${order.id}`)}
-                maxW={"350px"}
+                maxW={"300px"}
               >
                 <Tooltip
                   label={order.receiverDto.detailedAddress}
