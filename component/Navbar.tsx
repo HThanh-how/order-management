@@ -417,9 +417,9 @@ export default function NavBar() {
                           src={getUser?.avatar ? getUser.avatar :
                             "male.svg"
                           }
-                          m={-1}
+                          ml={-2}
                         />
-                        <TagLabel>Nhân viên</TagLabel>
+                        <TagLabel ml={2}>Nhân viên</TagLabel>
                       </Tag>
                     )
                       : (
