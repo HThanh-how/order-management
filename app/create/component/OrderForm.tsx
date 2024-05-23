@@ -527,7 +527,7 @@ export default function OrderForm() {
                   size="md"
                   mt={4}
                   w={{ base: "50%", md: "25%" }}
-                  defaultValue={1}
+                  defaultValue={0}
                   min={1}
                   // max={20}
                   onChange={(valueString, valueNumber) => {
