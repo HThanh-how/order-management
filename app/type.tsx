@@ -12,7 +12,7 @@ export type Product = {
   };
   
 export type Customer = {
-    id: number;
+    receiverId: number;
     name: string;
     status: string;
     phoneNumber: string;
@@ -24,7 +24,7 @@ export type Customer = {
   };
   
 export type Store = {
-    id: number;
+    storeId: number;
     name: string;
     phoneNumber: string;
     address: string;

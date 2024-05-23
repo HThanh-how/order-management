@@ -88,11 +88,11 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
       response = await removeProduct(id).unwrap();
       // console.log(response.message);
       handleDeleteClose();
-    } catch (err) {
+    } catch (err: any) {
       handleDeleteClose();
       console.error('Failed to delete product: ', err)
       toast({
-        title: response?.message,
+        title: err.data.message,
         position: 'top',
         status: 'error',
         duration: 3000,

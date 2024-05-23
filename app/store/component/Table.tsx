@@ -74,7 +74,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
     setSelectedStore({});
   };
   const handleDeleteOpen = async (id: any) => {
-    const p = stores.find((tmp) => tmp.id === id);
+    const p = stores.find((tmp) => tmp.storeId === id);
     setSelectedStore({ ...p });
     setDeleteOpen(true);
   };
@@ -109,7 +109,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
     setCheckedAll(!checkedAll);
 
     if (!checkedAll) {
-      const allStoreIds = stores.map((store) => store.id);
+      const allStoreIds = stores.map((store) => store.storeId);
       setStoreSelections(allStoreIds);
     } else {
       setStoreSelections([]);
@@ -153,7 +153,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
   const totalPages = Math.ceil(stores.length / storesPerPage);
 
   const handleUpdate = async (id: any) => {
-    const p = stores.find((tmp) => tmp.id === id);
+    const p = stores.find((tmp) => tmp.storeId === id);
     setSelectedStore({ ...p });
     onOpen();
   };
@@ -185,12 +185,13 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
           </Tr>
         </Thead>
         <Tbody>
+          
           {paginateStores().map((store) => (
-            <Tr key={store.id}>
+            <Tr key={store.storeId}>
               <Td>
                 <Checkbox
-                  isChecked={storeSelections.includes(store.id)}
-                  onChange={() => handleCheckboxChange(store.id)}
+                  isChecked={storeSelections.includes(store.storeId)}
+                  onChange={() => handleCheckboxChange(store.storeId)}
                 />
               </Td>
               <Td>
@@ -228,10 +229,10 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
                       <Icon as={SlOptionsVertical} color={"gray"} />
                     </MenuButton>
                     <MenuList>
-                      <MenuItem onClick={() => handleUpdate(store.id)}>
+                      <MenuItem onClick={() => handleUpdate(store.storeId)}>
                         Sửa
                       </MenuItem>
-                      <MenuItem onClick={() => handleDeleteOpen(store.id)}>
+                      <MenuItem onClick={() => handleDeleteOpen(store.storeId)}>
                         Xoá
                       </MenuItem>
                     </MenuList>
@@ -283,7 +284,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
               isLoading={isLoading}
               onClick={() => {
                 // setIsLoading(true)
-                handleDelete(selectedStore.id)
+                handleDelete(selectedStore.storeId)
               }}
             >
               Xác nhận
