@@ -1,6 +1,6 @@
 "use client";
 import React, { ReactNode } from "react";
-import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 import {
   IconButton,
   Box,
@@ -50,7 +50,6 @@ import CustomerTable from "./component/Customer";
 import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
 import { getRole } from "@/app/_lib/features/roles/roleSlice";
 
-
 interface LinkItemProps {
   name: string;
   icon: IconType;
@@ -75,31 +74,16 @@ const LinkItemsE: Array<LinkItemProps> = [
 
 export default function Sidebar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  
-  return (
 
+  return (
     <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
-          <title>Đơn hàng</title>
+      <title>Đơn hàng</title>
       <SidebarContent
         onClose={() => onClose}
         display={{ base: "none", md: "none", lg: "block" }}
       />
-      {/* <Drawer
-        isOpen={isOpen}
-        placement="left"
-        onClose={onClose}
-        returnFocusOnClose={false}
-        onOverlayClick={onClose}
-        size="full"
-      >
-        <DrawerContent>
-          <SidebarContent onClose={onClose} />
-        </DrawerContent>
-      </Drawer> */}
-      {/* mobilenav */}
-      {/* <MobileNav display={{ base: "flex", md: "none" }} onOpen={onOpen} /> */}
       <Box ml={{ base: 0, lg: 60 }} p={{ base: 2, lg: 8 }}>
-        <CustomerTable/>
+        <CustomerTable />
       </Box>
     </Box>
   );
@@ -114,9 +98,9 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   const role = useAppSelector((state: any) => state.role.value);
   const [linkItems, setLinkItems] = useState<Array<LinkItemProps>>([]);
   // const LinkItems: Array<LinkItemProps> = role == "ROLE_USER" ? LinkItemsU : LinkItemsE;
-  useEffect (() => {
-    setLinkItems(role == "ROLE_USER" ? LinkItemsU : LinkItemsE)
-  }, [role])
+  useEffect(() => {
+    setLinkItems(role == "ROLE_USER" ? LinkItemsU : LinkItemsE);
+  }, [role]);
 
   return (
     <Box
@@ -128,25 +112,44 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       h="full"
       {...rest}
     >
-      <Flex display={{ base: "flex", md: "none" }} h="20" alignItems="center" mx="10" justifyContent="space-between">
+      <Flex
+        display={{ base: "flex", md: "none" }}
+        h="20"
+        alignItems="center"
+        mx="10"
+        justifyContent="space-between"
+      >
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           OrList
         </Text>
-        <CloseButton  onClick={onClose} />
+        <CloseButton onClick={onClose} />
       </Flex>
-      <Button onClick={()=>router.push("/create")}  ml={8} mt={6} mb={2} w="50%"                 bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
-                color={"white"}
-                _hover={{
-                  bgGradient: "linear-gradient(to right, #df5207, #d80740)",
-                  boxShadow: "xl",
-                }}>+ Tạo đơn </Button>
+      <Button
+        onClick={() => router.push("/create")}
+        ml={8}
+        mt={6}
+        mb={2}
+        w="50%"
+        bgGradient="linear-gradient(90deg, #ff5e09, #ff0348)"
+        color={"white"}
+        _hover={{
+          bgGradient: "linear-gradient(to right, #df5207, #d80740)",
+          boxShadow: "xl",
+        }}
+      >
+        + Tạo đơn{" "}
+      </Button>
       {linkItems.map((link) => (
-        <NavItem  
-          key={link.name} 
+        <NavItem
+          key={link.name}
           icon={link.icon}
           onClick={() => router.push(`${link.link}`)}
-          bgGradient={link.name === "Khách hàng" ? "linear-gradient(90deg, #ff5e09, #ff0348)" : ""}
-          color= {link.name === "Khách hàng" ? "white" : ""}
+          bgGradient={
+            link.name === "Khách hàng"
+              ? "linear-gradient(90deg, #ff5e09, #ff0348)"
+              : ""
+          }
+          color={link.name === "Khách hàng" ? "white" : ""}
         >
           {link.name}
         </NavItem>
@@ -163,7 +166,6 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
   return (
     <Box
       as="a"
-
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
     >

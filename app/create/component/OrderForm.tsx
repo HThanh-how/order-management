@@ -45,6 +45,7 @@ import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import ProductDialog from "@/app/product/component/Dialog";
 import ReceiverDialog from "../../table/component/Dialog";
+import AddCustomerDialog from "./Dialog";
 import {
   useGetProductsQuery,
   useGetCustomersQuery,
@@ -56,7 +57,7 @@ import { useAppSelector } from "@/app/_lib/hooks";
 import { Product, Customer, Store } from "@/app/type";
 import { cityData } from "@/component/HeroSection/CityData";
 import { calculateShippingCost } from "@/pages/api/cost";
-import { current } from "@reduxjs/toolkit";
+
 
 type OrderItem = {
   quantity: number;
@@ -304,6 +305,7 @@ export default function OrderForm() {
   };
 
   const handleReceiverInputChange = async (value: string) => {
+
     if (getReceivers && value.length > 1) {
       // Typically, we look for suggestions after 2 characters have been typed.
       const results = getReceivers.filter((receiver: any) =>
@@ -389,24 +391,29 @@ export default function OrderForm() {
     ));
 
   const renderReceiverSuggestions = () =>
-    receiverSuggestions.slice(0, 5).map((suggestion) => (
-      <Button
-        key={suggestion.receiverId}
-        style={{ cursor: "pointer" , textAlign: "left", justifyContent: "left" }}
-        onClick={() => {
-          setReceiverValue(suggestion.phoneNumber);
-          setSelectedReceiver(suggestion);
-          setValue("receiver", suggestion);
-          setReceiverSuggestions([]);
-        }}
-        width={"100%"}
-        m={1}
-        
 
-      >
-       <Text m={1} style={{ textAlign: "left" }} isTruncated> {suggestion.name}</Text> - <Text m={1}> {suggestion.phoneNumber}</Text>
-      </Button>
-    ));
+<>
+  {receiverSuggestions.slice(0, 4).map((suggestion) => (
+    <Button
+      key={suggestion.receiverId}
+      style={{ cursor: "pointer", textAlign: "left", justifyContent: "left" }}
+      onClick={() => {
+        setReceiverValue(suggestion.phoneNumber);
+        setSelectedReceiver(suggestion);
+        setValue("receiver", suggestion);
+        setReceiverSuggestions([]);
+      }}
+      width={"100%"}
+      m={1}
+    >
+      <Text m={1} style={{ textAlign: "left" }} isTruncated>
+        {suggestion.name}
+      </Text> - <Text m={1}> {suggestion.phoneNumber}</Text>
+    </Button>
+  ))}
+  <AddCustomerDialog />
+</>
+  
 
   return (
     <Stack direction={{ base: "column", md: "row" }}>
@@ -707,7 +714,7 @@ export default function OrderForm() {
           <FormControl isRequired isInvalid={Boolean(errors.receiver)}>
             <div>
               <Popover
-                isOpen={receiverSuggestions.length > 0}
+                isOpen={receiverValue.length > 0}
                 placement="bottom-start"
                 matchWidth 
               >
