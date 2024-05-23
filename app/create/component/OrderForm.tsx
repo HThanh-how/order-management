@@ -131,7 +131,7 @@ export default function OrderForm() {
     useAddOrderForEmployeeMutation();
   const toast = useToast();
   const router = useRouter();
-  const role = useAppSelector((state) => state.role.value);
+  const role: any = useAppSelector((state: any) => state.role.value);
 
   const {
     data: products,
@@ -815,9 +815,9 @@ export default function OrderForm() {
                   required: "This is required",
                 })}
               >
-                <option value="MOT_TIENG">Hoả tốc</option>
-                <option value="BA_GIO">BA GIỜ</option>
-                <option value="MOT_NGAY">MỘT NGÀY</option>
+                <option value="HOA_TOC">Hoả Tốc</option>
+                <option value="BINH_THUONG">Bình Thường</option>
+                <option value="TIET_KIEM">Tiết Kiệm</option>
               </Select>
               <FormErrorMessage>
                 {errors.delivery && errors.delivery.message}
@@ -832,8 +832,11 @@ export default function OrderForm() {
                   required: "This is required",
                 })}
               >
-                <option value="CA_NGAY">MỘT NGÀY</option>
-                <option value="BA_NGAY">BA NGÀY</option>
+                <option value="GIO_HANH_CHINH">Giờ Hành Chính</option>
+                <option value="NGOAI_GIO_HANH_CHINH">Ngoài Giờ Hành Chính</option>
+                <option value="BUOI_SANG">Buổi Sáng</option>
+                <option value="BUOI_CHIEU">Buổi Chiều</option>
+                <option value="CA_NGAY">Cả Ngày</option>
               </Select>
               <FormErrorMessage>
                 {errors.delivery && errors.delivery.message}
@@ -851,8 +854,9 @@ export default function OrderForm() {
                   required: "This is required",
                 })}
               >
-                <option value="CA_NGAY">MỘT NGÀY</option>
-                <option value="BA_NGÀY">BA NGÀY</option>
+                <option value="MOT_NGAY">Một Ngày</option>
+                <option value="BA_NGAY">Ba Ngày</option>
+                <option value="MOT_TUAN">Một Tuần</option>
               </Select>
               <FormErrorMessage>
                 {errors.delivery && errors.delivery.message}
@@ -867,8 +871,11 @@ export default function OrderForm() {
                   required: "This is required",
                 })}
               >
-                <option value="CA_NGAY">MỘT NGÀY</option>
-                <option value="BA_NGÀY">BA NGÀY</option>
+                <option value="GIO_HANH_CHINH">Giờ Hành Chính</option>
+                <option value="NGOAI_GIO_HANH_CHINH">Ngoài Giờ Hành Chính</option>
+                <option value="BUOI_SANG">Buổi Sáng</option>
+                <option value="BUOI_CHIEU">Buổi Chiều</option>
+                <option value="CA_NGAY">Cả Ngày</option>
               </Select>
               <FormErrorMessage>
                 {errors.delivery && errors.delivery.message}
