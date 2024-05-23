@@ -65,7 +65,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
     setSelectedCustomer({});
   }
   const handleDeleteOpen = async (id: any) => {
-    const p = customers.find((tmp) => tmp.id === id);
+    const p = customers.find((tmp) => tmp.receiverId === id);
     setSelectedCustomer({ ...p });
     setDeleteOpen(true);
   }
@@ -79,7 +79,6 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
       console.error('Failed to delete customer: ', err)
       toast({
         title: 'Có lỗi khi xóa khách hàng này',
-
         position: 'top',
         status: 'error',
         duration: 3000,
@@ -100,7 +99,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
     setCheckedAll(!checkedAll);
 
     if (!checkedAll) {
-      const allCustomerIds = customers.map((customer) => customer.id);
+      const allCustomerIds = customers.map((customer) => customer.receiverId);
       setCustomerSelections(allCustomerIds);
     } else {
       setCustomerSelections([]);
@@ -144,7 +143,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
   const totalPages = Math.ceil(customers.length / customersPerPage);
 
   const handleUpdate = async (id: any) => {
-    const p = customers.find((tmp) => tmp.id === id);
+    const p = customers.find((tmp) => tmp.receiverId === id);
     setSelectedCustomer({ ...p });
     onOpen();
   }
@@ -177,11 +176,11 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
         </Thead>
         <Tbody>
           {paginateCustomers().map((customer) => (
-            <Tr key={customer.id}>
+            <Tr key={customer.receiverId}>
               <Td>
                 <Checkbox
-                  isChecked={customerSelections.includes(customer.id)}
-                  onChange={() => handleCheckboxChange(customer.id)}
+                  isChecked={customerSelections.includes(customer.receiverId)}
+                  onChange={() => handleCheckboxChange(customer.receiverId)}
                 />
               </Td>
               <Td><Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{customer.name}</Text></Td>
@@ -201,8 +200,8 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
                       <Icon as={SlOptionsVertical} color={"gray"} />
                     </MenuButton>
                     <MenuList>
-                      <MenuItem onClick={() => handleUpdate(customer.id)}>Sửa</MenuItem>
-                      <MenuItem onClick={() => handleDeleteOpen(customer.id)}>Xoá</MenuItem>
+                      <MenuItem onClick={() => handleUpdate(customer.receiverId)}>Sửa</MenuItem>
+                      <MenuItem onClick={() => handleDeleteOpen(customer.receiverId)}>Xoá</MenuItem>
                     </MenuList>
                   </Menu>
                 </Td>
@@ -237,7 +236,9 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
                     backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
                   }
                 }
-              }} onClick={() => handleDelete(selectedCustomer.id)}>Xác nhận</Button>
+              }} 
+              isLoading={isLoading}
+              onClick={() => handleDelete(selectedCustomer.receiverId)}>Xác nhận</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

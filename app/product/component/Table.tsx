@@ -88,11 +88,11 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
       response = await removeProduct(id).unwrap();
       // console.log(response.message);
       handleDeleteClose();
-    } catch (err) {
+    } catch (err: any) {
       handleDeleteClose();
       console.error('Failed to delete product: ', err)
       toast({
-        title: response?.message,
+        title: err.data.message,
         position: 'top',
         status: 'error',
         duration: 3000,
@@ -320,7 +320,9 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
                     backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
                   }
                 }
-              }} onClick={() => handleDelete(selectedProduct.id)}>Xác nhận</Button>
+              }} 
+              isLoading={isLoading}
+              onClick={() => handleDelete(selectedProduct.id)}>Xác nhận</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

@@ -382,7 +382,7 @@ export default function OrderForm() {
   const renderReceiverSuggestions = () =>
     receiverSuggestions.slice(0, 5).map((suggestion) => (
       <Button
-        key={suggestion.id}
+        key={suggestion.receiverId}
         style={{ cursor: "pointer" }}
         onClick={() => {
           setReceiverValue(suggestion.phoneNumber);
