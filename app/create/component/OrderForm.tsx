@@ -39,6 +39,7 @@ import {
   PopoverTrigger,
   PopoverContent,
   Skeleton,
+  chakra,
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
@@ -96,6 +97,14 @@ type FormData = {
   };
 };
 
+const GradientText = chakra('span', {
+  baseStyle: {
+    fontWeight: 'bold',
+    background: 'linear-gradient(90deg, #ff5e09, #ff0348)',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+  },
+})
 export default function OrderForm() {
   const [items, setItems] = useState([0]);
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
@@ -383,17 +392,19 @@ export default function OrderForm() {
     receiverSuggestions.slice(0, 5).map((suggestion) => (
       <Button
         key={suggestion.receiverId}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer" , textAlign: "left", justifyContent: "left" }}
         onClick={() => {
           setReceiverValue(suggestion.phoneNumber);
           setSelectedReceiver(suggestion);
           setValue("receiver", suggestion);
           setReceiverSuggestions([]);
         }}
-        width={"full"}
+        width={"100%"}
         m={1}
+        
+
       >
-        {suggestion.name} {suggestion.phoneNumber}
+       <Text m={1} style={{ textAlign: "left" }} isTruncated> {suggestion.name}</Text> - <Text m={1}> {suggestion.phoneNumber}</Text>
       </Button>
     ));
 
@@ -688,7 +699,7 @@ export default function OrderForm() {
           </Box>
         </Box>
       </Box>
-      <Box w={{ base: "80wv", lg: "50%" }}>
+      <Box w={{ base: "80wv", lg: "50%" }} maxW={{ base: "80wv", lg: "50%" }}>
         <Box p={4} bg="gray.50">
           <Text color="orange.500" fontWeight={"bold"} fontSize="20px">
             Người nhận
@@ -698,6 +709,7 @@ export default function OrderForm() {
               <Popover
                 isOpen={receiverSuggestions.length > 0}
                 placement="bottom-start"
+                matchWidth 
               >
                 <PopoverTrigger>
                   <Input
@@ -723,7 +735,7 @@ export default function OrderForm() {
                     {errors.receiver.message}
                   </Text>
                 )}
-                <PopoverContent pr={2}>
+                <PopoverContent pr={2} w="full">
                   <Box>{renderReceiverSuggestions()}</Box>
                 </PopoverContent>
               </Popover>
