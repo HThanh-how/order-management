@@ -36,7 +36,7 @@ import {
 } from "@chakra-ui/react";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useState } from "react";
-import { useRemoveStoreMutation } from "@/app/_lib/features/api/apiSlice"
+import { useRemoveStoreMutation } from "@/app/_lib/features/api/apiSlice";
 import { Store } from "@/app/type";
 import { useAppSelector } from "@/app/_lib/hooks";
 import EditDialog from "./EditDialog";
@@ -45,16 +45,16 @@ interface StoreTableProps {
   stores: Store[];
 }
 
-import { chakra } from "@chakra-ui/react"
+import { chakra } from "@chakra-ui/react";
 
-const GradientText = chakra('span', {
+const GradientText = chakra("span", {
   baseStyle: {
-    fontWeight: 'bold',
-    background: 'linear-gradient(90deg, #ff5e09, #ff0348)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
+    fontWeight: "bold",
+    background: "linear-gradient(90deg, #ff5e09, #ff0348)",
+    WebkitBackgroundClip: "text",
+    WebkitTextFillColor: "transparent",
   },
-})
+});
 
 const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
   const [checkedAll, setCheckedAll] = useState(false);
@@ -63,7 +63,7 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
   const [storesPerPage, setStoresPerPage] = useState(5);
   const [selectedStore, setSelectedStore] = useState<any>({});
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const role = useAppSelector((state: any) => state.role.value)
+  const role = useAppSelector((state: any) => state.role.value);
   const [removeStore, { isLoading }] = useRemoveStoreMutation();
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -71,12 +71,12 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
   const handleDeleteClose = async () => {
     setDeleteOpen(false);
     setSelectedStore({});
-  }
+  };
   const handleDeleteOpen = async (id: any) => {
     const p = stores.find((tmp) => tmp.id === id);
     setSelectedStore({ ...p });
     setDeleteOpen(true);
-  }
+  };
 
   const handleDelete = async (id: any) => {
     try {
@@ -84,25 +84,25 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
       handleDeleteClose();
     } catch (err) {
       handleDeleteClose();
-      console.error('Failed to delete store: ', err)
+      console.error("Failed to delete store: ", err);
       toast({
-        title: 'Có lỗi khi xóa cửa hàng này',
-        position: 'top',
-        status: 'error',
+        title: "Có lỗi khi xóa cửa hàng này",
+        position: "top",
+        status: "error",
         duration: 3000,
         isClosable: true,
-      })
+      });
       return;
     }
     toast({
-      title: 'Xoá cửa hàng thành công',
-      position: 'top',
-      status: 'success',
+      title: "Xoá cửa hàng thành công",
+      position: "top",
+      status: "success",
       duration: 3000,
       isClosable: true,
-    })
-    console.log(removeStore(id).unwrap())
-  }
+    });
+    console.log(removeStore(id).unwrap());
+  };
 
   const handleMasterCheckboxChange = () => {
     setCheckedAll(!checkedAll);
@@ -154,13 +154,13 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
   const handleUpdate = async (id: any) => {
     const p = stores.find((tmp) => tmp.id === id);
     setSelectedStore({ ...p });
-    onOpen()
-  }
+    onOpen();
+  };
 
   return (
     <Box overflowX={"auto"} p={8} m={2}>
-      <Table variant="simple" size={{ base: 'sm', md: 'md' }}>
-        <Thead bgColor={"gray.50"} rounded={"xl"} >
+      <Table variant="simple" size={{ base: "sm", md: "md" }}>
+        <Thead bgColor={"gray.50"} rounded={"xl"}>
           <Tr>
             <Th width={"1vw"}>
               <Checkbox
@@ -168,11 +168,11 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
                 onChange={handleMasterCheckboxChange}
               />
             </Th>
-            <Th >Name</Th>
+            <Th>Name</Th>
             <Th>Số điện thoại</Th>
             <Th>Địa chỉ</Th>
             <Th>Ghi chú</Th>
-            {role === 'ROLE_USER' && (
+            {role === "ROLE_USER" && (
               <Th w={"1vw"}>
                 <Menu>
                   <MenuButton>
@@ -192,27 +192,47 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
                   onChange={() => handleCheckboxChange(store.id)}
                 />
               </Td>
-              <Td><Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{store.name}</Text></Td>
-              <Td><Text maxW={'120px'} minW={"100px"} whiteSpace="normal" >{store.phoneNumber}</Text></Td>
-              <Td ><Text whiteSpace="normal" minW={"200px"}>{store.detailedAddress}, {store.address}</Text></Td>
-   
+              <Td>
+                <Text maxW={"200px"} minW={"100px"} whiteSpace="normal">
+                  {store.name}
+                </Text>
+              </Td>
+              <Td>
+                <Text maxW={"120px"} minW={"100px"} whiteSpace="normal">
+                  {store.phoneNumber}
+                </Text>
+              </Td>
+              <Td>
+                <Tooltip
+                  label={`${store.detailedAddress}, ${store.address}`}
+                  placement="bottom"
+                >
+                  <Text whiteSpace="normal" maxW={"400px"} isTruncated>
+                    {store.detailedAddress}, {store.address}
+                  </Text>
+                </Tooltip>
+              </Td>
 
               <Td>
                 <Tooltip label={store.description} placement="bottom">
-                  <Text maxW={'100px'} whiteSpace="normal" isTruncated>
+                  <Text maxW={"100px"} whiteSpace="normal" isTruncated>
                     {store.description}
                   </Text>
                 </Tooltip>
               </Td>
-              {role === 'ROLE_USER' && (
+              {role === "ROLE_USER" && (
                 <Td>
                   <Menu>
                     <MenuButton>
                       <Icon as={SlOptionsVertical} color={"gray"} />
                     </MenuButton>
                     <MenuList>
-                      <MenuItem onClick={() => handleUpdate(store.id)}>Sửa</MenuItem>
-                      <MenuItem onClick={() => handleDeleteOpen(store.id)}>Xoá</MenuItem>
+                      <MenuItem onClick={() => handleUpdate(store.id)}>
+                        Sửa
+                      </MenuItem>
+                      <MenuItem onClick={() => handleDeleteOpen(store.id)}>
+                        Xoá
+                      </MenuItem>
                     </MenuList>
                   </Menu>
                 </Td>
@@ -228,29 +248,41 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
         selectedStore={selectedStore}
       />
 
-      <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered size={{ base: 'sm', md: 'md' }}>
+      <Modal
+        onClose={() => handleDeleteClose()}
+        isOpen={deleteOpen}
+        isCentered
+        size={{ base: "sm", md: "md" }}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
           <ModalHeader>Xác nhận xoá cửa hàng</ModalHeader>
           <ModalBody>
-
             <Flex alignItems="center">
-              <Text >Bạn có chắc chắn muốn xoá cửa hàng này không?</Text>
+              <Text>Bạn có chắc chắn muốn xoá cửa hàng này không?</Text>
             </Flex>
             Đây là yêu cầu không thể hoàn tác.
           </ModalBody>
           <ModalFooter>
-            <Button mr={3} onClick={() => handleDeleteClose()}>Đóng</Button>
-            <Button color="white"
+            <Button mr={3} onClick={() => handleDeleteClose()}>
+              Đóng
+            </Button>
+            <Button
+              color="white"
               backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
               sx={{
-                '@media (hover: hover)': {
+                "@media (hover: hover)": {
                   _hover: {
-                    backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
-                  }
-                }
-              }} onClick={() => handleDelete(selectedStore.id)}>Xác nhận</Button>
+                    backgroundImage:
+                      "linear-gradient(to right, #df5207, #d80740)",
+                  },
+                },
+              }}
+              onClick={() => handleDelete(selectedStore.id)}
+            >
+              Xác nhận
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -288,11 +320,18 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
             25
           </Button>
         </ButtonGroup> */}
-        <Select ml={2} fontSize={{ base: 10, md: 16 }} w={{ base: '15%', md: '20%' }} onChange={(e) => handleStoresPerPageChange(Number(e.target.value))}>
-          <option defaultChecked value='5' >5 cửa hàng</option>
-          <option value='10' >10 cửa hàng</option>
-          <option value='15' >15 cửa hàng</option>
-          <option value='20' >20 cửa hàng</option>
+        <Select
+          ml={2}
+          fontSize={{ base: 10, md: 16 }}
+          w={{ base: "15%", md: "20%" }}
+          onChange={(e) => handleStoresPerPageChange(Number(e.target.value))}
+        >
+          <option defaultChecked value="5">
+            5 cửa hàng
+          </option>
+          <option value="10">10 cửa hàng</option>
+          <option value="15">15 cửa hàng</option>
+          <option value="20">20 cửa hàng</option>
         </Select>
 
         <Flex ml={{ base: 6 }} align="center">

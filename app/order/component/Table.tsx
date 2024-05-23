@@ -9,6 +9,7 @@ import {
   Th,
   Thead,
   Badge,
+  Tooltip,
   Tr,
   ButtonGroup,
   Button,
@@ -62,23 +63,22 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
   const dispatch = useAppDispatch();
   const [filteredOrders, setFilteredOrders] = useState(orders);
   const toast = useToast();
-  const [removeOrder, {isLoading}] = useRemoveOrderMutation();
+  const [removeOrder, { isLoading }] = useRemoveOrderMutation();
   const router = useRouter();
-  const [tabIndex, setTabIndex] = useState(0)
-
+  const [tabIndex, setTabIndex] = useState(0);
 
   useEffect(() => {
     setFilteredOrders(orders);
-  }, [orders])
+  }, [orders]);
   const handleDeleteClose = async () => {
     setDeleteOpen(false);
     setSelectedOrder({});
-  }
+  };
   const handleDeleteOpen = async (id: any) => {
     const p = orders.find((tmp) => tmp.id === id);
-    setSelectedOrder({...p});
+    setSelectedOrder({ ...p });
     setDeleteOpen(true);
-  }
+  };
 
   const handleDelete = async (id: any) => {
     try {
@@ -86,24 +86,24 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
       handleTabChange(0);
       handleDeleteClose();
     } catch (err) {
-      console.error('Failed to delete order: ', err)
+      console.error("Failed to delete order: ", err);
       toast({
-        title: 'Có lỗi khi xóa đơn hàng này',
-        position: 'top',
-        status: 'error',
+        title: "Có lỗi khi xóa đơn hàng này",
+        position: "top",
+        status: "error",
         duration: 3000,
         isClosable: true,
-      })
+      });
       return;
     }
     toast({
-      title: 'Xoá đơn hàng thành công',
-      position: 'top',
-      status: 'success',
+      title: "Xoá đơn hàng thành công",
+      position: "top",
+      status: "success",
       duration: 3000,
       isClosable: true,
-    })
-  }
+    });
+  };
 
   const handleMasterCheckboxChange = () => {
     setCheckedAll(!checkedAll);
@@ -129,7 +129,10 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
 
   const paginateOrders = () => {
     const startingIndex = (currentPage - 1) * ordersPerPage;
-    const endingIndex = Math.min(startingIndex + ordersPerPage, filteredOrders.length);
+    const endingIndex = Math.min(
+      startingIndex + ordersPerPage,
+      filteredOrders.length
+    );
     return filteredOrders.slice(startingIndex, endingIndex);
   };
 
@@ -152,36 +155,90 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
 
   const handleTabChange = (index: number) => {
     setTabIndex(index);
-    if(index === 0) setFilteredOrders(orders);
-    if(index === 1) setFilteredOrders(orders.filter((order) => order.orderStatus === "DELIVERED"));
-    if(index === 2) setFilteredOrders(orders.filter((order) => order.orderStatus === "PROCESSING"));
-    if(index === 3) setFilteredOrders(orders.filter((order) => order.orderStatus === "CREATED"));
-    if(index === 4) setFilteredOrders(orders.filter((order) => order.orderStatus === "CANCELLED"));
-  }
+    if (index === 0) setFilteredOrders(orders);
+    if (index === 1)
+      setFilteredOrders(
+        orders.filter((order) => order.orderStatus === "DELIVERED")
+      );
+    if (index === 2)
+      setFilteredOrders(
+        orders.filter((order) => order.orderStatus === "PROCESSING")
+      );
+    if (index === 3)
+      setFilteredOrders(
+        orders.filter((order) => order.orderStatus === "CREATED")
+      );
+    if (index === 4)
+      setFilteredOrders(
+        orders.filter((order) => order.orderStatus === "CANCELLED")
+      );
+  };
 
   const totalPages = Math.ceil(orders.length / ordersPerPage);
 
   function formatDate(date: Date): string {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-    const seconds = String(date.getSeconds()).padStart(2, '0');
-  
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
     return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
   }
 
   return (
-    <Box overflowX={{ base: "scroll", lg: "hidden" }} p={8} pt={0}>     
-      <Tabs index={tabIndex} isFitted variant="enclosed" colorScheme="red" mb={2} onChange={(index) => handleTabChange(index)}>
+    <Box overflowX={{ base: "scroll" }} p={8} pt={0}>
+      <Tabs
+        index={tabIndex}
+        isFitted
+        variant="enclosed"
+        colorScheme="red"
+        mb={2}
+        onChange={(index) => handleTabChange(index)}
+      >
         <TabList>
-          <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} >Tất cả</Tab>
-          <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} >Thành công</Tab>
-          <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} >Đang giao</Tab>
+          <Tab
+            _selected={{
+              color: "white",
+              bg: "linear-gradient(90deg, #ff5e09, #ff0348)",
+            }}
+          >
+            Tất cả
+          </Tab>
+          <Tab
+            _selected={{
+              color: "white",
+              bg: "linear-gradient(90deg, #ff5e09, #ff0348)",
+            }}
+          >
+            Thành công
+          </Tab>
+          <Tab
+            _selected={{
+              color: "white",
+              bg: "linear-gradient(90deg, #ff5e09, #ff0348)",
+            }}
+          >
+            Đang giao
+          </Tab>
           {/* <Tab>Đang vận chuyển</Tab> */}
-          <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} >Chờ lấy hàng</Tab>
-          <Tab _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }} >Bị hủy</Tab>
+          <Tab
+            _selected={{
+              color: "white",
+              bg: "linear-gradient(90deg, #ff5e09, #ff0348)",
+            }}
+          >
+            Chờ lấy hàng
+          </Tab>
+          <Tab
+            _selected={{
+              color: "white",
+              bg: "linear-gradient(90deg, #ff5e09, #ff0348)",
+            }}
+          >
+            Bị hủy
+          </Tab>
         </TabList>
       </Tabs>
       <Table variant="simple" size={{ base: "sm", md: "md" }}>
@@ -210,10 +267,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
         </Thead>
         <Tbody>
           {paginateOrders().map((order) => (
-            <Tr 
-              key={order.id} 
-              style={{cursor: "pointer"}} 
-            >
+            <Tr key={order.id} style={{ cursor: "pointer" }}>
               <Td>
                 <Checkbox
                   isChecked={orderSelections.includes(order.id)}
@@ -221,14 +275,30 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
                 />
               </Td>
               <Td onClick={() => router.push(`/order-details?id=${order.id}`)}>
-                <strong>{order.code}</strong>
+                <Text maxW={"100px"}>
+                  <strong>{order.code}</strong>
+                </Text>
               </Td>
-              <Td onClick={() => router.push(`/order-details?id=${order.id}`)}>{order.price?.collectionCharge} VNĐ</Td>
-
               <Td onClick={() => router.push(`/order-details?id=${order.id}`)}>
-                {order.receiverDto.address}
+                <Text maxW={"100px"}>{order.price?.collectionCharge} VNĐ</Text>
               </Td>
-              <Td onClick={() => router.push(`/order-details?id=${order.id}`)}>{order.lastUpdatedBy}</Td>
+
+              <Td
+                onClick={() => router.push(`/order-details?id=${order.id}`)}
+                maxW={"350px"}
+              >
+                <Tooltip
+                  label={order.receiverDto.detailedAddress}
+                  placement="bottom"
+                >
+                  <Text whiteSpace={"normal"} isTruncated>
+                    {order.receiverDto.detailedAddress}
+                  </Text>
+                </Tooltip>
+              </Td>
+              <Td onClick={() => router.push(`/order-details?id=${order.id}`)}>
+                {order.lastUpdatedBy}
+              </Td>
               <Td onClick={() => router.push(`/order-details?id=${order.id}`)}>
                 {order.orderStatus === "DELIVERED" && (
                   <Badge mr={2} colorScheme="green">
@@ -260,11 +330,18 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
                     <Icon as={SlOptionsVertical} color={"gray"} />
                   </MenuButton>
                   <MenuList>
-                    <MenuItem onClick={() => router.push(`/order-details?id=${order.id}`)}>Sửa</MenuItem>
-                    <MenuItem onClick={() => handleDeleteOpen(order.id)}>Xoá</MenuItem>
+                    <MenuItem
+                      onClick={() =>
+                        router.push(`/order-details?id=${order.id}`)
+                      }
+                    >
+                      Sửa
+                    </MenuItem>
+                    <MenuItem onClick={() => handleDeleteOpen(order.id)}>
+                      Xoá
+                    </MenuItem>
                   </MenuList>
                 </Menu>
-                
               </Td>
             </Tr>
           ))}
@@ -275,26 +352,31 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
-          <ModalBody>
-              Bạn có chắc chắn xóa đơn hàng này?
-          </ModalBody>
+          <ModalBody>Bạn có chắc chắn xóa đơn hàng này?</ModalBody>
           <ModalFooter>
-            <Button mr={3} onClick={() => handleDeleteClose()}>Đóng</Button>
-            <Button                   color="white"
-                  backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
-                  sx={{
-                    '@media (hover: hover)': {
-                      _hover: {
-                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
-                      }
-                    }
-                  }} onClick={() => handleDelete(selectedOrder.id)}>Xác nhận</Button>
+            <Button mr={3} onClick={() => handleDeleteClose()}>
+              Đóng
+            </Button>
+            <Button
+              color="white"
+              backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+              sx={{
+                "@media (hover: hover)": {
+                  _hover: {
+                    backgroundImage:
+                      "linear-gradient(to right, #df5207, #d80740)",
+                  },
+                },
+              }}
+              onClick={() => handleDelete(selectedOrder.id)}
+            >
+              Xác nhận
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
 
       <Flex justify="space-between" mt={4}>
-
         <Select
           ml={2}
           fontSize={{ base: 10, md: 16 }}
@@ -339,7 +421,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
         </ButtonGroup>
       </Flex>
     </Box>
-  )
+  );
 };
 
 export default OrderTable;
