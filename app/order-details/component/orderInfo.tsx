@@ -49,6 +49,7 @@ import {
   useGetOrderDetailQuery,
   useGetOrderDetailForEmployeeQuery,
   useEditOrderStatusMutation,
+  useEditOrderStatusForEmployeeMutation,
 } from "@/app/_lib/features/api/apiSlice";
 import { useSearchParams } from 'next/navigation'
 import { useRouter } from "next/navigation";
@@ -115,6 +116,7 @@ export default function CustomerTable() {
   }, [orderU, orderE]);
 
   const [editOrderStatus, {isLoading}] = useEditOrderStatusMutation();
+  const [editOrderStatusForEmployee, {isLoading: isLoadingEmp}] = useEditOrderStatusForEmployeeMutation();
 
   useEffect(() => {
     if (isSuccessU || isSuccessE) {
@@ -128,10 +130,19 @@ export default function CustomerTable() {
   const handleCancelOrder = async (id: number) => {
     let isSuccess: boolean = true;
     try {
-      await editOrderStatus({
-        newStatus: { newStatus: "CANCELLED" },
-        id: id,
-      }).unwrap();
+      if(role === 'ROLE_USER') {
+        await editOrderStatus({
+          newStatus: { newStatus: "CANCELLED" },
+          id: id,
+        }).unwrap();
+      }
+      else {
+        await editOrderStatusForEmployee({
+          newStatus: { newStatus: "CANCELLED" },
+          id: id,
+        }).unwrap();
+      }
+      
       onClose();
     } catch (err) {
       isSuccess = false;
@@ -480,7 +491,7 @@ export default function CustomerTable() {
                           }
                         }
                       }} 
-                      isLoading={isLoading}
+                      isLoading={isLoading || isLoadingEmp}
                       onClick={() => handleCancelOrder(getOrder.id)} ml={3}>
                       Xác nhận
                     </Button>

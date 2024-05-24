@@ -119,7 +119,6 @@ export default function OrderForm() {
   const [isReadOnly, setIsReadOnly] = useState(false);
   //////////////////////////
   const [optionValuable, setOptionValuable] = useState<number>(0);
-  // const [optionValuable, setOptionValuable] = useState<number>(0);
   const [optionBulky, setOptionBulky] = useState<number>(0);
 
   //only 1 checkbox of receiver box be checked

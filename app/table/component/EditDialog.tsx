@@ -172,13 +172,14 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
         <ModalHeader>Cập nhật thông tin người nhận</ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
-          <FormControl mt={4} isRequired isInvalid={Boolean(errors.name)}>
+          <FormControl isRequired isInvalid={Boolean(errors?.name?.type === 'required' || errors?.name?.type === 'maxLength')}>
             <FormLabel>Tên người nhận</FormLabel>
-            <Input type='text' {...register('name', {
+            <Input type='text' id="name" {...register('name', {
               required: 'Trường này không được bỏ trống',
+              maxLength: 30,
             })} />
             <FormErrorMessage>
-              {errors.name && errors.name.message}
+              {errors.name?.type === 'required' && errors.name?.message || errors.name?.type === 'maxLength' && "Không vượt quá 30 kí tự"}
             </FormErrorMessage>
           </FormControl>
 
@@ -191,7 +192,7 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
                 message: 'Số điện thoại không hợp lệ'
               }
             })} />
-            {errors.phoneNumber && <Text color="red.500" mb={2} mt={-2}>{errors.phoneNumber.message}</Text>}
+            {errors.phoneNumber && <Text color="red.500" mb={2} mt={2}>{errors.phoneNumber.message}</Text>}
             <FormErrorMessage>
               {errors.name && errors.name.message}
             </FormErrorMessage>
@@ -273,20 +274,21 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
               {errors.village && errors.village.message}
             </FormErrorMessage>
           </FormControl>
-          <FormControl mt={4} isRequired isInvalid={Boolean(errors.detailedAddress)}>
-            <FormLabel>Địa chỉ chi tiết</FormLabel>
-            <Input
-              type="text"
-              maxLength={255}
-              placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
-              {...register('detailedAddress', {
-                required: 'Trường này không được bỏ trống',
-              })}
-            />
-            <FormErrorMessage>
-              {errors.detailedAddress && errors.detailedAddress.message}
-            </FormErrorMessage>
-          </FormControl>
+          <FormControl mt={4} isRequired isInvalid={Boolean(errors.detailedAddress?.type === 'required' || errors.detailedAddress?.type === 'maxLength')}>
+              <FormLabel>Địa chỉ chi tiết</FormLabel>
+              <Input
+                maxLength={255}
+                type="text"
+                placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
+                {...register('detailedAddress', {
+                  required: 'Trường này không được bỏ trống',
+                  maxLength: 30,
+                })}
+              />
+              <FormErrorMessage>
+                {errors.detailedAddress?.type === 'required' && errors.detailedAddress?.message || errors.detailedAddress?.type === 'maxLength' && "Không vượt quá 30 kí tự"}
+              </FormErrorMessage>
+            </FormControl>
           <FormControl mt={4}>
             <FormLabel>Ghi chú</FormLabel>
             <Textarea placeholder={"Ghi chú"} {...register('note')} />
