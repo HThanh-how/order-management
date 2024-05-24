@@ -49,6 +49,7 @@ import {
   useGetOrderDetailQuery,
   useGetOrderDetailForEmployeeQuery,
   useEditOrderStatusMutation,
+  useEditOrderStatusForEmployeeMutation,
 } from "@/app/_lib/features/api/apiSlice";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -123,7 +124,8 @@ export default function CustomerTable() {
     if (isSuccessE) return orderE.data;
   }, [orderU, orderE]);
 
-  const [editOrderStatus, { isLoading }] = useEditOrderStatusMutation();
+  const [editOrderStatus, {isLoading}] = useEditOrderStatusMutation();
+  const [editOrderStatusForEmployee, {isLoading: isLoadingEmp}] = useEditOrderStatusForEmployeeMutation();
 
   useEffect(() => {
     if (isSuccessU || isSuccessE) {
@@ -137,10 +139,19 @@ export default function CustomerTable() {
   const handleCancelOrder = async (id: number) => {
     let isSuccess: boolean = true;
     try {
-      await editOrderStatus({
-        newStatus: { newStatus: "CANCELLED" },
-        id: id,
-      }).unwrap();
+      if(role === 'ROLE_USER') {
+        await editOrderStatus({
+          newStatus: { newStatus: "CANCELLED" },
+          id: id,
+        }).unwrap();
+      }
+      else {
+        await editOrderStatusForEmployee({
+          newStatus: { newStatus: "CANCELLED" },
+          id: id,
+        }).unwrap();
+      }
+      
       onClose();
     } catch (err) {
       isSuccess = false;
@@ -569,32 +580,28 @@ export default function CustomerTable() {
                   Bạn có chắc chắn muốn huỷ đơn hàng này?
                 </AlertDialogBody>
 
-                <AlertDialogFooter>
-                  <Button ref={cancelRef} onClick={onClose}>
-                    Huỷ
-                  </Button>
-                  <Button
-                    color="white"
-                    backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
-                    sx={{
-                      "@media (hover: hover)": {
-                        _hover: {
-                          backgroundImage:
-                            "linear-gradient(to right, #df5207, #d80740)",
-                        },
-                      },
-                    }}
-                    isLoading={isLoading}
-                    onClick={() => handleCancelOrder(getOrder.id)}
-                    ml={3}
-                  >
-                    Xác nhận
-                  </Button>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialogOverlay>
-          </AlertDialog>
-        </>
+                  <AlertDialogFooter>
+                    <Button ref={cancelRef} onClick={onClose}>
+                      Huỷ
+                    </Button>
+                    <Button color="white"
+                      backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+                      sx={{
+                        '@media (hover: hover)': {
+                          _hover: {
+                            backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                          }
+                        }
+                      }} 
+                      isLoading={isLoading || isLoadingEmp}
+                      onClick={() => handleCancelOrder(getOrder.id)} ml={3}>
+                      Xác nhận
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialogOverlay>
+            </AlertDialog>
+          </>
       )}
     </>
   );

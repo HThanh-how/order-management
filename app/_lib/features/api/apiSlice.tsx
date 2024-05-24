@@ -304,6 +304,17 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Order"],
     }),
+    editOrderStatusForEmployee: builder.mutation({
+      query: ({newStatus, id}) => ({
+        url: `/order/${id}/owner/status`,
+        method: "PATCH",
+        headers: {
+          userId: `${getFromLocalStorage("userId")}`,
+        },
+        body: newStatus,
+      }),
+      invalidatesTags: ["Order"],
+    }),
     removeOrder: builder.mutation({
       query: (id) => ({
         url: `/order/${id}`,
@@ -455,6 +466,7 @@ export const {
   useAddOrderMutation,
   useAddOrderForEmployeeMutation,
   useEditOrderStatusMutation,
+  useEditOrderStatusForEmployeeMutation,
   useRemoveOrderMutation,
   useGetRefreshTokenMutation,
   useGetEmployeesQuery,

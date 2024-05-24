@@ -146,13 +146,14 @@ export default function Dialog() {
           <ModalCloseButton />
           <ModalBody pb={6}>
 
-            <FormControl isRequired isInvalid={Boolean(errors.name)}>
+            <FormControl isRequired isInvalid={Boolean(errors?.name?.type === 'required' || errors?.name?.type === 'maxLength')}>
               <FormLabel>Tên hàng hóa</FormLabel>
               <Input type='text' id="name" {...register('name', {
                 required: 'Trường này không được bỏ trống',
+                maxLength: 30,
               })} />
               <FormErrorMessage>
-                {errors.name && errors.name.message}
+                {errors.name?.type === 'required' && errors.name?.message || errors.name?.type === 'maxLength' && "Không vượt quá 30 kí tự"}
               </FormErrorMessage>
             </FormControl>
             <FormControl mt={4}>
