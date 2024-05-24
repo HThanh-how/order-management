@@ -120,6 +120,8 @@ export default function OrderForm() {
   //////////////////////////
   const [optionValuable, setOptionValuable] = useState<number>(0);
   const [optionBulky, setOptionBulky] = useState<number>(0);
+  const [vanchuyen, setVanchuyen] = useState<number>(0);
+  const [luukho, setLuukho] = useState<number>(0);
 
   //only 1 checkbox of receiver box be checked
   // const [checkbox1Checked, setCheckbox1Checked] = useState(true);
@@ -127,7 +129,8 @@ export default function OrderForm() {
 
   const [selectedStore, setSelectedStore] = useState<any>(null);
   const [selectedReceiver, setSelectedReceiver] = useState<any>(null);
-  const [payer, setPayer] = useState<string>("SENDER");
+  const [payer, setPayer] = useState<string>("RECEIVER");
+  const [insurance, setInsurance] = useState<number>(0);
 
   const [receiverValue, setReceiverValue] = useState<string>("");
   const [receiverSuggestions, setReceiverSuggestions] = useState<Customer[]>(
@@ -228,7 +231,7 @@ export default function OrderForm() {
       };
 
       data.price.itemsPrice = totalPriceItems;
-      data.price.shippingFee = shippingFee + optionValuable + optionBulky;
+      data.price.shippingFee = shippingFee + optionValuable + optionBulky + insurance + vanchuyen + luukho;
       data.price.collectionCharge = collectedMoney;
       data.store = { ...selectedStore };
       data.receiver = { ...selectedReceiver };
@@ -844,6 +847,11 @@ export default function OrderForm() {
                 {...register("delivery.deliveryMethod", {
                   required: "This is required",
                 })}
+                onChange={(e) => {
+                  if(e.target.value === "HOA_TOC") setVanchuyen(15000);
+                  if(e.target.value === "BINH_THUONG") setVanchuyen(0);
+                  if(e.target.value === "TIET_KIEM") setVanchuyen(-5000);
+                }}
               >
                 <option value="HOA_TOC">Hoả Tốc</option>
                 <option value="BINH_THUONG">Bình Thường</option>
@@ -885,6 +893,11 @@ export default function OrderForm() {
                 {...register("delivery.luuKho", {
                   required: "This is required",
                 })}
+                onChange={(e) => { 
+                  if(e.target.value === "MOT_NGAY") setVanchuyen(0);
+                  if(e.target.value === "BA_NGAY") setLuukho(5000);
+                  if(e.target.value === "MOT_TUAN") setLuukho(15000);
+                }}
               >
                 <option value="MOT_NGAY">Một Ngày</option>
                 <option value="BA_NGAY">Ba Ngày</option>
@@ -921,6 +934,10 @@ export default function OrderForm() {
             fontWeight={"500"}
             colorScheme="red"
             {...register("delivery.hasLostInsurance")}
+            onChange={(e) => {
+              if (e.target.checked) setInsurance(Math.ceil(0.05 * totalPriceItems));
+              else setInsurance(0);
+            }}
           >
             Bảo hiểm đơn hàng
           </Checkbox>
@@ -957,8 +974,8 @@ export default function OrderForm() {
           <Flex m={4} justifyContent={"space-between"}>
             <Text fontWeight={"bold"}>
               Phí ship: {shippingFee}{" "}
-              {optionValuable + optionBulky !== 0
-                ? `+ ${optionValuable + optionBulky} (phí tuỳ chọn)`
+              {optionValuable + optionBulky + insurance + vanchuyen + luukho !== 0
+                ? `+ ${optionValuable + optionBulky + insurance + vanchuyen + luukho} (phí tuỳ chọn)`
                 : ""}{" "}
               VNĐ
             </Text>
@@ -990,7 +1007,7 @@ export default function OrderForm() {
           <Flex m={4}>
             <Text fontWeight={"bold"}>
               Tổng tiền đơn:{" "}
-              {(shippingFee + optionValuable + optionBulky).toLocaleString()}{" "}
+              {(shippingFee + optionValuable + optionBulky + insurance + vanchuyen + luukho).toLocaleString()}{" "}
               VNĐ
             </Text>
           </Flex>
@@ -998,7 +1015,7 @@ export default function OrderForm() {
             <Text color="orange.500" fontWeight={"bold"} fontSize="18px">
               Người gửi trả:{" "}
               {(payer === "SENDER"
-                ? shippingFee + optionValuable + optionBulky
+                ? shippingFee + optionValuable + optionBulky + insurance + vanchuyen + luukho
                 : 0
               ).toLocaleString()}{" "}
               VNĐ
@@ -1010,7 +1027,7 @@ export default function OrderForm() {
               {(
                 collectedMoney +
                 (payer === "RECEIVER"
-                  ? shippingFee + optionValuable + optionBulky
+                  ? shippingFee + optionValuable + optionBulky + insurance + vanchuyen + luukho
                   : 0)
               ).toLocaleString()}{" "}
               VNĐ
