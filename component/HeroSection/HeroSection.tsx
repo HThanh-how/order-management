@@ -10,46 +10,78 @@ import {
   Button,
   Text,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import Place from "./Estimate";
 import { useDisclosure } from "@chakra-ui/react";
 import PostOfficeLocation from "./PostOfficeLocation";
+import axios, { AxiosError } from "axios";
+interface OrderHistory {
+  code: string;
+  message: string;
+  data: {
+    actionDate: string;
+    description: string;
+  }[];
+  timestamps: string;
+}
 const MyBox = () => {
   const [selectedTab, setSelectedTab] = useState(0);
-  const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [orderCode, setOrderCode] = useState("");
+  const [orderHistory, setOrderHistory] = useState<OrderHistory | null>(null); // if it's a state
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
   const handleTabsChange = (index: number) => {
     setSelectedTab(index);
   };
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // const handleCaptchaVerify: () => void = () => {
-  //   if (captchaVerified) {
-  //     // Xử lý khi reCAPTCHA được xác minh thành công
-  //     // Gửi biểu mẫu hoặc thực hiện hành động mong muốn
-  //     console.log('reCAPTCHA verified');
-  //   } else {
-  //     // Xử lý khi reCAPTCHA không được xác minh thành công
-  //     console.log('reCAPTCHA verification failed');
-  //   }
-  // };
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setOrderCode(e.target.value);
+  };
 
-  // const handleCaptchaChange = (value: string) => {
-  //   setCaptchaVerified(!!value);
-  // };
+  const handleSearch = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/order/history`,
+        {
+          params: { orderCode },
+        }
+      );
+      setOrderHistory(response.data);
+      onOpen();
+      console.log("Response:", response.data.data);
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response && axiosError.response.status === 400) {
+        toast({
+          title: "Đơn hàng không tồn tại.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    }
+  };
 
   return (
     <Flex
       align="center"
       justify="center"
       w="full"
-      h={{ base: 'full', md: "93vh" }}
+      h={{ base: "full", md: "93vh" }}
       backgroundImage="mainbg.webp"
       backgroundSize="cover"
       backgroundPosition="center"
     >
-      <Box w={{ base: "80vw", md: "60vw" }} h={{ base: "190vw", md: "auto", lg: "30vw" }} mt={{ base: 2, md: 8 }} bg="gray.200" rounded={"lg"}>
+      <Box
+        w={{ base: "80vw", md: "60vw" }}
+        h={{ base: "190vw", md: "auto", lg: "30vw" }}
+        mt={{ base: 2, md: 8 }}
+        bg="gray.200"
+        rounded={"lg"}
+      >
         <Tabs
           isFitted
           variant="enclosed"
@@ -59,15 +91,20 @@ const MyBox = () => {
         >
           <TabList>
             <Tab
-              _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }}
+              _selected={{
+                color: "white",
+                bg: "linear-gradient(90deg, #ff5e09, #ff0348)",
+              }}
               shadow={"xl"}
-              // border={"1px"}
               borderColor={"gray.300"}
             >
               Mã vận đơn
             </Tab>
             <Tab
-              _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }}
+              _selected={{
+                color: "white",
+                bg: "linear-gradient(90deg, #ff5e09, #ff0348)",
+              }}
               shadow={"xl"}
               border={"1px"}
               borderColor={"gray.300"}
@@ -75,7 +112,10 @@ const MyBox = () => {
               Ước tính chi phí
             </Tab>
             <Tab
-              _selected={{ color: "white", bg: "linear-gradient(90deg, #ff5e09, #ff0348)" }}
+              _selected={{
+                color: "white",
+                bg: "linear-gradient(90deg, #ff5e09, #ff0348)",
+              }}
               shadow={"xl"}
               border={"1px"}
               borderColor={"gray.300"}
@@ -86,11 +126,7 @@ const MyBox = () => {
 
           <TabPanels>
             <TabPanel>
-              {/* Content of the first tab */}
-
-
-              {/* <Box m={4}> <div className="g-recaptcha" data-sitekey="YOUR_SITE_KEY" data-callback={handleCaptchaChange}></div></Box> */}
-              <Flex >
+              <Flex>
                 <Input
                   m={4}
                   w={{ base: "90%", md: "40%" }}
@@ -98,51 +134,45 @@ const MyBox = () => {
                   type="text"
                   placeholder="Nhập mã vận đơn"
                   maxLength={255}
+                  value={orderCode}
+                  onChange={handleInputChange}
                 />
                 <Button
-                  my={{ base: 2, md: 4 }}
-                  mx={{ base: 2, md: 4 }}
+                  m={4}
                   color="white"
                   backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
                   sx={{
-                    '@media (hover: hover)': {
+                    "@media (hover: hover)": {
                       _hover: {
-                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
-                      }
-                    }
+                        backgroundImage:
+                          "linear-gradient(to right, #df5207, #d80740)",
+                      },
+                    },
                   }}
-                  onClick={onOpen}
+                  onClick={handleSearch}
                 >
                   Tra cứu
                 </Button>
               </Flex>
 
               {isOpen && (
-                <VStack m={4} justifyContent={"flex-start"} alignItems={"flex-start"}>
-                  <Flex color="teal">
-                    04/12/2023 00:12:43: <Text ml={{ base: 2, md: 4 }} color="black" fontWeight={500}>Đã tạo đơn hàng</Text>
-                  </Flex>
-                  <Flex color="teal">
-                    04/12/2023 07:23:11: <Text ml={{ base: 2, md: 4 }} color="black" fontWeight={500}>Người lấy hàng chuẩn bị lấy hàng</Text>
-                  </Flex>
-                  <Flex color="teal">
-                    04/12/2023 14:54:20: <Text ml={{ base: 2, md: 4 }} color="black" fontWeight={500}>Đã lấy hàng</Text>
-                  </Flex>
-                  <Flex color="teal">
-                    04/12/2023 16:22:42: <Text ml={{ base: 2, md: 4 }} color="black" fontWeight={500}>Nhập kho Củ Chi</Text>
-                  </Flex>
-                  <Flex color="teal">
-                    05/12/2023 08:19:28: <Text ml={{ base: 2, md: 4 }} color="black" fontWeight={500}>Vận chuyển từ kho Củ Chi đến kho Quận 10</Text>
-                  </Flex>
-                  <Flex color="teal">
-                    05/12/2023  09:45:37: <Text ml={{ base: 2, md: 4 }} color="black" fontWeight={500}>Nhập kho Quận 10</Text>
-                  </Flex>
-                  <Flex color="teal">
-                    05/12/2023 10:28:51: <Text ml={{ base: 2, md: 4 }} color="black" fontWeight={500}>Phân công giao hàng</Text>
-                  </Flex>
-                  <Flex color="teal">
-                    05/12/2023 13:59:39: <Text ml={{ base: 2, md: 4 }} color="black" fontWeight={500}>Đã giao hàng</Text>
-                  </Flex>
+                <VStack
+                  m={4}
+                  justifyContent={"flex-start"}
+                  alignItems={"flex-start"}
+                >
+                  {orderHistory?.data.map((item, index) => (
+                    <Flex key={index} color="teal">
+                      {new Date(item.actionDate).toLocaleString()}:{" "}
+                      <Text
+                        ml={{ base: 2, md: 4 }}
+                        color="black"
+                        fontWeight={500}
+                      >
+                        {item.description}
+                      </Text>
+                    </Flex>
+                  ))}
                 </VStack>
               )}
             </TabPanel>

@@ -65,6 +65,7 @@ type OrderItem = {
 };
 
 type FormData = {
+  isCollected: boolean;
   code: string;
   height: number;
   width: number;
@@ -219,7 +220,7 @@ export default function OrderForm() {
     let result: any;
     try {
       data.items.map((item, index) => {
-        item.price = priceItem[index] + 10000;
+        item.price = priceItem[index];
         item.quantity = quantityItem[index];
       });
       data.price = {
@@ -227,7 +228,7 @@ export default function OrderForm() {
         shippingFee: 0,
         collectionCharge: 0,
       };
-
+      data.isCollected = payer === "RECEIVER";
       data.price.itemsPrice = totalPriceItems;
       data.price.shippingFee = shippingFee + optionValuable + optionBulky;
       data.price.collectionCharge = collectedMoney;
@@ -273,6 +274,8 @@ export default function OrderForm() {
       }
     }
   };
+
+
 
   const getProvinceCode = (cityName: string) => {
     const city = cityData.find((city) => city.name === cityName);
@@ -813,7 +816,7 @@ export default function OrderForm() {
             Vận chuyển
           </Text>
           <RadioGroup
-            defaultValue="RECEIVER"
+            defaultValue="SENDER"
             m={4}
             onChange={handlePayerChange}
           >
