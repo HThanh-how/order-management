@@ -53,17 +53,17 @@ export default function StoreTable() {
     if (isSuccess) return stores.data
   }, [stores])
 
-  const {
-    data: today,
-    isLoading: isLoadingT,
-    isSuccess: isSuccessT,
-    isError: isErrorT,
-    error: errorT,
-  } = useGetTodayStoreQuery(1)
+  // const {
+  //   data: today,
+  //   isLoading: isLoadingT,
+  //   isSuccess: isSuccessT,
+  //   isError: isErrorT,
+  //   error: errorT,
+  // } = useGetTodayStoreQuery(1)
 
-  const getToday = useMemo(() => {
-    if (isSuccessT) return today.data
-  }, [today])
+  // const getToday = useMemo(() => {
+  //   if (isSuccessT) return today.data
+  // }, [today])
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
 
@@ -102,9 +102,9 @@ export default function StoreTable() {
             Cửa hàng
           </Text>
           {/* <Text color={"gray"}>Tuần này bạn có thêm 20 khách hàng mới</Text> */}
-          {isSuccessT && (
-            <Text display={{base: "none", md:"flex"}} color={"gray"}>Vươn tầm đi xa</Text>
-          )}
+          
+          <Text display={{base: "none", md:"flex"}} color={"gray"}>Vươn tầm đi xa</Text>
+          
         </VStack>
         <Flex>
           <Input

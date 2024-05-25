@@ -165,7 +165,7 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
                     <Icon as={SlOptionsVertical} color={"gray"} />
                   </MenuButton>
                   <MenuList>
-                    <MenuItem>Sửa</MenuItem>
+                    {/* <MenuItem>Sửa</MenuItem> */}
                     <MenuItem>Xoá</MenuItem>
                   </MenuList>
                 </Menu>

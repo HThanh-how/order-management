@@ -56,17 +56,17 @@ export default function CustomerTable() {
     if (isSuccess) return customers.data
   }, [customers])
 
-  const {
-    data: today,
-    isLoading: isLoadingT,
-    isSuccess: isSuccessT,
-    isError: isErrorT,
-    error: errorT,
-  } = useGetTodayReceiverQuery(1)
+  // const {
+  //   data: today,
+  //   isLoading: isLoadingT,
+  //   isSuccess: isSuccessT,
+  //   isError: isErrorT,
+  //   error: errorT,
+  // } = useGetTodayReceiverQuery(1)
 
-  const getToday = useMemo(() => {
-    if (isSuccessT) return today.data
-  }, [today])
+  // const getToday = useMemo(() => {
+  //   if (isSuccessT) return today.data
+  // }, [today])
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
 
@@ -103,9 +103,9 @@ export default function CustomerTable() {
             Khách hàng
           </Text>
           {/* <Text color={"gray"}>Tuần này bạn có thêm 20 khách hàng mới</Text> */}
-          {isSuccessT && (
-            <Text display={{base: "none", md:"flex"}} color={"gray"}>Những vị khách quý giá</Text>
-          )}
+          
+          <Text display={{base: "none", md:"flex"}} color={"gray"}>Những vị khách quý giá</Text>
+          
         </VStack>
         <Flex>
           <Input

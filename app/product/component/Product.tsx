@@ -53,17 +53,17 @@ export default function Product() {
     if (isSuccess) return products.data
   }, [products])
 
-  const {
-    data: today,
-    isLoading: isLoadingT,
-    isSuccess: isSuccessT,
-    isError: isErrorT,
-    error: errorT,
-  } = useGetTodayProductQuery(1)
+  // const {
+  //   data: today,
+  //   isLoading: isLoadingT,
+  //   isSuccess: isSuccessT,
+  //   isError: isErrorT,
+  //   error: errorT,
+  // } = useGetTodayProductQuery(1)
 
-  const getToday = useMemo(() => {
-    if (isSuccessT) return today.data
-  }, [today])
+  // const getToday = useMemo(() => {
+  //   if (isSuccessT) return today.data
+  // }, [today])
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
     const inputValue = event.target.value;
@@ -98,9 +98,9 @@ export default function Product() {
             color="transparent" fontWeight={700}>
             Sản phẩm
           </Text>
-          {isSuccessT && (
-            <Text display={{base: "none", md:"flex"}} color={"gray"}>Hôm nay thật tuyệt</Text>
-          )}
+          
+          <Text display={{base: "none", md:"flex"}} color={"gray"}>Hôm nay thật tuyệt</Text>
+          
           
         </VStack>
         <Flex>

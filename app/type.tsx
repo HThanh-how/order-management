@@ -20,7 +20,8 @@ export type Customer = {
     detailedAddress: string;
     note: string;
     callBeforeSend: boolean,
-    receiveAtPost: boolean,
+    receiveAtPost: boolean
+    legitLevel: string,
   };
   
 export type Store = {

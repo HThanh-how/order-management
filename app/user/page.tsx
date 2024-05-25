@@ -91,8 +91,6 @@ export default function Sidebar() {
       {isLoading ? (
         <Box ml={{ base: 0, md: 60 }} p={{ base: 2, md: 8 }} display={{ base: 'block', md: 'flex' }}>
           <Box
-
-
             bg="white"
             rounded="md"
             borderColor="#e9ebee"
