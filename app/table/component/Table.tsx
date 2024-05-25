@@ -183,7 +183,45 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
                   onChange={() => handleCheckboxChange(customer.receiverId)}
                 />
               </Td>
-              <Td><Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{customer.name}</Text></Td>
+              <Td>
+                
+                {customer.legitLevel === "VERY_LOW" && (
+                  <Tooltip label='Khách hàng không đáng tin cậy thường xuyên không nhận đơn'>
+                    <Badge colorScheme="red">
+                      <Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{customer.name}</Text>
+                    </Badge>
+                  </Tooltip>
+                )}
+
+                {customer.legitLevel === "BAD" && (
+                  <Tooltip label='Khách hàng không đáng tin cậy'>
+                  <Badge colorScheme="orange">
+                    <Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{customer.name}</Text>
+                  </Badge>
+                  </Tooltip>
+                )}
+
+                {customer.legitLevel === "NORMAL" && (
+                  <Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{customer.name}</Text>
+                )}
+
+                {customer.legitLevel === "HIGH" && (
+                  <Tooltip label='Khách hàng uy tín'>
+                  <Badge colorScheme="blue">
+                    <Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{customer.name}</Text>
+                  </Badge>
+                  </Tooltip>
+                )}
+
+                {customer.legitLevel === "VERY_HIGH" && (
+                  <Tooltip label='Khách hàng uy tín'>
+                  <Badge colorScheme="green">
+                    <Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{customer.name}</Text>
+                  </Badge>
+                  </Tooltip>
+                )}
+                
+              </Td>
               <Td><Text maxW={'120px'} minW={"100px"} whiteSpace="normal">{customer.phoneNumber}</Text></Td>
               <Td><Text whiteSpace="normal" minW={"200px"}>{customer.detailedAddress}, {customer.address}</Text></Td>
               <Td>

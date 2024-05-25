@@ -80,30 +80,30 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
     setDeleteOpen(true);
   };
 
-  const handleDelete = async (id: any) => {
-    try {
-      await removeOrder(id).unwrap();
-      handleTabChange(0);
-      handleDeleteClose();
-    } catch (err) {
-      console.error("Failed to delete order: ", err);
-      toast({
-        title: "Có lỗi khi xóa đơn hàng này",
-        position: "top",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
-    toast({
-      title: "Xoá đơn hàng thành công",
-      position: "top",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
-  };
+  // const handleDelete = async (id: any) => {
+  //   try {
+  //     await removeOrder(id).unwrap();
+  //     handleTabChange(0);
+  //     handleDeleteClose();
+  //   } catch (err) {
+  //     console.error("Failed to delete order: ", err);
+  //     toast({
+  //       title: "Có lỗi khi xóa đơn hàng này",
+  //       position: "top",
+  //       status: "error",
+  //       duration: 3000,
+  //       isClosable: true,
+  //     });
+  //     return;
+  //   }
+  //   toast({
+  //     title: "Xoá đơn hàng thành công",
+  //     position: "top",
+  //     status: "success",
+  //     duration: 3000,
+  //     isClosable: true,
+  //   });
+  // };
 
   const handleMasterCheckboxChange = () => {
     setCheckedAll(!checkedAll);
@@ -337,9 +337,9 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
                     >
                       Sửa
                     </MenuItem>
-                    <MenuItem onClick={() => handleDeleteOpen(order.id)}>
+                    {/* <MenuItem onClick={() => handleDeleteOpen(order.id)}>
                       Xoá
-                    </MenuItem>
+                    </MenuItem> */}
                   </MenuList>
                 </Menu>
               </Td>
@@ -348,7 +348,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
         </Tbody>
       </Table>
 
-      <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered>
+      {/* <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
@@ -374,7 +374,7 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
             </Button>
           </ModalFooter>
         </ModalContent>
-      </Modal>
+      </Modal> */}
 
       <Flex justify="space-between" mt={4}>
         <Select
