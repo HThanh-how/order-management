@@ -350,16 +350,17 @@ export default function NavBar() {
                   </Button>
                 ) : (
                   <Flex
-                    m={1}
-                    display={
-                      isEmployee ? { base: "none", md: "block" } : "none"
-                    }
+                    m={2}
+                    display={isEmployee ? { base: "none", lg: "flex" } : "none"}
                   >
-                    <Text>Nhân viên</Text>
+                    <Text m={1} fontWeight={"bold"}>
+                      Nhân viên
+                    </Text>
                     <Switch
-                      m={1}
+                      m={2}
                       colorScheme="green"
                       onChange={handleSwitchRole}
+                      isChecked={role === "ROLE_EMPLOYEE"}
                     />
                   </Flex>
                 )}
@@ -487,10 +488,11 @@ export default function NavBar() {
                           size={"xs"}
                           src={getUser?.avatar ? getUser.avatar : "male.svg"}
                           ml={-2}
+                          mr={{ base: -2, lg: 0 }}
                         />
                         <TagLabel
-                          ml={2}
-                          display={{ base: "none", md: "block" }}
+                          ml={{ base: -1, lg: 2 }}
+                          display={{ base: "none", lg: "block" }}
                         >
                           Nhân viên
                         </TagLabel>
@@ -507,12 +509,25 @@ export default function NavBar() {
                       Cá nhân
                     </MenuItem>
 
-                
-
                     <MenuItem onClick={() => router.push("/dashboard")}>
                       Quản lý
                     </MenuItem>
                     <MenuDivider />
+                    <Flex
+                      m={2}
+                      display={isEmployee ? "flex" : "none"}
+                      justifyContent="space-between"
+                    >
+                      <Text m={1} fontWeight={"bold"}>
+                        Nhân viên
+                      </Text>
+                      <Switch
+                        m={2}
+                        colorScheme="green"
+                        onChange={handleSwitchRole}
+                        isChecked={role === "ROLE_EMPLOYEE"}
+                      />
+                    </Flex>
                     <MenuItem onClick={() => handleLogout()}>
                       Đăng xuất
                     </MenuItem>
@@ -576,7 +591,8 @@ interface SidebarProps extends BoxProps {
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
   const router = useRouter();
   const pathname = usePathname();
-
+  const role = useAppSelector((state) => state.role.value);
+  console.log("Sidebar", role, typeof role);
   return (
     <Box
       bg={useColorModeValue("white", "gray.900")}
@@ -594,9 +610,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         mx="10"
         justifyContent="space-between"
       >
-        <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          OrList
-        </Text>
+        <Image src="/logo.png" alt="OrList Logo" />
         <CloseButton onClick={onClose} />
       </Flex>
       <Button
@@ -607,8 +621,9 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         ml={8}
         mt={6}
         mb={2}
-        w="25%"
+        
         color="white"
+        
         backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
         sx={{
           "@media (hover: hover)": {
@@ -618,26 +633,32 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           },
         }}
       >
-        + Tạo đơn
+        <Text mx={4}>+ Tạo đơn</Text>
       </Button>
-      {LinkItems.map((link) => (
-        <NavItem
-          key={link.name}
-          icon={link.icon}
-          onClick={() => {
-            onClose();
-            router.push(`${link.link}`);
-          }}
-          bgGradient={
-            link.link === pathname
-              ? "linear-gradient(90deg, #ff5e09, #ff0348)"
-              : ""
-          }
-          color={link.link === pathname ? "white" : ""}
-        >
-          {link.name}
-        </NavItem>
-      ))}
+      {LinkItems.map((link) => {
+        if (role === "ROLE_EMPLOYEE" && link.name === "Nhân sự") {
+          return null;
+        }
+
+        return (
+          <NavItem
+            key={link.name}
+            icon={link.icon}
+            onClick={() => {
+              onClose();
+              router.push(`${link.link}`);
+            }}
+            bgGradient={
+              link.link === pathname
+                ? "linear-gradient(90deg, #ff5e09, #ff0348)"
+                : ""
+            }
+            color={link.link === pathname ? "white" : ""}
+          >
+            {link.name}
+          </NavItem>
+        );
+      })}
     </Box>
   );
 };
@@ -689,7 +710,6 @@ interface MobileProps extends FlexProps {
   onOpen: () => void;
 }
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
-
   return (
     <Flex
       ml={{ base: 0, lg: 60 }}
