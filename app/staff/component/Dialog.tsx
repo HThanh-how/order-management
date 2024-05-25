@@ -139,6 +139,7 @@ export default function AddressSelect() {
               <div className="flex gap-4">  
                 <Checkbox 
                   defaultChecked
+                  colorScheme="red"
                   value='VIEW_ONLY'
                   {...register('view')}
                 >
@@ -148,12 +149,13 @@ export default function AddressSelect() {
                   defaultChecked 
                   value='CREATE_ORDER'
                   {...register('create')}
+                  colorScheme="red"
                 >
                   Tạo đơn
                 </Checkbox>
 
-                <Checkbox value='UPDATE_ORDER' {...register('update')}>Cập nhật</Checkbox>
-                <Checkbox value='MANAGE_ORDER' {...register('manage')}>Quản lý</Checkbox>
+                <Checkbox value='UPDATE_ORDER'      colorScheme="red" {...register('update')}>Cập nhật</Checkbox>
+                <Checkbox value='MANAGE_ORDER'      colorScheme="red" {...register('manage')}>Quản lý</Checkbox>
               </div>         
             </Box>
           </ModalBody>

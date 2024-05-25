@@ -70,7 +70,7 @@ import {
 } from "@/app/_lib/features/api/apiSlice";
 import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
 import { getRole, setRole } from "@/app/_lib/features/roles/roleSlice";
-
+import { log } from "console";
 
 interface Props {
   children: React.ReactNode;
@@ -127,13 +127,13 @@ export default function NavBar() {
   const [prevNotifications, setPrevNotifications] = useState<any[]>([]);
   const [isEmployee, setIsEmployee] = useState(false);
 
-useEffect(() => {
-  if (getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE")) {
-    dispatch(getRole("ROLE_EMPLOYEE"));
-    setIsEmployee(true);
-    setRoleNavBar(initalRole);
-  }
-}, []); 
+  useEffect(() => {
+    if (getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE")) {
+      dispatch(getRole("ROLE_EMPLOYEE"));
+      setIsEmployee(true);
+      setRoleNavBar(initalRole);
+    }
+  }, []);
 
   const handleSwitchRole = () => {
     const newRole = role === "ROLE_EMPLOYEE" ? "ROLE_USER" : "ROLE_EMPLOYEE";
@@ -351,7 +351,9 @@ useEffect(() => {
                 ) : (
                   <Flex
                     m={1}
-                    display={isEmployee? "block" : "none"}
+                    display={
+                      isEmployee ? { base: "none", md: "block" } : "none"
+                    }
                   >
                     <Text>Nhân viên</Text>
                     <Switch
@@ -486,7 +488,12 @@ useEffect(() => {
                           src={getUser?.avatar ? getUser.avatar : "male.svg"}
                           ml={-2}
                         />
-                        <TagLabel ml={2}>Nhân viên</TagLabel>
+                        <TagLabel
+                          ml={2}
+                          display={{ base: "none", md: "block" }}
+                        >
+                          Nhân viên
+                        </TagLabel>
                       </Tag>
                     ) : (
                       <Avatar
@@ -500,17 +507,7 @@ useEffect(() => {
                       Cá nhân
                     </MenuItem>
 
-                    {/* {getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE") && role === "ROLE_USER" && (
-                  <MenuItem onClick={() => dispatch(getRole("ROLE_EMPLOYEE"))}>
-                    Chuyển giao diện <br/> nhân viên
-                  </MenuItem>
-                )}  
-
-                {getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE") && role === "ROLE_EMPLOYEE" && (
-                  <MenuItem onClick={() => dispatch(getRole("ROLE_USER"))}>
-                    Chuyển giao diện <br/> người dùng
-                  </MenuItem>
-                )} */}
+                
 
                     <MenuItem onClick={() => router.push("/dashboard")}>
                       Quản lý
@@ -650,6 +647,8 @@ interface NavItemProps extends FlexProps {
   children: ReactText;
 }
 const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
+  const initalRole = useAppSelector((state) => state.role.value);
+  console.log("Mobile navbar", initalRole);
   return (
     <Box
       as="a"
@@ -690,15 +689,13 @@ interface MobileProps extends FlexProps {
   onOpen: () => void;
 }
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+
   return (
     <Flex
       ml={{ base: 0, lg: 60 }}
       px={{ base: 0, lg: 24 }}
       height="20"
       alignItems="center"
-      // bg={useColorModeValue("white", "gray.900")}
-      // borderBottomWidth="1px"
-      // borderBottomColor={useColorModeValue("gray.200", "gray.700")}
       justifyContent="flex-start"
       {...rest}
     >
@@ -709,10 +706,6 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         color="black"
         icon={<FiMenu />}
       />
-
-      {/* <Text fontSize="2xl" ml="8" fontFamily="monospace" fontWeight="bold">
-        OrList
-      </Text> */}
     </Flex>
   );
 };
