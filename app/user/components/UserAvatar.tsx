@@ -146,7 +146,12 @@ export default function UserAvatar({ user }: UserAvatarProps) {
           name="Tim Cook"
           src={user.avatar ? user.avatar : "male.svg"}
         >
-          <AvatarBadge bg="#4164e3" boxSize="1em" onClick={onOpen} cursor={"pointer"}>
+          <AvatarBadge
+            bg="#4164e3"
+            boxSize="1em"
+            onClick={onOpen}
+            cursor={"pointer"}
+          >
             <svg width="0.4em" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fillRule="evenodd"
@@ -228,7 +233,7 @@ export default function UserAvatar({ user }: UserAvatarProps) {
                   {...register("phoneNumber", {
                     required: "Trường này không được bỏ trống",
                     pattern: {
-                      value: /^(0|[1-9][0-9]*)$/,
+                      value: /(84|0[3|5|7|8|9])+([0-9]{8})\b/,
                       message: "Số điện thoại không hợp lệ",
                     },
                   })}
