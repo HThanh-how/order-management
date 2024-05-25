@@ -36,14 +36,15 @@ import {
   Divider,
   Tag,
   TagLabel,
-  Image
+  Switch,
+  Image,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { FiBell } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, createContext } from "react";
 import { usePathname } from "next/navigation";
-import { BellIcon, CheckCircleIcon } from '@chakra-ui/icons'
+import { BellIcon, CheckCircleIcon } from "@chakra-ui/icons";
 // import { searchResults } from "./SearchBar";
 import {
   FiHome,
@@ -54,7 +55,7 @@ import {
   FiMenu,
   FiUser,
   FiAirplay,
-  FiShoppingCart
+  FiShoppingCart,
 } from "react-icons/fi";
 import { IconType } from "react-icons";
 import { ReactText, useMemo } from "react";
@@ -68,7 +69,8 @@ import {
   useSetNotiIsReadMutation,
 } from "@/app/_lib/features/api/apiSlice";
 import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
-import { getRole } from "@/app/_lib/features/roles/roleSlice";
+import { getRole, setRole } from "@/app/_lib/features/roles/roleSlice";
+
 
 interface Props {
   children: React.ReactNode;
@@ -119,11 +121,27 @@ export default function NavBar() {
   const notification = useDisclosure();
   const toast = useToast();
   const pathname = usePathname();
-  const role = useAppSelector((state) => state.role.value);
+  const [role, setRoleNavBar] = useState("ROLE_USER");
+  const initalRole = useAppSelector((state) => state.role.value);
   const dispatch = useAppDispatch();
   const [prevNotifications, setPrevNotifications] = useState<any[]>([]);
+  const [isEmployee, setIsEmployee] = useState(false);
 
-  if (getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE")) dispatch(getRole("ROLE_EMPLOYEE"));
+useEffect(() => {
+  if (getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE")) {
+    dispatch(getRole("ROLE_EMPLOYEE"));
+    setIsEmployee(true);
+    setRoleNavBar(initalRole);
+  }
+}, []); 
+
+  const handleSwitchRole = () => {
+    const newRole = role === "ROLE_EMPLOYEE" ? "ROLE_USER" : "ROLE_EMPLOYEE";
+    setRoleNavBar(newRole);
+    dispatch(setRole(newRole));
+    dispatch(getRole(newRole));
+    console.log(role);
+  };
 
   const {
     data: user,
@@ -131,7 +149,7 @@ export default function NavBar() {
     isSuccess: isSuccessU,
     isError: isErrorU,
     error: errorU,
-  } = useGetUserInfoQuery(getFromLocalStorage('userId'), { skip: !isLogin })
+  } = useGetUserInfoQuery(getFromLocalStorage("userId"), { skip: !isLogin });
 
   const {
     data: employeeRequests,
@@ -139,7 +157,7 @@ export default function NavBar() {
     isSuccess: isSuccessR,
     isError: isErrorR,
     error: errorR,
-  } = useGetEmployeesRequestQuery(1, { skip: !isLogin })
+  } = useGetEmployeesRequestQuery(1, { skip: !isLogin });
 
   const {
     data: notifications,
@@ -147,19 +165,19 @@ export default function NavBar() {
     isSuccess: isSuccessN,
     isError: isErrorN,
     error: errorN,
-  } = useGetNotificationsQuery(1, { pollingInterval: 15000, skip: !isLogin })
+  } = useGetNotificationsQuery(1, { pollingInterval: 15000, skip: !isLogin });
 
   // const [approveEmployeeRequest] = useApproveEmployeeRequestMutation();
   // const [rejectEmployeeRequest] = useRejectEmployeeRequestMutation();
   const [setNotiIsRead] = useSetNotiIsReadMutation();
 
   const getEmployeeRequests = useMemo(() => {
-    if (isSuccessR) return employeeRequests.data
-  }, [employeeRequests])
+    if (isSuccessR) return employeeRequests.data;
+  }, [employeeRequests]);
 
   const getUser = useMemo(() => {
-    if (isSuccessU) return user.data
-  }, [user])
+    if (isSuccessU) return user.data;
+  }, [user]);
 
   const getNotifications = useMemo(() => {
     if (isSuccessN) {
@@ -168,7 +186,7 @@ export default function NavBar() {
       const notReadNoti = tmp.filter((noti) => noti.read === false).reverse();
       return notReadNoti.concat(readNoti);
     }
-  }, [notifications])
+  }, [notifications]);
 
   const checkForNewNotifications = (newNotifications: any[] | undefined) => {
     if (newNotifications === undefined) return;
@@ -177,15 +195,16 @@ export default function NavBar() {
       return;
     }
 
-    const newNotificationCount = newNotifications.length - prevNotifications.length;
+    const newNotificationCount =
+      newNotifications.length - prevNotifications.length;
     if (newNotificationCount > 0) {
       toast({
         title: `Bạn có ${newNotificationCount} thông báo mới`,
-        position: 'top-right',
-        status: 'info',
+        position: "top-right",
+        status: "info",
         duration: 3000,
         isClosable: true,
-      })
+      });
     }
 
     setPrevNotifications(newNotifications);
@@ -205,15 +224,15 @@ export default function NavBar() {
     const minutes = date.getMinutes();
 
     // Convert hours to 12-hour format and determine AM/PM
-    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const ampm = hours >= 12 ? "PM" : "AM";
     hours = hours % 12;
     hours = hours ? hours : 12; // 0 should be converted to 12
 
     // Format day, month, hours, and minutes with leading zeros if needed
-    const formattedDay = day < 10 ? '0' + day : day;
-    const formattedMonth = month < 10 ? '0' + month : month;
-    const formattedHours = hours < 10 ? '0' + hours : hours;
-    const formattedMinutes = minutes < 10 ? '0' + minutes : minutes;
+    const formattedDay = day < 10 ? "0" + day : day;
+    const formattedMonth = month < 10 ? "0" + month : month;
+    const formattedHours = hours < 10 ? "0" + hours : hours;
+    const formattedMinutes = minutes < 10 ? "0" + minutes : minutes;
 
     // Construct the final formatted string
     const formattedString = `${formattedDay}/${formattedMonth}/${year} ${formattedHours}:${formattedMinutes} ${ampm}`;
@@ -228,19 +247,19 @@ export default function NavBar() {
     } else setIsLogin(true);
   }, []);
 
-
   useEffect(() => {
-    if ((pathname === "/login" && isLogin) ||
-      (pathname === "/register" && isLogin)) {
+    if (
+      (pathname === "/login" && isLogin) ||
+      (pathname === "/register" && isLogin)
+    ) {
       router.replace("/dashboard");
     }
   }, [pathname, isLogin]);
 
   useEffect(() => {
-    if (isSuccessN)
-      checkForNewNotifications(getNotifications)
+    if (isSuccessN) checkForNewNotifications(getNotifications);
     return;
-  }, [getNotifications])
+  }, [getNotifications]);
 
   function handleLogout(): void {
     localStorage.removeItem("accessToken");
@@ -257,15 +276,15 @@ export default function NavBar() {
       <Box
         bg={useColorModeValue("white.100", "#171717")}
         px={4}
-        bgColor={'white'}
+        bgColor={"white"}
         textColor={"black"}
-        borderBottom={'1px'}
+        borderBottom={"1px"}
         borderBottomColor={useColorModeValue("gray.200", "gray.700")}
         shadow={"sm"}
         position="sticky" // Add this line
         top={0} // And this line
         zIndex={1}
-      // bgGradient={'linear-gradient(90deg, #ff8a00, #ffeb37)'}
+        // bgGradient={'linear-gradient(90deg, #ff8a00, #ffeb37)'}
       >
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
           {/* <IconButton
@@ -277,62 +296,95 @@ export default function NavBar() {
         /> */}
           <Drawer
             isOpen={isOpen}
-
             placement="left"
             onClose={onClose}
             returnFocusOnClose={false}
             onOverlayClick={onClose}
-          // size="full"
+            // size="full"
           >
             <DrawerOverlay />
             <DrawerContent>
               <SidebarContent onClose={onClose} />
             </DrawerContent>
           </Drawer>
-          <MobileNav display={{ base: "flex", md: "flex", lg: "none" }} onOpen={onOpen} />
+          <MobileNav
+            display={{ base: "flex", md: "flex", lg: "none" }}
+            onOpen={onOpen}
+          />
           <HStack spacing={{ base: 4, md: 8 }} alignItems={"center"}>
-            <Box ml={{ base: 0, md: 0, lg: 8 }} onClick={() => router.push("/")} cursor={"pointer"}>
+            <Box
+              ml={{ base: 0, md: 0, lg: 8 }}
+              onClick={() => router.push("/")}
+              cursor={"pointer"}
+            >
               <Image
                 src="/logo.png"
                 alt="OrList"
                 objectFit="cover" // or "contain"
-                height={'50px'}
+                height={"50px"}
               />
             </Box>
           </HStack>
 
-          <Flex alignItems={"center"} color="#171717" >
+          <Flex alignItems={"center"} color="#171717">
             {isLogin ? (
               <>
-                {pathname === "/" && (
+                {pathname === "/" ? (
                   <Button
                     display={{ base: "none", md: "none", lg: "flex" }}
                     color="white"
                     backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
                     sx={{
-                      '@media (hover: hover)': {
+                      "@media (hover: hover)": {
                         _hover: {
-                          backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
-                        }
-                      }
+                          backgroundImage:
+                            "linear-gradient(to right, #df5207, #d80740)",
+                        },
+                      },
                     }}
                     onClick={() => router.push("/dashboard")}
                     mx={2}
-                    size={{ base: 'sm', md: 'md' }}
+                    size={{ base: "sm", md: "md" }}
                   >
                     Trang tổng quan
                   </Button>
+                ) : (
+                  <Flex
+                    m={1}
+                    display={isEmployee? "block" : "none"}
+                  >
+                    <Text>Nhân viên</Text>
+                    <Switch
+                      m={1}
+                      colorScheme="green"
+                      onChange={handleSwitchRole}
+                    />
+                  </Flex>
                 )}
                 <Menu>
-                  <Avatar size='sm' bgColor={'white'} cursor={"pointer"} icon={<BellIcon boxSize={7} color="orange" />} onClick={notification.onOpen}>
-                    {isSuccessN && getNotifications?.filter((noti) => noti.read === false).length !== 0 && (
-                      <AvatarBadge boxSize='1.5em' bg='red'>{getNotifications?.filter((noti) => noti.read === false).length}</AvatarBadge>
-                    )}
+                  <Avatar
+                    size="sm"
+                    bgColor={"white"}
+                    cursor={"pointer"}
+                    icon={<BellIcon boxSize={7} color="orange" />}
+                    onClick={notification.onOpen}
+                  >
+                    {isSuccessN &&
+                      getNotifications?.filter((noti) => noti.read === false)
+                        .length !== 0 && (
+                        <AvatarBadge boxSize="1.5em" bg="red">
+                          {
+                            getNotifications?.filter(
+                              (noti) => noti.read === false
+                            ).length
+                          }
+                        </AvatarBadge>
+                      )}
                   </Avatar>
                   <Drawer
                     isOpen={notification.isOpen}
-                    placement='right'
-                    size={{ base: 'sm', md: 'md' }}
+                    placement="right"
+                    size={{ base: "sm", md: "md" }}
                     onClose={notification.onClose}
                   >
                     <DrawerOverlay />
@@ -340,14 +392,13 @@ export default function NavBar() {
                       <DrawerCloseButton />
                       <DrawerHeader>Thông báo</DrawerHeader>
                       <DrawerBody>
-
                         {isLoadingN ? (
                           <Flex
                             alignItems="center"
                             justify="center"
                             direction={{ base: "column", md: "row" }}
                           >
-                            <Spinner size='lg' color='orange.500' />
+                            <Spinner size="lg" color="orange.500" />
                           </Flex>
                         ) : isErrorN ? (
                           <Flex
@@ -356,7 +407,7 @@ export default function NavBar() {
                             direction={{ base: "column", md: "row" }}
                             m={4}
                           >
-                            <Alert w='50%' status='error'>
+                            <Alert w="50%" status="error">
                               <AlertIcon />
                               Can not fetch data from server
                             </Alert>
@@ -366,29 +417,46 @@ export default function NavBar() {
                             {getNotifications?.length === 0 && (
                               <p>Không có thông báo nào</p>
                             )}
-                            {getNotifications?.length !== 0 && (
+                            {getNotifications?.length !== 0 &&
                               getNotifications?.map((noti: any) => (
-                                <VStack align={'start'} justifyContent={'flex-start'} mb={4} key={noti.id} cursor={'pointer'}
+                                <VStack
+                                  align={"start"}
+                                  justifyContent={"flex-start"}
+                                  mb={4}
+                                  key={noti.id}
+                                  cursor={"pointer"}
                                   onClick={async () => {
                                     if (noti.read === false)
-                                      await setNotiIsRead(noti.id).unwrap()
-                                    if (noti.type === 'EMPLOYEE_REQUEST') router.push("/requests")
-                                    if (noti.type === 'ORDER_INFO') router.push("/order")
+                                      await setNotiIsRead(noti.id).unwrap();
+                                    if (noti.type === "EMPLOYEE_REQUEST")
+                                      router.push("/requests");
+                                    if (noti.type === "ORDER_INFO")
+                                      router.push("/order");
                                     // notification.onClose();
-                                  }}>
+                                  }}
+                                >
                                   <Flex gap={2}>
                                     {noti.read === false && (
-                                      <CheckCircleIcon mt={2} color={'orange.500'} />
+                                      <CheckCircleIcon
+                                        mt={2}
+                                        color={"orange.500"}
+                                      />
                                     )}
-                                    <VStack align={'start'} justifyContent={'flex-start'}>
+                                    <VStack
+                                      align={"start"}
+                                      justifyContent={"flex-start"}
+                                    >
                                       <Text>{noti.message}</Text>
-                                      <Text color={'gray.400'}>{convertISOToCustomFormat(noti.createdAt)}</Text>
+                                      <Text color={"gray.400"}>
+                                        {convertISOToCustomFormat(
+                                          noti.createdAt
+                                        )}
+                                      </Text>
                                     </VStack>
                                   </Flex>
                                   <Divider />
                                 </VStack>
-                              ))
-                            )}
+                              ))}
                           </>
                         )}
                       </DrawerBody>
@@ -410,27 +478,22 @@ export default function NavBar() {
                     minW={0}
                     ml={6}
                   >
-                    {getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE") && role === "ROLE_EMPLOYEE" ? (
-                      <Tag size='lg' colorScheme='red' borderRadius='full'>
+                    {getFromLocalStorage("roles")?.includes("ROLE_EMPLOYEE") &&
+                    role === "ROLE_EMPLOYEE" ? (
+                      <Tag size="lg" colorScheme="red" borderRadius="full">
                         <Avatar
                           size={"xs"}
-                          src={getUser?.avatar ? getUser.avatar :
-                            "male.svg"
-                          }
+                          src={getUser?.avatar ? getUser.avatar : "male.svg"}
                           ml={-2}
                         />
                         <TagLabel ml={2}>Nhân viên</TagLabel>
                       </Tag>
-                    )
-                      : (
-                        <Avatar
-                          size={"sm"}
-                          src={getUser?.avatar ? getUser.avatar :
-                            "male.svg"
-                          }
-                        />
-                      )
-                    }
+                    ) : (
+                      <Avatar
+                        size={"sm"}
+                        src={getUser?.avatar ? getUser.avatar : "male.svg"}
+                      />
+                    )}
                   </MenuButton>
                   <MenuList>
                     <MenuItem onClick={() => router.push("/user")}>
@@ -453,16 +516,16 @@ export default function NavBar() {
                       Quản lý
                     </MenuItem>
                     <MenuDivider />
-                    <MenuItem onClick={() => handleLogout()}>Đăng xuất</MenuItem>
+                    <MenuItem onClick={() => handleLogout()}>
+                      Đăng xuất
+                    </MenuItem>
                   </MenuList>
                 </Menu>
               </>
             ) : (
               <>
                 <Button
-
-
-                  variant='outline'
+                  variant="outline"
                   mx={2}
                   borderColor={"#ff0348"}
                   backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
@@ -470,15 +533,15 @@ export default function NavBar() {
                   color="transparent"
                   sx={{
                     transition: "all 0.3s",
-                    '@media (hover: hover)': {
+                    "@media (hover: hover)": {
                       _hover: {
-                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)",
+                        backgroundImage:
+                          "linear-gradient(to right, #df5207, #d80740)",
                         textColor: "white",
-
-                      }
-                    }
+                      },
+                    },
                   }}
-                  size={{ base: 'sm', md: 'md' }}
+                  size={{ base: "sm", md: "md" }}
                   onClick={() => (window.location.href = "/register")}
                 >
                   Đăng ký
@@ -487,21 +550,21 @@ export default function NavBar() {
                   color="white"
                   backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
                   sx={{
-                    '@media (hover: hover)': {
+                    "@media (hover: hover)": {
                       _hover: {
-                        backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
-                      }
-                    }
+                        backgroundImage:
+                          "linear-gradient(to right, #df5207, #d80740)",
+                      },
+                    },
                   }}
                   onClick={() => (window.location.href = "/login")}
                   mx={2}
-                  size={{ base: 'sm', md: 'md' }}
+                  size={{ base: "sm", md: "md" }}
                 >
                   Đăng nhập
                 </Button>
               </>
             )}
-
           </Flex>
         </Flex>
       </Box>
@@ -519,8 +582,6 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 
   return (
     <Box
-
-
       bg={useColorModeValue("white", "gray.900")}
       borderRight="1px"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
@@ -529,7 +590,13 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
       h="full"
       {...rest}
     >
-      <Flex display={{ base: "flex", lg: "none" }} h="20" alignItems="center" mx="10" justifyContent="space-between">
+      <Flex
+        display={{ base: "flex", lg: "none" }}
+        h="20"
+        alignItems="center"
+        mx="10"
+        justifyContent="space-between"
+      >
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
           OrList
         </Text>
@@ -540,16 +607,18 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           onClose();
           router.push("/create");
         }}
-        ml={8} mt={6} mb={2}
+        ml={8}
+        mt={6}
+        mb={2}
         w="25%"
         color="white"
         backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
         sx={{
-          '@media (hover: hover)': {
+          "@media (hover: hover)": {
             _hover: {
-              backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
-            }
-          }
+              backgroundImage: "linear-gradient(to right, #df5207, #d80740)",
+            },
+          },
         }}
       >
         + Tạo đơn
@@ -560,9 +629,13 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
           icon={link.icon}
           onClick={() => {
             onClose();
-            router.push(`${link.link}`)
+            router.push(`${link.link}`);
           }}
-          bgGradient={link.link === pathname ? "linear-gradient(90deg, #ff5e09, #ff0348)" : ""}
+          bgGradient={
+            link.link === pathname
+              ? "linear-gradient(90deg, #ff5e09, #ff0348)"
+              : ""
+          }
           color={link.link === pathname ? "white" : ""}
         >
           {link.name}
@@ -580,7 +653,6 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
   return (
     <Box
       as="a"
-
       style={{ textDecoration: "none" }}
       _focus={{ boxShadow: "none" }}
     >
@@ -634,7 +706,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
         variant="filled"
         onClick={onOpen}
         aria-label="open menu"
-        color='black'
+        color="black"
         icon={<FiMenu />}
       />
 

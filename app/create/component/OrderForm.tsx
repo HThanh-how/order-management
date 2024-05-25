@@ -107,6 +107,7 @@ const GradientText = chakra("span", {
   },
 });
 export default function OrderForm() {
+  
   const [items, setItems] = useState([0]);
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
   const [productSuggestions, setProductSuggestions] = useState<Product[]>([]);
@@ -144,7 +145,9 @@ export default function OrderForm() {
   const toast = useToast();
   const router = useRouter();
   const role: any = useAppSelector((state: any) => state.role.value);
-
+  useEffect(() => {
+    console.log(role);
+  }, [role]);
   const {
     data: products,
     isLoading: isLoadingP,

@@ -31,3 +31,9 @@ export const roleSlice = createSlice({
   export const selectRole = (state: RootState) => state.role.value
   
   export default roleSlice.reducer
+
+
+  export const setRole = (role: string) => ({
+  type: 'role/set',
+  payload: role,
+});

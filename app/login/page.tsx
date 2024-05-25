@@ -62,6 +62,7 @@ export default function Login() {
         localStorage.setItem('userId', processedData.userId);
         localStorage.setItem('refreshToken', processedData.refreshToken);
         localStorage.setItem('roles', processedData.roles);
+        localStorage.setItem('initialRoles', processedData.roles);
         window.location.href = '/dashboard'
       })
       .catch((error) => {
