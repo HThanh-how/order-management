@@ -52,6 +52,9 @@ import {
   useGetStoresQuery,
   useAddOrderMutation,
   useAddOrderForEmployeeMutation,
+  useGetCustomersForEmployeeQuery,
+  useGetProductsForEmployeeQuery,
+  useGetStoresForEmployeeQuery,
 } from "@/app/_lib/features/api/apiSlice";
 import { useAppSelector } from "@/app/_lib/hooks";
 import { Product, Customer, Store } from "@/app/type";
@@ -149,40 +152,68 @@ export default function OrderForm() {
     console.log(role);
   }, [role]);
   const {
-    data: products,
-    isLoading: isLoadingP,
-    isSuccess: isSuccessP,
-    isError: isErrorP,
-    error: errorP,
-  } = useGetProductsQuery();
+    data: productsU,
+    isLoading: isLoadingPU,
+    isSuccess: isSuccessPU,
+    isError: isErrorPU,
+    error: errorPU,
+  } = useGetProductsQuery(1, {skip: role === "ROLE_EMPLOYEE"})
 
   const {
-    data: receivers,
-    isLoading: isLoadingR,
-    isSuccess: isSuccessR,
-    isError: isErrorR,
-    error: errorR,
-  } = useGetCustomersQuery(1);
+    data: productsE,
+    isLoading: isLoadingPE,
+    isSuccess: isSuccessPE,
+    isError: isErrorPE,
+    error: errorPE,
+  } = useGetProductsForEmployeeQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
+
 
   const {
-    data: stores,
-    isLoading: isLoadingS,
-    isSuccess: isSuccessS,
-    isError: isErrorS,
-    error: errorS,
-  } = useGetStoresQuery();
+    data: customersU,
+    isLoading: isLoadingCU,
+    isSuccess: isSuccessCU,
+    isError: isErrorCU,
+    error: errorCU,
+  } = useGetCustomersQuery(1, {skip: role === "ROLE_EMPLOYEE"});
+
+  const {
+    data: customersE,
+    isLoading: isLoadingCE,
+    isSuccess: isSuccessCE,
+    isError: isErrorCE,
+    error: errorCE,
+  } = useGetCustomersForEmployeeQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
+
+  const {
+    data: storesU,
+    isLoading: isLoadingSU,
+    isSuccess: isSuccessSU,
+    isError: isErrorSU,
+    error: errorSU,
+  } = useGetStoresQuery(1, {skip: role === "ROLE_EMPLOYEE"});
+
+  const {
+    data: storesE,
+    isLoading: isLoadingSE,
+    isSuccess: isSuccessSE,
+    isError: isErrorSE,
+    error: errorSE,
+  } = useGetStoresForEmployeeQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
 
   const getProducts = useMemo(() => {
-    if (isSuccessP) return products.data;
-  }, [products]);
+    if (isSuccessPU) return productsU.data;
+    if (isSuccessPE) return productsE.data;
+  }, [productsU, productsE]);
 
   const getReceivers = useMemo(() => {
-    if (isSuccessR) return receivers.data;
-  }, [receivers]);
+    if (isSuccessCU) return customersU.data;
+    if (isSuccessCE) return customersE.data;
+  }, [customersU, customersE]);
 
   const getStores = useMemo(() => {
-    if (isSuccessS) return stores.data;
-  }, [stores]);
+    if (isSuccessSU) return storesU.data;
+    if (isSuccessSE) return storesE.data;
+  }, [storesU, storesE]);
 
   const {
     register,
@@ -438,7 +469,7 @@ export default function OrderForm() {
             {" "}
             Người gửi:{" "}
           </Text>
-          {isErrorS ? (
+          {isErrorSU || isErrorSE ? (
             <Flex
               alignItems="center"
               justify="center"
@@ -450,7 +481,7 @@ export default function OrderForm() {
                 Can not fetch data from server
               </Alert>
             </Flex>
-          ) : isLoadingS ? (
+          ) : isLoadingSU || isLoadingSE ? (
             <Flex
               alignItems="center"
               justify="center"
