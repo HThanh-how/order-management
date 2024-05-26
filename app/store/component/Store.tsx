@@ -33,7 +33,7 @@ import {
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
 import StoreList from "./Table";
-import { useGetStoresQuery, useGetTodayStoreQuery } from "@/app/_lib/features/api/apiSlice"
+import { useGetStoresQuery, useGetStoresForEmployeeQuery } from "@/app/_lib/features/api/apiSlice"
 import { Store } from "@/app/type";
 import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
 
@@ -42,16 +42,26 @@ export default function StoreTable() {
   const [filteredStores, setFilteredStores] = useState<Store[]>([]);
   const role = useAppSelector((state: any) => state.role.value);
   const {
-    data: stores,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = useGetStoresQuery()
+    data: storesU,
+    isLoading: isLoadingU,
+    isSuccess: isSuccessU,
+    isError: isErrorU,
+    error: errorU,
+  } = useGetStoresQuery(1, {skip: role === "ROLE_EMPLOYEE"});
+
+  const {
+    data: storesE,
+    isLoading: isLoadingE,
+    isSuccess: isSuccessE,
+    isError: isErrorE,
+    error: errorE,
+  } = useGetStoresForEmployeeQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
+
 
   const getStores = useMemo(() => {
-    if (isSuccess) return stores.data
-  }, [stores])
+    if (isSuccessU) return storesU.data;
+    if (isSuccessE) return storesE.data;
+  }, [storesU, storesE]);
 
   // const {
   //   data: today,
@@ -70,7 +80,7 @@ export default function StoreTable() {
     const inputValue = event.target.value;
     setSearchInput(inputValue);
 
-    if (isSuccess) {
+    if (isSuccessU || isSuccessE) {
       const filteredResults = getStores.filter(
         (store: any) =>
           store.name.toLowerCase().includes(inputValue.toLowerCase()) ||
@@ -83,7 +93,7 @@ export default function StoreTable() {
 
   useEffect(() => {
     handleSearchInputChange({ target: { value: '' } });
-  }, [stores]);
+  }, [storesU, isSuccessU, storesE, isSuccessE]);
   return (
     <TableContainer bgColor={"white"} rounded={"2xl"}>
       <Flex
@@ -119,7 +129,7 @@ export default function StoreTable() {
           <Dialog />
         )}
       </Flex>
-      {isLoading ? (
+      {isLoadingU || isLoadingE ? (
          <Box overflowX={{ base: "scroll", md: "hidden" }} p={8} pt={0}>
          <Table variant="simple" size={{ base: "sm", md: "md" }}>
            <Thead bgColor={"gray.50"} rounded={"xl"}>
@@ -148,7 +158,7 @@ export default function StoreTable() {
            </Tbody>
          </Table>
        </Box>
-      ) : isError ? (
+      ) : isErrorU || isErrorE ? (
         <Flex
           alignItems="center"
           justify="center"

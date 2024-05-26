@@ -45,16 +45,25 @@ export default function CustomerTable() {
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
 
   const {
-    data: customers,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = useGetCustomersQuery(1);
+    data: customersU,
+    isLoading: isLoadingU,
+    isSuccess: isSuccessU,
+    isError: isErrorU,
+    error: errorU,
+  } = useGetCustomersQuery(1, {skip: role === "ROLE_EMPLOYEE"});
+
+  const {
+    data: customersE,
+    isLoading: isLoadingE,
+    isSuccess: isSuccessE,
+    isError: isErrorE,
+    error: errorE,
+  } = useGetCustomersForEmployeeQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
 
   const getCustomers = useMemo(() => {
-    if (isSuccess) return customers.data
-  }, [customers])
+    if (isSuccessU) return customersU.data;
+    if (isSuccessE) return customersE.data;
+  }, [customersU, customersE]);
 
   // const {
   //   data: today,
@@ -72,7 +81,7 @@ export default function CustomerTable() {
 
     const inputValue = event.target.value;
     setSearchInput(inputValue);
-    if (isSuccess) {
+    if (isSuccessU || isSuccessE) {
       const filteredResults = getCustomers.filter(
         (customer: any) =>
           customer.name.toLowerCase().includes(inputValue.toLowerCase()) ||
@@ -84,7 +93,7 @@ export default function CustomerTable() {
 
   useEffect(() => {
     handleSearchInputChange({ target: { value: '' } });
-  }, [customers]);
+  }, [customersU, isSuccessU, customersE, isSuccessE]);
   return (
     <TableContainer bgColor={"white"} rounded={"2xl"}>
       <Flex
@@ -122,7 +131,7 @@ export default function CustomerTable() {
 
       </Flex>
 
-      {isLoading ? (
+      {isLoadingU || isLoadingE ? (
                  <Box overflowX={{ base: "scroll", md: "hidden" }} p={8} pt={0}>
                  <Table variant="simple" size={{ base: "sm", md: "md" }}>
                    <Thead bgColor={"gray.50"} rounded={"xl"}>
@@ -151,7 +160,7 @@ export default function CustomerTable() {
                    </Tbody>
                  </Table>
                </Box>
-      ) : isError ? (
+      ) : isErrorU || isErrorE ? (
         <Flex
           alignItems="center"
           justify="center"
