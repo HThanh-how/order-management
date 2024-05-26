@@ -132,6 +132,7 @@ export default function NavBar() {
       dispatch(getRole("ROLE_EMPLOYEE"));
       setIsEmployee(true);
       setRoleNavBar(initalRole);
+      handleSwitchRole()
     }
   }, []);
 
