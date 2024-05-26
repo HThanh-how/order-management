@@ -109,11 +109,22 @@ export const apiSlice = createApi({
         body: refreshToken,
       }),
     }),
-    getProducts: builder.query<any, void>({
+    getProducts: builder.query({
       // The URL for the request is '/fakeApi/posts'
       query: () => ({
         method: "GET",
         url: "/products",
+        headers: {
+          userId: `${getFromLocalStorage("userId")}`,
+        },
+      }),
+      providesTags: ["Product"],
+    }),
+    getProductsForEmployee: builder.query({
+      // The URL for the request is '/fakeApi/posts'
+      query: () => ({
+        method: "GET",
+        url: "/products/owner/getall",
         headers: {
           userId: `${getFromLocalStorage("userId")}`,
         },
@@ -155,6 +166,17 @@ export const apiSlice = createApi({
       // The URL for the request is '/fakeApi/posts'
       query: () => ({
         url: "/receivers",
+        headers: {
+          userId: `${getFromLocalStorage("userId")}`,
+        },
+      }),
+      providesTags: ["Customer"],
+    }),
+    getCustomerForEmployee: builder.query({
+      // The URL for the request is '/fakeApi/posts'
+      query: () => ({
+        method: "GET",
+        url: "/receivers/owner/getall",
         headers: {
           userId: `${getFromLocalStorage("userId")}`,
         },
@@ -215,10 +237,21 @@ export const apiSlice = createApi({
       invalidatesTags: ["Customer"],
     }),
 
-    getStores: builder.query<any, void>({
+    getStores: builder.query({
       // The URL for the request is '/fakeApi/posts'
       query: () => ({
         url: "/stores",
+      }),
+      providesTags: ["Store"],
+    }),
+    getStoresForEmployee: builder.query({
+      // The URL for the request is '/fakeApi/posts'
+      query: () => ({
+        method: "GET",
+        url: "/stores/owner/getall",
+        headers: {
+          userId: `${getFromLocalStorage("userId")}`,
+        },
       }),
       providesTags: ["Store"],
     }),
@@ -446,16 +479,19 @@ export const apiSlice = createApi({
 // Export the auto-generated hook for the `getPosts` query endpoint
 export const {
   useGetProductsQuery,
+  useGetProductsForEmployeeQuery,
   useAddProductMutation,
   useEditProductMutation,
   useRemoveProductMutation,
   useGetCustomersQuery,
+  useGetCustomerForEmployeeQuery,
   useGetTopCustomersQuery,
   useGetCustomersForEmployeeQuery,
   useAddCustomerMutation,
   useEditCustomerMutation,
   useRemoveCustomerMutation,
   useGetStoresQuery,
+  useGetStoresForEmployeeQuery,
   useAddStoreMutation,
   useEditStoreMutation,
   useRemoveStoreMutation,

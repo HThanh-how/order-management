@@ -34,7 +34,7 @@ import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
 import ProductTable from "./Table";
 import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
-import { useGetProductsQuery, useGetTodayProductQuery } from "@/app/_lib/features/api/apiSlice"
+import { useGetProductsQuery, useGetProductsForEmployeeQuery } from "@/app/_lib/features/api/apiSlice"
 // import { Product } from "@/app/type";
 
 export default function Product() {
@@ -42,16 +42,25 @@ export default function Product() {
   const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
   const role = useAppSelector((state: any) => state.role.value);
   const {
-    data: products,
-    isLoading,
-    isSuccess,
-    isError,
-    error,
-  } = useGetProductsQuery()
+    data: productsU,
+    isLoading: isLoadingU,
+    isSuccess: isSuccessU,
+    isError: isErrorU,
+    error: errorU,
+  } = useGetProductsQuery(1, {skip: role === "ROLE_EMPLOYEE"})
+
+  const {
+    data: productsE,
+    isLoading: isLoadingE,
+    isSuccess: isSuccessE,
+    isError: isErrorE,
+    error: errorE,
+  } = useGetProductsForEmployeeQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
 
   const getProducts = useMemo(() => {
-    if (isSuccess) return products.data
-  }, [products])
+    if (isSuccessU) return productsU.data;
+    if (isSuccessE) return productsE.data;
+  }, [productsU, productsE]);
 
   // const {
   //   data: today,
@@ -68,7 +77,7 @@ export default function Product() {
   const handleSearchInputChange = (event: { target: { value: any } }) => {
     const inputValue = event.target.value;
     setSearchInput(inputValue);
-    if (isSuccess) {
+    if (isSuccessU || isSuccessE) {
       const filteredResults = getProducts.filter(
         (product: any) =>
           product.name.toLowerCase().includes(inputValue.toLowerCase())
@@ -79,7 +88,7 @@ export default function Product() {
 
   useEffect(() => {
     handleSearchInputChange({ target: { value: '' } });
-  }, [products]);
+  }, [productsU, isSuccessU, productsE, isSuccessE]);
 
   return (
     <TableContainer bgColor={"white"} rounded={"2xl"}>
@@ -119,7 +128,7 @@ export default function Product() {
 
       </Flex>
 
-      {isLoading ? (
+      {isLoadingU || isLoadingE ? (
          <Box overflowX={{ base: "scroll", md: "hidden" }} p={8} pt={0}>
          <Table variant="simple" size={{ base: "sm", md: "md" }}>
            <Thead bgColor={"gray.50"} rounded={"xl"}>
@@ -148,7 +157,7 @@ export default function Product() {
            </Tbody>
          </Table>
        </Box>
-      ) : isError ? (
+      ) : isErrorU || isErrorE ? (
         <Flex
           alignItems="center"
           justify="center"

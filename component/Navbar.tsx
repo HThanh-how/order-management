@@ -121,7 +121,7 @@ export default function NavBar() {
   const notification = useDisclosure();
   const toast = useToast();
   const pathname = usePathname();
-  const [role, setRoleNavBar] = useState("ROLE_USER");
+  const [role, setRoleNavBar] = useState("ROLE_EMPLOYEE");
   const initalRole = useAppSelector((state) => state.role.value);
   const dispatch = useAppDispatch();
   const [prevNotifications, setPrevNotifications] = useState<any[]>([]);
@@ -138,9 +138,7 @@ export default function NavBar() {
   const handleSwitchRole = () => {
     const newRole = role === "ROLE_EMPLOYEE" ? "ROLE_USER" : "ROLE_EMPLOYEE";
     setRoleNavBar(newRole);
-    dispatch(setRole(newRole));
     dispatch(getRole(newRole));
-    console.log(role);
   };
 
   const {
