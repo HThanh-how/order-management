@@ -82,7 +82,7 @@ const ActivityChart = () => {
     },
 
     title: {
-      text: 'Báo cáo',
+      text: 'Báo cáo tháng',
       align: 'left'
     },
     xaxis: {
