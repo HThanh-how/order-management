@@ -23,7 +23,7 @@ import {
   Grid,
   GridItem,
 } from "@chakra-ui/react";
-
+import { useBreakpointValue } from "@chakra-ui/react";
 import { useEffect, useState, ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
 import { useEditCustomerMutation } from "@/app/_lib/features/api/apiSlice";
@@ -72,6 +72,7 @@ type FormData = {
 };
 
 export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
+  const isMobile = useBreakpointValue({ base: true, md: false });
   const {
     register,
     reset,
@@ -115,11 +116,16 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
 
   const handleVillageChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedVillage(event.target.value);
-    setValue('address', `${event.target.value}, ${selectedDistrict}, ${selectedCity}`);
+    setValue(
+      "address",
+      `${event.target.value}, ${selectedDistrict}, ${selectedCity}`
+    );
   };
 
   const selectedCityData = cityData.find((city) => city.name === selectedCity);
-  const selectedDistrictData = selectedCityData?.districts.find((district) => district.name === selectedDistrict);
+  const selectedDistrictData = selectedCityData?.districts.find(
+    (district) => district.name === selectedDistrict
+  );
 
   const onSubmit = async (data: FormData) => {
     const { village, district, city, ...sendData } = data;
@@ -129,20 +135,20 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
       onClose();
     } catch (err) {
       isSuccess = false;
-      console.error('Failed to edit customer: ', err);
+      console.error("Failed to edit customer: ", err);
       toast({
-        title: 'Có lỗi khi sửa thông tin người nhận',
-        position: 'top',
-        status: 'error',
+        title: "Có lỗi khi sửa thông tin người nhận",
+        position: "top",
+        status: "error",
         duration: 3000,
         isClosable: true,
       });
     } finally {
       if (isSuccess) {
         toast({
-          title: 'Cập nhật thông tin người nhận thành công',
-          position: 'top',
-          status: 'success',
+          title: "Cập nhật thông tin người nhận thành công",
+          position: "top",
+          status: "success",
           duration: 3000,
           isClosable: true,
         });
@@ -151,7 +157,13 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
   };
 
   return (
-    <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose} isCentered size={{ base: 'sm', md: '2xl' }}>
+    <Modal
+      closeOnOverlayClick={false}
+      isOpen={isOpen}
+      onClose={onClose}
+      isCentered
+      size={{ base: "sm", md: "2xl" }}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Cập nhật thông tin người nhận</ModalHeader>
@@ -159,7 +171,13 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
         <ModalBody pb={6}>
           <Grid templateColumns={{ base: "1fr", md: "repeat(2, 1fr)" }} gap={4}>
             <GridItem>
-              <FormControl isRequired isInvalid={Boolean(errors?.name?.type === 'required' || errors?.name?.type === 'maxLength')}>
+              <FormControl
+                isRequired
+                isInvalid={Boolean(
+                  errors?.name?.type === "required" ||
+                    errors?.name?.type === "maxLength"
+                )}
+              >
                 <FormLabel>Tên người nhận</FormLabel>
                 <Input
                   type="text"
@@ -171,11 +189,16 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
                 />
                 <FormErrorMessage>
                   {(errors.name?.type === "required" && errors.name?.message) ||
-                    (errors.name?.type === "maxLength" && "Không vượt quá 30 kí tự")}
+                    (errors.name?.type === "maxLength" &&
+                      "Không vượt quá 30 kí tự")}
                 </FormErrorMessage>
               </FormControl>
 
-              <FormControl isRequired isInvalid={Boolean(errors.phoneNumber)} mt={4}>
+              <FormControl
+                isRequired
+                isInvalid={Boolean(errors.phoneNumber)}
+                mt={4}
+              >
                 <FormLabel>Số điện thoại </FormLabel>
                 <Input
                   type="text"
@@ -187,35 +210,53 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
                     },
                   })}
                 />
-                {errors.phoneNumber && <Text color="red.500" mb={2} mt={2}>{errors.phoneNumber.message}</Text>}
-                <FormErrorMessage>{errors.phoneNumber && errors.phoneNumber.message}</FormErrorMessage>
-              </FormControl>
-
-              <FormControl mt={4} display={{base: "none", md: "block"}} isRequired isInvalid={Boolean(errors.detailedAddress?.type === 'required' || errors.detailedAddress?.type === 'maxLength')}>
-                <FormLabel >Địa chỉ chi tiết</FormLabel>
-                <Input
-                  maxLength={255}
-                  type="text"
-                  placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
-                  {...register("detailedAddress", {
-                    required: "Trường này không được bỏ trống",
-                    maxLength: 30,
-                  })}
-                />
+                {errors.phoneNumber && (
+                  <Text color="red.500" mb={2} mt={2}>
+                    {errors.phoneNumber.message}
+                  </Text>
+                )}
                 <FormErrorMessage>
-                  {(errors.detailedAddress?.type === "required" && errors.detailedAddress?.message) ||
-                    (errors.detailedAddress?.type === "maxLength" && "Không vượt quá 30 kí tự")}
+                  {errors.phoneNumber && errors.phoneNumber.message}
                 </FormErrorMessage>
               </FormControl>
 
-              <FormControl my={4} display={{base: "none", md: "block"}}>
-                <FormLabel>Ghi chú</FormLabel>
-                <Textarea placeholder={"Ghi chú"} {...register("note")} />
-              </FormControl>
+              {!isMobile && (
+                <FormControl
+                  mt={4}
+                  isRequired
+                  isInvalid={Boolean(
+                    errors.detailedAddress?.type === "required" ||
+                      errors.detailedAddress?.type === "maxLength"
+                  )}
+                >
+                  <FormLabel>Địa chỉ chi tiết</FormLabel>
+                  <Input
+                    maxLength={255}
+                    type="text"
+                    placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
+                    {...register("detailedAddress", {
+                      required: "Trường này không được bỏ trống",
+                      maxLength: 30,
+                    })}
+                  />
+                  <FormErrorMessage>
+                    {(errors.detailedAddress?.type === "required" &&
+                      errors.detailedAddress?.message) ||
+                      (errors.detailedAddress?.type === "maxLength" &&
+                        "Không vượt quá 30 kí tự")}
+                  </FormErrorMessage>
+                </FormControl>
+              )}
+              {!isMobile && (
+                <FormControl my={4}>
+                  <FormLabel>Ghi chú</FormLabel>
+                  <Textarea placeholder={"Ghi chú"} {...register("note")} />
+                </FormControl>
+              )}
             </GridItem>
 
             <GridItem>
-              <FormControl  isRequired isInvalid={Boolean(errors.city)}>
+              <FormControl isRequired isInvalid={Boolean(errors.city)}>
                 <FormLabel>Tỉnh/Thành phố</FormLabel>
                 <Select
                   my={2}
@@ -235,10 +276,16 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
                     </option>
                   ))}
                 </Select>
-                <FormErrorMessage>{errors.city && errors.city.message}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors.city && errors.city.message}
+                </FormErrorMessage>
               </FormControl>
 
-              <FormControl mt={4} isRequired isInvalid={Boolean(errors.district)}>
+              <FormControl
+                mt={4}
+                isRequired
+                isInvalid={Boolean(errors.district)}
+              >
                 <FormLabel>Quận/Huyện</FormLabel>
                 <Select
                   my={2}
@@ -259,10 +306,16 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
                     </option>
                   ))}
                 </Select>
-                <FormErrorMessage>{errors.district && errors.district.message}</FormErrorMessage>
+                <FormErrorMessage>
+                  {errors.district && errors.district.message}
+                </FormErrorMessage>
               </FormControl>
 
-              <FormControl mt={4} isRequired isInvalid={Boolean(errors.village)}>
+              <FormControl
+                mt={4}
+                isRequired
+                isInvalid={Boolean(errors.village)}
+              >
                 <FormLabel>Phường/xã</FormLabel>
                 <Select
                   my={2}
@@ -283,35 +336,61 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
                     </option>
                   ))}
                 </Select>
-                <FormErrorMessage>{errors.village && errors.village.message}</FormErrorMessage>
-              </FormControl>
-              <FormControl mt={4} display={{base: "block", md: "none"}} isRequired isInvalid={Boolean(errors.detailedAddress?.type === 'required' || errors.detailedAddress?.type === 'maxLength')}>
-                <FormLabel >Địa chỉ chi tiết</FormLabel>
-                <Input
-                  maxLength={255}
-                  type="text"
-                  placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
-                  {...register("detailedAddress", {
-                    required: "Trường này không được bỏ trống",
-                    maxLength: 30,
-                  })}
-                />
                 <FormErrorMessage>
-                  {(errors.detailedAddress?.type === "required" && errors.detailedAddress?.message) ||
-                    (errors.detailedAddress?.type === "maxLength" && "Không vượt quá 30 kí tự")}
+                  {errors.village && errors.village.message}
                 </FormErrorMessage>
               </FormControl>
+              {isMobile && (
+                <FormControl
+                  mt={4}
+                  display={{ base: "block", md: "none" }}
+                  isRequired
+                  isInvalid={Boolean(
+                    errors.detailedAddress?.type === "required" ||
+                      errors.detailedAddress?.type === "maxLength"
+                  )}
+                >
+                  <FormLabel>Địa chỉ chi tiết</FormLabel>
+                  <Input
+                    maxLength={255}
+                    type="text"
+                    placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
+                    {...register("detailedAddress", {
+                      required: "Trường này không được bỏ trống",
+                      maxLength: 30,
+                    })}
+                  />
+                  <FormErrorMessage>
+                    {(errors.detailedAddress?.type === "required" &&
+                      errors.detailedAddress?.message) ||
+                      (errors.detailedAddress?.type === "maxLength" &&
+                        "Không vượt quá 30 kí tự")}
+                  </FormErrorMessage>
+                </FormControl>
+              )}
 
-              <FormControl my={4} display={{base: "block", md: "none"}}>
-                <FormLabel>Ghi chú</FormLabel>
-                <Textarea placeholder={"Ghi chú"} {...register("note")} />
-              </FormControl>
-              <Box mt={{base: 4, md: 12}}>
-                <Checkbox m={{base:0, md:2}} id="checkbox1" colorScheme="red" {...register("receiveAtPost")}>
+              {isMobile && (
+                <FormControl my={4} display={{ base: "block", md: "none" }}>
+                  <FormLabel>Ghi chú</FormLabel>
+                  <Textarea placeholder={"Ghi chú"} {...register("note")} />
+                </FormControl>
+              )}
+              <Box mt={{ base: 4, md: 12 }}>
+                <Checkbox
+                  m={{ base: 0, md: 2 }}
+                  id="checkbox1"
+                  colorScheme="red"
+                  {...register("receiveAtPost")}
+                >
                   Nhận tại bưu cục
                 </Checkbox>
                 <br />
-                <Checkbox  m={{base:0, md:2}} id="checkbox2" colorScheme="red" {...register("callBeforeSend")}>
+                <Checkbox
+                  m={{ base: 0, md: 2 }}
+                  id="checkbox2"
+                  colorScheme="red"
+                  {...register("callBeforeSend")}
+                >
                   Liên hệ trước khi gửi
                 </Checkbox>
               </Box>
@@ -330,9 +409,10 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
               color="white"
               backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
               sx={{
-                '@media (hover: hover)': {
+                "@media (hover: hover)": {
                   _hover: {
-                    backgroundImage: "linear-gradient(to right, #df5207, #d80740)",
+                    backgroundImage:
+                      "linear-gradient(to right, #df5207, #d80740)",
                   },
                 },
               }}
@@ -344,9 +424,10 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
               color="white"
               backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
               sx={{
-                '@media (hover: hover)': {
+                "@media (hover: hover)": {
                   _hover: {
-                    backgroundImage: "linear-gradient(to right, #df5207, #d80740)",
+                    backgroundImage:
+                      "linear-gradient(to right, #df5207, #d80740)",
                   },
                 },
               }}
