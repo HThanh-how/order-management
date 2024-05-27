@@ -134,7 +134,7 @@ export default function OrderForm() {
 
   const [selectedStore, setSelectedStore] = useState<any>(null);
   const [selectedReceiver, setSelectedReceiver] = useState<any>(null);
-  const [payer, setPayer] = useState<string>("RECEIVER");
+  const [payer, setPayer] = useState<string>("SENDER");
   const [insurance, setInsurance] = useState<number>(0);
 
   const [receiverValue, setReceiverValue] = useState<string>("");
