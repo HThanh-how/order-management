@@ -154,6 +154,7 @@ export default function Dialog() {
             <Grid
               templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)" }}
               gap={4}
+              pr={{base:2, md:0}}
             >
               <GridItem>
                 <FormControl
