@@ -276,9 +276,10 @@ export default function CustomerTable() {
               <Modal onClose={onClose} isOpen={isOpen} isCentered size={{base: 'sm', md: 'md'}}>
                 <ModalOverlay />
                 <ModalContent>
+                  <ModalHeader>Chấp nhận yêu cầu</ModalHeader>
                   <ModalCloseButton />
                   <ModalBody>
-                      Để chấp nhận hệ thống sẽ đăng xuất, bạn vui lòng đăng nhập lại để tiếp tục.
+                      Để chấp nhận hệ thống sẽ đăng xuất để thay đổi quyền truy cập, bạn vui lòng đăng nhập lại để tiếp tục.
                   </ModalBody>
                   <ModalFooter>
                     <Button 
