@@ -467,7 +467,7 @@ export default function OrderForm() {
         }
 
         return (
-          <Tooltip label={tooltipLabel}>
+          <Tooltip label={tooltipLabel} key={suggestion.receiverId}>
             <Button
               colorScheme={colorScheme}
               key={suggestion.receiverId}
