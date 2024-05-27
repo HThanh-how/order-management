@@ -42,6 +42,7 @@ const MyBox = () => {
   };
 
   const handleSearch = async () => {
+    setOrderHistory(null);
     try {
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_HOSTNAME}api/v1/order/history`,
@@ -51,7 +52,7 @@ const MyBox = () => {
       );
       setOrderHistory(response.data);
       onOpen();
-      console.log("Response:", response.data.data);
+      // console.log("Response:", response.data.data);
     } catch (error) {
       const axiosError = error as AxiosError;
       if (axiosError.response && axiosError.response.status === 400) {
