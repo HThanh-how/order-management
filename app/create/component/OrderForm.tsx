@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
+import { IoIosCloseCircle } from "react-icons/io";
 import {
   Box,
   Select,
@@ -12,7 +13,6 @@ import {
   VStack,
   HStack,
   Container,
-  InputGroup,
   InputLeftElement,
   RadioGroup,
   NumberInput,
@@ -34,13 +34,19 @@ import {
   AlertIcon,
   useToast,
   StackDivider,
+  Tooltip,
   Link,
   Popover,
   PopoverTrigger,
   PopoverContent,
   Skeleton,
   chakra,
+  InputRightElement,
+  InputGroup,
+  Icon,
 } from "@chakra-ui/react";
+import { CheckCircleIcon, WarningTwoIcon, CloseIcon } from "@chakra-ui/icons";
+
 import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import ProductDialog from "@/app/product/component/Dialog";
@@ -110,7 +116,6 @@ const GradientText = chakra("span", {
   },
 });
 export default function OrderForm() {
-  
   const [items, setItems] = useState([0]);
   const [selectedItems, setSelectedItems] = useState<any[]>([]);
   const [productSuggestions, setProductSuggestions] = useState<Product[]>([]);
@@ -157,7 +162,7 @@ export default function OrderForm() {
     isSuccess: isSuccessPU,
     isError: isErrorPU,
     error: errorPU,
-  } = useGetProductsQuery(1, {skip: role === "ROLE_EMPLOYEE"})
+  } = useGetProductsQuery(1, { skip: role === "ROLE_EMPLOYEE" });
 
   const {
     data: productsE,
@@ -165,8 +170,7 @@ export default function OrderForm() {
     isSuccess: isSuccessPE,
     isError: isErrorPE,
     error: errorPE,
-  } = useGetProductsForEmployeeQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
-
+  } = useGetProductsForEmployeeQuery(1, { skip: role !== "ROLE_EMPLOYEE" });
 
   const {
     data: customersU,
@@ -174,7 +178,7 @@ export default function OrderForm() {
     isSuccess: isSuccessCU,
     isError: isErrorCU,
     error: errorCU,
-  } = useGetCustomersQuery(1, {skip: role === "ROLE_EMPLOYEE"});
+  } = useGetCustomersQuery(1, { skip: role === "ROLE_EMPLOYEE" });
 
   const {
     data: customersE,
@@ -182,7 +186,7 @@ export default function OrderForm() {
     isSuccess: isSuccessCE,
     isError: isErrorCE,
     error: errorCE,
-  } = useGetCustomersForEmployeeQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
+  } = useGetCustomersForEmployeeQuery(1, { skip: role !== "ROLE_EMPLOYEE" });
 
   const {
     data: storesU,
@@ -190,7 +194,7 @@ export default function OrderForm() {
     isSuccess: isSuccessSU,
     isError: isErrorSU,
     error: errorSU,
-  } = useGetStoresQuery(1, {skip: role === "ROLE_EMPLOYEE"});
+  } = useGetStoresQuery(1, { skip: role === "ROLE_EMPLOYEE" });
 
   const {
     data: storesE,
@@ -198,7 +202,7 @@ export default function OrderForm() {
     isSuccess: isSuccessSE,
     isError: isErrorSE,
     error: errorSE,
-  } = useGetStoresForEmployeeQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
+  } = useGetStoresForEmployeeQuery(1, { skip: role !== "ROLE_EMPLOYEE" });
 
   const getProducts = useMemo(() => {
     if (isSuccessPU) return productsU.data;
@@ -266,7 +270,13 @@ export default function OrderForm() {
       };
       data.isCollected = payer === "RECEIVER";
       data.price.itemsPrice = totalPriceItems;
-      data.price.shippingFee = shippingFee + optionValuable + optionBulky + insurance + vanchuyen + luukho;
+      data.price.shippingFee =
+        shippingFee +
+        optionValuable +
+        optionBulky +
+        insurance +
+        vanchuyen +
+        luukho;
       data.price.collectionCharge = collectedMoney;
       data.store = { ...selectedStore };
       data.receiver = { ...selectedReceiver };
@@ -310,8 +320,6 @@ export default function OrderForm() {
       }
     }
   };
-
-
 
   const getProvinceCode = (cityName: string) => {
     const city = cityData.find((city) => city.name === cityName);
@@ -396,7 +404,7 @@ export default function OrderForm() {
   };
 
   const renderProductSuggestions = () =>
-    productSuggestions.slice(0,5).map((suggestion): any => (
+    productSuggestions.slice(0, 5).map((suggestion): any => (
       <Button
         key={suggestion.id}
         style={{ cursor: "pointer", textAlign: "left", justifyContent: "left" }}
@@ -431,33 +439,60 @@ export default function OrderForm() {
         - <Text m={1}> {suggestion.price} VNĐ</Text>
       </Button>
     ));
-
   const renderReceiverSuggestions = () => (
     <>
-      {receiverSuggestions.slice(0, 4).map((suggestion) => (
-        <Button
-          key={suggestion.receiverId}
-          style={{
-            cursor: "pointer",
-            textAlign: "left",
-            justifyContent: "left",
-          }}
-          onClick={() => {
-            setReceiverValue(suggestion.phoneNumber);
-            setSelectedReceiver(suggestion);
-            setValue("receiver", suggestion);
-            setReceiverSuggestions([]);
-          }}
-          width={"100%"}
-          m={1}
-        >
-          <Text m={1} style={{ textAlign: "left" }} isTruncated>
-            {suggestion.name}
-          </Text>{" "}
-          - <Text m={1}> {suggestion.phoneNumber}</Text>
-        </Button>
-      ))}
-     
+      {receiverSuggestions.slice(0, 4).map((suggestion) => {
+        let colorScheme: string | undefined;
+        let tooltipLabel: string | undefined;
+
+        switch (suggestion.legitLevel) {
+          case "VERY_LOW":
+            colorScheme = "red";
+            tooltipLabel = "Khách hàng thường xuyên bom hàng";
+            break;
+          case "BAD":
+            colorScheme = "orange";
+            tooltipLabel = "Khách hàng có tỉ lệ huỷ đơn cao";
+            break;
+          case "HIGH":
+            colorScheme = "blue";
+            tooltipLabel = "Khách hàng được đánh giá tốt";
+            break;
+          case "VERY_HIGH":
+            colorScheme = "green";
+            tooltipLabel = "Khách hàng rất uy tín, đánh giá cực tốt";
+            break;
+          default:
+            break;
+        }
+
+        return (
+          <Tooltip label={tooltipLabel}>
+            <Button
+              colorScheme={colorScheme}
+              key={suggestion.receiverId}
+              style={{
+                cursor: "pointer",
+                textAlign: "left",
+                justifyContent: "left",
+              }}
+              onClick={() => {
+                setReceiverValue(suggestion.phoneNumber);
+                setSelectedReceiver(suggestion);
+                setValue("receiver", suggestion);
+                setReceiverSuggestions([]);
+              }}
+              width={"100%"}
+              m={1}
+            >
+              <Text m={1} style={{ textAlign: "left" }} isTruncated>
+                {suggestion.name}
+              </Text>{" "}
+              - <Text m={1}> {suggestion.phoneNumber}</Text>
+            </Button>
+          </Tooltip>
+        );
+      })}
     </>
   );
 
@@ -763,53 +798,97 @@ export default function OrderForm() {
             Người nhận
           </Text>
           <FormControl isRequired isInvalid={Boolean(errors.receiver)}>
-            <div>
-              <Popover
-                isOpen={receiverValue.length > 1}
-                placement="bottom-start"
-                matchWidth
-              >
-                <PopoverTrigger>
-                  <Input
-                    mt={4}
-                    maxLength={255}
-                    placeholder={"Số điện thoại"}
-                    value={receiverValue}
-                    {...register("receiver", {
-                      required: "Người nhận không được bỏ trống",
-                      pattern: {
-                        value: /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
-                        message: "Số điện thoại không hợp lệ",
-                      },
-                    })}
-                    onChange={(e) => {
-                      handleReceiverInputChange(e.target.value);
-                      setReceiverValue(e.target.value);
-                    }}
-                  />
-                </PopoverTrigger>
-                {errors.receiver && (
-                  <Text color="red.500" mb={2} mt={-2}>
-                    {errors.receiver.message}
-                  </Text>
-                )}
-                <PopoverContent pr={2} w="full">
-                  <Box>{renderReceiverSuggestions()} {!(receiverValue.length ==10)&&<AddCustomerDialog/>} </Box>
-                </PopoverContent>
-              </Popover>
-            </div>
+            <Popover
+              isOpen={receiverValue.length > 1}
+              placement="bottom-start"
+              matchWidth
+            >
+              <PopoverTrigger>
+                <Input
+                  mt={4}
+                  maxLength={255}
+                  placeholder={"Số điện thoại"}
+                  value={receiverValue}
+                  {...register("receiver", {
+                    required: "Người nhận không được bỏ trống",
+                    pattern: {
+                      value: /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
+                      message: "Số điện thoại không hợp lệ",
+                    },
+                  })}
+                  onChange={(e) => {
+                    handleReceiverInputChange(e.target.value);
+                    setReceiverValue(e.target.value);
+                  }}
+                />
+              </PopoverTrigger>
+              {errors.receiver && (
+                <Text color="red.500" mb={2} mt={-2}>
+                  {errors.receiver.message}
+                </Text>
+              )}
+              <PopoverContent pr={2} w="full">
+                <Box>
+                  {renderReceiverSuggestions()}{" "}
+                  {!(receiverValue.length == 10) && <AddCustomerDialog />}{" "}
+                </Box>
+              </PopoverContent>
+            </Popover>
+
             <FormErrorMessage>
               {errors.receiver && errors.receiver.message}
             </FormErrorMessage>
           </FormControl>
           {selectedReceiver && (
             <>
-              <Input
-                mt={4}
-                value={selectedReceiver?.name}
-                placeholder={"Họ và tên"}
-                readOnly
-              />
+              <Tooltip
+                hasArrow
+                label={
+                  selectedReceiver?.legitLevel === "VERY_LOW"
+                    ? "Khách hàng thường xuyên bom hàng"
+                    : selectedReceiver?.legitLevel === "BAD"
+                    ? "Khách hàng có tỉ lệ huỷ đơn cao"
+                    : selectedReceiver?.legitLevel === "HIGH"
+                    ? "Khách hàng được đánh giá tốt"
+                    : selectedReceiver?.legitLevel === "VERY_HIGH"
+                    ? "Khách hàng rất uy tín, đánh giá cực tốt"
+                    : ""
+                }
+                bg={
+                  selectedReceiver?.legitLevel === "VERY_LOW"
+                    ? "red.600"
+                    : selectedReceiver?.legitLevel === "BAD"
+                    ? "orange.600"
+                    : selectedReceiver?.legitLevel === "HIGH"
+                    ? "blue.400"
+                    : selectedReceiver?.legitLevel === "VERY_HIGH"
+                    ? "green.500"
+                    : "default"
+                }
+              >
+                <InputGroup mt={4}>
+                  <Input
+                    value={selectedReceiver?.name}
+                    placeholder={"Họ và tên"}
+                    readOnly
+                    variant={"outline"}
+                  />
+                  <InputRightElement>
+                    {selectedReceiver?.legitLevel === "VERY_HIGH" && (
+                      <CheckCircleIcon color="green.500" />
+                    )}
+                    {selectedReceiver?.legitLevel === "HIGH" && (
+                      <CheckCircleIcon color="blue.500" />
+                    )}
+                    {selectedReceiver?.legitLevel === "BAD" && (
+                      <WarningTwoIcon color="orange.500" />
+                    )}
+                    {selectedReceiver?.legitLevel === "VERY_LOW" && (
+                      <IoIosCloseCircle color="red.600" size={20}  />
+                    )}
+                  </InputRightElement>
+                </InputGroup>
+              </Tooltip>
               <Input
                 mt={4}
                 value={selectedReceiver?.address}
@@ -851,11 +930,7 @@ export default function OrderForm() {
           <Text color="orange.500" fontWeight={"bold"} fontSize="20px">
             Vận chuyển
           </Text>
-          <RadioGroup
-            defaultValue="SENDER"
-            m={4}
-            onChange={handlePayerChange}
-          >
+          <RadioGroup defaultValue="SENDER" m={4} onChange={handlePayerChange}>
             <Stack spacing={10} direction="row">
               <Text fontWeight={"500"}>Người trả cước</Text>
               <Radio
@@ -885,9 +960,9 @@ export default function OrderForm() {
                   required: "This is required",
                 })}
                 onChange={(e) => {
-                  if(e.target.value === "HOA_TOC") setVanchuyen(15000);
-                  if(e.target.value === "BINH_THUONG") setVanchuyen(0);
-                  if(e.target.value === "TIET_KIEM") setVanchuyen(-5000);
+                  if (e.target.value === "HOA_TOC") setVanchuyen(15000);
+                  if (e.target.value === "BINH_THUONG") setVanchuyen(0);
+                  if (e.target.value === "TIET_KIEM") setVanchuyen(-5000);
                 }}
               >
                 <option value="HOA_TOC">Hoả Tốc</option>
@@ -930,10 +1005,10 @@ export default function OrderForm() {
                 {...register("delivery.luuKho", {
                   required: "This is required",
                 })}
-                onChange={(e) => { 
-                  if(e.target.value === "MOT_NGAY") setVanchuyen(0);
-                  if(e.target.value === "BA_NGAY") setLuukho(5000);
-                  if(e.target.value === "MOT_TUAN") setLuukho(15000);
+                onChange={(e) => {
+                  if (e.target.value === "MOT_NGAY") setVanchuyen(0);
+                  if (e.target.value === "BA_NGAY") setLuukho(5000);
+                  if (e.target.value === "MOT_TUAN") setLuukho(15000);
                 }}
               >
                 <option value="MOT_NGAY">Một Ngày</option>
@@ -972,7 +1047,8 @@ export default function OrderForm() {
             colorScheme="red"
             {...register("delivery.hasLostInsurance")}
             onChange={(e) => {
-              if (e.target.checked) setInsurance(Math.ceil(0.05 * totalPriceItems));
+              if (e.target.checked)
+                setInsurance(Math.ceil(0.05 * totalPriceItems));
               else setInsurance(0);
             }}
           >
@@ -1011,8 +1087,15 @@ export default function OrderForm() {
           <Flex m={4} justifyContent={"space-between"}>
             <Text fontWeight={"bold"}>
               Phí ship: {shippingFee}{" "}
-              {optionValuable + optionBulky + insurance + vanchuyen + luukho !== 0
-                ? `+ ${optionValuable + optionBulky + insurance + vanchuyen + luukho} (phí tuỳ chọn)`
+              {optionValuable + optionBulky + insurance + vanchuyen + luukho !==
+              0
+                ? `+ ${
+                    optionValuable +
+                    optionBulky +
+                    insurance +
+                    vanchuyen +
+                    luukho
+                  } (phí tuỳ chọn)`
                 : ""}{" "}
               VNĐ
             </Text>
@@ -1044,7 +1127,14 @@ export default function OrderForm() {
           <Flex m={4}>
             <Text fontWeight={"bold"}>
               Tổng tiền đơn:{" "}
-              {(shippingFee + optionValuable + optionBulky + insurance + vanchuyen + luukho).toLocaleString()}{" "}
+              {(
+                shippingFee +
+                optionValuable +
+                optionBulky +
+                insurance +
+                vanchuyen +
+                luukho
+              ).toLocaleString()}{" "}
               VNĐ
             </Text>
           </Flex>
@@ -1052,7 +1142,12 @@ export default function OrderForm() {
             <Text color="orange.500" fontWeight={"bold"} fontSize="18px">
               Người gửi trả:{" "}
               {(payer === "SENDER"
-                ? shippingFee + optionValuable + optionBulky + insurance + vanchuyen + luukho
+                ? shippingFee +
+                  optionValuable +
+                  optionBulky +
+                  insurance +
+                  vanchuyen +
+                  luukho
                 : 0
               ).toLocaleString()}{" "}
               VNĐ
@@ -1064,7 +1159,12 @@ export default function OrderForm() {
               {(
                 collectedMoney +
                 (payer === "RECEIVER"
-                  ? shippingFee + optionValuable + optionBulky + insurance + vanchuyen + luukho
+                  ? shippingFee +
+                    optionValuable +
+                    optionBulky +
+                    insurance +
+                    vanchuyen +
+                    luukho
                   : 0)
               ).toLocaleString()}{" "}
               VNĐ
