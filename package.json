@@ -24,6 +24,7 @@
     "autoprefixer": "10.4.15",
     "axios": "^1.6.1",
     "chart.js": "4.4.1",
+    "encoding": "^0.1.13",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
     "framer-motion": "^10.16.4",
