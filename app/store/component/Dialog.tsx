@@ -23,7 +23,7 @@ import {
   Grid,
   GridItem,
 } from "@chakra-ui/react";
-
+import { useBreakpointValue } from "@chakra-ui/react";
 import { ChangeEvent, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useAddStoreMutation } from "@/app/_lib/features/api/apiSlice";
@@ -69,6 +69,7 @@ type FormData = {
 };
 
 export default function AddressSelect() {
+  const isMobile = useBreakpointValue({ base: true, md: false });
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
@@ -221,40 +222,43 @@ export default function AddressSelect() {
                   </FormErrorMessage>
                 </FormControl>
 
-                <FormControl
-                  mt={4}
-                  isRequired
-                  isInvalid={Boolean(
-                    errors.detailedAddress?.type === "required" ||
-                      errors.detailedAddress?.type === "maxLength"
-                  )}
-                  display={{base: "none", md: "block"}}
-                >
-                  <FormLabel>Địa chỉ chi tiết</FormLabel>
-                  <Input
-                    maxLength={255}
-                    type="text"
-                    placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
-                    {...register("detailedAddress", {
-                      required: "Trường này không được bỏ trống",
-                      maxLength: 30,
-                    })}
-                  />
-                  <FormErrorMessage>
-                    {(errors.detailedAddress?.type === "required" &&
-                      errors.detailedAddress?.message) ||
-                      (errors.detailedAddress?.type === "maxLength" &&
-                        "Không vượt quá 30 kí tự")}
-                  </FormErrorMessage>
-                </FormControl>
+                {!isMobile && (
+                  <FormControl
+                    mt={4}
+                    isRequired
+                    isInvalid={Boolean(
+                      errors.detailedAddress?.type === "required" ||
+                        errors.detailedAddress?.type === "maxLength"
+                    )}
+                  >
+                    <FormLabel>Địa chỉ chi tiết</FormLabel>
+                    <Input
+                      maxLength={255}
+                      type="text"
+                      placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
+                      {...register("detailedAddress", {
+                        required: "Trường này không được bỏ trống",
+                        maxLength: 30,
+                      })}
+                    />
+                    <FormErrorMessage>
+                      {(errors.detailedAddress?.type === "required" &&
+                        errors.detailedAddress?.message) ||
+                        (errors.detailedAddress?.type === "maxLength" &&
+                          "Không vượt quá 30 kí tự")}
+                    </FormErrorMessage>
+                  </FormControl>
+                )}
 
-                <FormControl mt={4} display={{base: "none", md: "block"}}>
-                  <FormLabel>Mô tả chi tiết</FormLabel>
-                  <Textarea
-                    placeholder={"Mô tả"}
-                    {...register("description")}
-                  />
-                </FormControl>
+                {!isMobile && (
+                  <FormControl mt={4}>
+                    <FormLabel>Mô tả chi tiết</FormLabel>
+                    <Textarea
+                      placeholder={"Mô tả"}
+                      {...register("description")}
+                    />
+                  </FormControl>
+                )}
               </GridItem>
 
               <GridItem>
@@ -343,41 +347,44 @@ export default function AddressSelect() {
                   </FormErrorMessage>
                 </FormControl>
 
-                <FormControl
-                  mt={4}
-                  isRequired
-                  isInvalid={Boolean(
-                    errors.detailedAddress?.type === "required" ||
-                      errors.detailedAddress?.type === "maxLength"
-                  )}
-                  display={{base: "block", md: "none"}}
-                >
-                  <FormLabel>Địa chỉ chi tiết</FormLabel>
-                  <Input
-                    maxLength={255}
-                    type="text"
-                    placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
-                    {...register("detailedAddress", {
-                      required: "Trường này không được bỏ trống",
-                      maxLength: 30,
-                    })}
-                  />
-                  <FormErrorMessage>
-                    {(errors.detailedAddress?.type === "required" &&
-                      errors.detailedAddress?.message) ||
-                      (errors.detailedAddress?.type === "maxLength" &&
-                        "Không vượt quá 30 kí tự")}
-                  </FormErrorMessage>
-                </FormControl>
+                {isMobile && (
+                  <FormControl
+                    mt={4}
+                    isRequired
+                    isInvalid={Boolean(
+                      errors.detailedAddress?.type === "required" ||
+                        errors.detailedAddress?.type === "maxLength"
+                    )}
+                  >
+                    <FormLabel>Địa chỉ chi tiết</FormLabel>
+                    <Input
+                      maxLength={255}
+                      type="text"
+                      placeholder={"Số nhà, tên đường, địa chỉ chi tiết"}
+                      {...register("detailedAddress", {
+                        required: "Trường này không được bỏ trống",
+                        maxLength: 30,
+                      })}
+                    />
+                    <FormErrorMessage>
+                      {(errors.detailedAddress?.type === "required" &&
+                        errors.detailedAddress?.message) ||
+                        (errors.detailedAddress?.type === "maxLength" &&
+                          "Không vượt quá 30 kí tự")}
+                    </FormErrorMessage>
+                  </FormControl>
+                )}
 
-                <FormControl mt={4} display={{base: "block", md: "none"}}>
-                  <FormLabel>Mô tả chi tiết</FormLabel>
-                  <Textarea
-                    placeholder={"Mô tả"}
-                    {...register("description")}
-                  />
-                </FormControl>
-                <Box mt={{base: 4, md: 12}}>
+                {isMobile && (
+                  <FormControl mt={4}>
+                    <FormLabel>Mô tả chi tiết</FormLabel>
+                    <Textarea
+                      placeholder={"Mô tả"}
+                      {...register("description")}
+                    />
+                  </FormControl>
+                )}
+                <Box mt={{ base: 4, md: 12 }}>
                   <Checkbox my={2} colorScheme="red" {...register("isDefault")}>
                     Đặt làm cửa hàng mặc định
                   </Checkbox>
