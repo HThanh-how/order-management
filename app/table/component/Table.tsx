@@ -186,7 +186,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
               <Td>
                 
                 {customer.legitLevel === "VERY_LOW" && (
-                  <Tooltip label='Khách hàng không đáng tin cậy thường xuyên không nhận đơn'>
+                  <Tooltip label='Khách hàng thường xuyên bom hàng'>
                     <Badge colorScheme="red">
                       <Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{customer.name}</Text>
                     </Badge>
@@ -194,7 +194,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
                 )}
 
                 {customer.legitLevel === "BAD" && (
-                  <Tooltip label='Khách hàng không đáng tin cậy'>
+                  <Tooltip label='Khách hàng có tỉ lệ huỷ đơn cao'>
                   <Badge colorScheme="orange">
                     <Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{customer.name}</Text>
                   </Badge>
@@ -206,7 +206,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
                 )}
 
                 {customer.legitLevel === "HIGH" && (
-                  <Tooltip label='Khách hàng uy tín'>
+                  <Tooltip label='Khách hàng được đánh giá tốt'>
                   <Badge colorScheme="blue">
                     <Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{customer.name}</Text>
                   </Badge>
@@ -214,7 +214,7 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
                 )}
 
                 {customer.legitLevel === "VERY_HIGH" && (
-                  <Tooltip label='Khách hàng uy tín'>
+                  <Tooltip label='Khách hàng rất uy tín, đánh giá cực tốt'>
                   <Badge colorScheme="green">
                     <Text maxW={'200px'} minW={"100px"} whiteSpace="normal">{customer.name}</Text>
                   </Badge>
