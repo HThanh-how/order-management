@@ -62,7 +62,7 @@ export default function AddressSelect() {
       isSuccess = false;
       console.error('Failed to send request: ', err)
       toast({
-        title: 'Có lỗi khi gửi yêu cầu',
+        title: 'Số điện thoại không tồn tại hoặc đã là nhân viên cửa hàng khác',
         position: 'top',
         status: 'error',
         duration: 3000,
