@@ -389,7 +389,14 @@ export default function OrderForm() {
     // Set the state with the updated array
     setQuantityItem(newArray);
   };
+  // const defaultStore = getStores.find(store => store.isDefault === true);
 
+  // useEffect(() => {
+  //   if (defaultStore) {
+  //     handleStoreChange(defaultStore.name);
+  //   }
+  // }, [defaultStore, handleStoreChange]);
+  
   const addItem = () => {
     setItems([...items, items.length]);
   };

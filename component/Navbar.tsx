@@ -39,8 +39,6 @@ import {
   Switch,
   Image,
 } from "@chakra-ui/react";
-import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import { FiBell } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, createContext } from "react";
 import { usePathname } from "next/navigation";
@@ -132,7 +130,7 @@ export default function NavBar() {
       dispatch(getRole("ROLE_EMPLOYEE"));
       setIsEmployee(true);
       setRoleNavBar(initalRole);
-      handleSwitchRole()
+      handleSwitchRole();
     }
   }, []);
 
@@ -267,7 +265,7 @@ export default function NavBar() {
     localStorage.removeItem("userId");
     localStorage.removeItem("roles");
     setIsLogin(false);
-    router.replace("/login");
+    window.location.href = "/login";
   }
 
   return (
@@ -320,7 +318,7 @@ export default function NavBar() {
                 src="/logo.png"
                 alt="OrList"
                 objectFit="cover" // or "contain"
-                height={"50px"}
+                height={{base: '23px', md:"50px"}}
               />
             </Box>
           </HStack>
@@ -588,12 +586,14 @@ interface SidebarProps extends BoxProps {
 }
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+
   const router = useRouter();
   const pathname = usePathname();
   const role = useAppSelector((state) => state.role.value);
   console.log("Sidebar", role, typeof role);
   return (
     <Box
+
       bg={useColorModeValue("white", "gray.900")}
       borderRight="1px"
       borderRightColor={useColorModeValue("gray.200", "gray.700")}
@@ -620,9 +620,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         ml={8}
         mt={6}
         mb={2}
-        
         color="white"
-        
         backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
         sx={{
           "@media (hover: hover)": {
@@ -709,8 +707,16 @@ interface MobileProps extends FlexProps {
   onOpen: () => void;
 }
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+  const [isLogin, setIsLogin] = useState(false);
+  useEffect(() => {
+    // const lastAccess = localStorage.getItem("createAt");
+    if (localStorage.getItem("accessToken") === null) {
+      setIsLogin(false);
+    } else setIsLogin(true);
+  }, []);
   return (
-    <Flex
+    <Flex 
+      // display={"none"}
       ml={{ base: 0, lg: 60 }}
       px={{ base: 0, lg: 24 }}
       height="20"
@@ -719,6 +725,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
       {...rest}
     >
       <IconButton
+            display={isLogin ? "block" : "none"}
         variant="filled"
         onClick={onOpen}
         aria-label="open menu"
