@@ -365,6 +365,16 @@ export const apiSlice = createApi({
       providesTags: ["Staff"],
     }),
 
+    removeEmployee: builder.mutation({
+      query: (id) => ({
+        url: `/empl-mngt/${id}`,
+        method: "DELETE",
+      }),
+
+      invalidatesTags: ["Staff"],
+    }),
+
+
     sendEmployeeRequest: builder.mutation({
       query: (request) => ({
         url: "/empl-mngt/request",
@@ -506,6 +516,7 @@ export const {
   useRemoveOrderMutation,
   useGetRefreshTokenMutation,
   useGetEmployeesQuery,
+  useRemoveEmployeeMutation,
   useSendEmployeeRequestMutation,
   useGetEmployeesRequestQuery,
   useApproveEmployeeRequestMutation,

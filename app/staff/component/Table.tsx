@@ -23,11 +23,21 @@ import {
   MenuOptionGroup,
   MenuDivider,
   Select,
-  AspectRatio
+  AspectRatio,
+  useToast,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import { SlOptionsVertical } from "react-icons/sl";
 import { useState } from "react";
 import { Staff } from "@/app/type";
+import { useRemoveEmployeeMutation } from "@/app/_lib/features/api/apiSlice";
 
 interface StaffTableProps {
   staffs: Staff[];
@@ -38,6 +48,47 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
   const [staffSelections, setStaffSelections] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [staffsPerPage, setStaffsPerPage] = useState(5);
+  const [selectedEmployee, setSelectedEmployee] = useState<any>({});
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
+
+  const [removeEmployee, { isLoading }] = useRemoveEmployeeMutation();
+
+  const handleDeleteClose = async () => {
+    setDeleteOpen(false);
+    setSelectedEmployee({});
+  }
+  const handleDeleteOpen = async (id: any) => {
+    const p = staffs.find((tmp) => tmp.employeeId === id);
+    setSelectedEmployee({ ...p });
+    setDeleteOpen(true);
+  }
+
+  const handleDelete = async (id: any) => {
+    try {
+      await removeEmployee(id).unwrap();
+      handleDeleteClose();
+    } catch (err) {
+      handleDeleteClose();
+      console.error('Failed to delete customer: ', err)
+      toast({
+        title: 'Có lỗi khi xóa nhân viên này',
+        position: 'top',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+      return;
+    }
+    toast({
+      title: "Xoá nhân viên thành công",
+      position: 'top',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    })
+  }
 
   const handleMasterCheckboxChange = () => {
     setCheckedAll(!checkedAll);
@@ -166,7 +217,7 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
                   </MenuButton>
                   <MenuList>
                     {/* <MenuItem>Sửa</MenuItem> */}
-                    <MenuItem>Xoá</MenuItem>
+                    <MenuItem onClick={() => handleDeleteOpen(staff.employeeId)}>Xoá</MenuItem>
                   </MenuList>
                 </Menu>
               </Td>
@@ -174,6 +225,31 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
           ))}
         </Tbody>
       </Table>
+
+      <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered size={{ base: 'sm', md: 'md' }}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalCloseButton />
+          <ModalHeader>Xác nhận Xóa nhân viên</ModalHeader>
+          <ModalBody>
+            Bạn có chắc chắn xóa nhân viên này?
+          </ModalBody>
+          <ModalFooter>
+            <Button mr={3} onClick={() => handleDeleteClose()}>Đóng</Button>
+            <Button color="white"
+              backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
+              sx={{
+                '@media (hover: hover)': {
+                  _hover: {
+                    backgroundImage: "linear-gradient(to right, #df5207, #d80740)"
+                  }
+                }
+              }} 
+              isLoading={isLoading}
+              onClick={() => handleDelete(selectedEmployee.employeeId)}>Xác nhận</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
       <Flex justify="space-between" mt={4}>
         <Select ml={2} fontSize={{base: 10, md: 16}} w={{base: '15%', md:'20%'}} onChange={(e) => handleStaffsPerPageChange(Number(e.target.value))}>
