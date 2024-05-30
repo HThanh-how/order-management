@@ -53,6 +53,7 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [staffId, setStaffId] = useState<string>("");
+  const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
   const toast = useToast();
 
   const [removeEmployee, { isLoading }] = useRemoveEmployeeMutation();
@@ -92,8 +93,8 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
     })
   }
 
-  const handleUpdate = async (id: any) => {
-    setStaffId(id);
+  const handleUpdate = async (staff: any) => {
+    setSelectedStaff(staff);
     onOpen();
   }
 
@@ -160,17 +161,6 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
             {/* <Th>Trạng thái</Th> */}
             <Th>Số điện thoại</Th>
             <Th>Quyền</Th>
-            {/* <Th w={"1vw"}>
-              <Menu>
-                <MenuButton>
-                  <Icon as={SlOptionsVertical} />
-                </MenuButton>
-                <MenuList>
-                  <MenuItem>Sửa</MenuItem>
-                  <MenuItem>Xoá</MenuItem>
-                </MenuList>
-              </Menu>
-            </Th> */}
           </Tr>
         </Thead>
         <Tbody>
@@ -223,7 +213,7 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
                     <Icon as={SlOptionsVertical} color={"gray"} />
                   </MenuButton>
                   <MenuList>
-                    <MenuItem onClick={() => handleUpdate(staff.employeeId)}>Sửa</MenuItem>
+                    <MenuItem onClick={() => handleUpdate(staff)}>Sửa</MenuItem>
                     <MenuItem onClick={() => handleDeleteOpen(staff.employeeId)}>Xoá</MenuItem>
                   </MenuList>
                 </Menu>
@@ -236,7 +226,7 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
       <EditDialog
         isOpen={isOpen}
         onClose={onClose}
-        id={staffId}
+  staff={selectedStaff || undefined}
       />
 
       <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered size={{ base: 'sm', md: 'md' }}>

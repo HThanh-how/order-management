@@ -37,9 +37,12 @@ type FormData = {
   create_receiver: string;
   update_receiver: string;
 };
-
-export default function EditDialog({ isOpen, onClose, id }: any) {
+import { Staff } from "@/app/type";
+export default function EditDialog({ isOpen, onClose, staff }: { isOpen: boolean, onClose: () => void, staff: Staff | undefined }) {
+  const id =  staff?.employeeId;
+  console.log(id);
   const toast = useToast();
+  
   const {
     register,
     setValue,
@@ -71,6 +74,7 @@ export default function EditDialog({ isOpen, onClose, id }: any) {
         manageOrder === "MANAGE_ORDER"
     );
   }, [viewOrder, createOrder, updateOrder, manageOrder]);
+
   const OrderPermissions = ({ register }: { register: any }) => {
     const handleSelectAllChange = () => {
       const newSelectAllOrder = !selectAllOrder;
@@ -91,7 +95,7 @@ export default function EditDialog({ isOpen, onClose, id }: any) {
     return (
       <Box m={4}>
         <Flex>
-          <Text fontWeight={"bold"}>Đơn hàng</Text>
+          <Text fontWeight={"bold"} ml={-2}>Đơn hàng</Text>
           <Checkbox
             ml={2}
             isChecked={selectAllOrder}
@@ -158,7 +162,7 @@ export default function EditDialog({ isOpen, onClose, id }: any) {
     return (
       <Box m={4} mt={8}>
         <Flex>
-          <Text fontWeight={"bold"}>Sản phẩm</Text>
+          <Text fontWeight={"bold"} ml={-2}>Sản phẩm</Text>
           <Checkbox
             ml={2}
             isChecked={selectAllProduct}
@@ -211,7 +215,7 @@ export default function EditDialog({ isOpen, onClose, id }: any) {
     return (
       <Box m={4} mt={8}>
         <Flex>
-          <Text fontWeight={"bold"}>Cửa hàng</Text>
+          <Text fontWeight={"bold"} ml={-2}>Cửa hàng</Text>
           <Checkbox
             ml={2}
             isChecked={selectAllStore}
@@ -267,7 +271,7 @@ export default function EditDialog({ isOpen, onClose, id }: any) {
     return (
       <Box m={4} mt={8}>
         <Flex>
-          <Text fontWeight={"bold"}>Khách hàng</Text>
+          <Text fontWeight={"bold"} ml={-2}>Khách hàng</Text>
           <Checkbox
             ml={2}
             isChecked={selectAllReceiver}
@@ -347,7 +351,21 @@ export default function EditDialog({ isOpen, onClose, id }: any) {
       }
     }
   };
-
+useEffect(() => {
+  if (isOpen && staff) {
+    const permissions = staff.permissions || [];
+    if (permissions.includes("VIEW_ONLY")) setValue("view", "VIEW_ONLY");
+    if (permissions.includes("CREATE_ORDER")) setValue("create", "CREATE_ORDER");
+    if (permissions.includes("UPDATE_ORDER")) setValue("update", "UPDATE_ORDER");
+    if (permissions.includes("MANAGE_ORDER")) setValue("manage", "MANAGE_ORDER");
+    if (permissions.includes("CREATE_PRODUCT")) setValue("create_product", "CREATE_PRODUCT");
+    if (permissions.includes("UPDATE_PRODUCT")) setValue("update_product", "UPDATE_PRODUCT");
+    if (permissions.includes("CREATE_STORE")) setValue("create_store", "CREATE_STORE");
+    if (permissions.includes("UPDATE_STORE")) setValue("update_store", "UPDATE_STORE");
+    if (permissions.includes("CREATE_RECEIVER")) setValue("create_receiver", "CREATE_RECEIVER");
+    if (permissions.includes("UPDATE_RECEIVER")) setValue("update_receiver", "UPDATE_RECEIVER");
+  }
+}, [isOpen, staff, setValue]);
   return (
     <>
       {/* <Button m={{ base: 2, xl: 8 }}  color="white"
