@@ -365,6 +365,16 @@ export const apiSlice = createApi({
       providesTags: ["Staff"],
     }),
 
+    editEmployeePermission: builder.mutation({
+      query: ({newPermissions, id}) => ({
+        url: `/empl-mngt/${id}`,
+        method: "PUT",
+        body: newPermissions,
+      }),
+
+      invalidatesTags: ["Staff"],
+    }),
+
     removeEmployee: builder.mutation({
       query: (id) => ({
         url: `/empl-mngt/${id}`,
@@ -516,6 +526,7 @@ export const {
   useRemoveOrderMutation,
   useGetRefreshTokenMutation,
   useGetEmployeesQuery,
+  useEditEmployeePermissionMutation,
   useRemoveEmployeeMutation,
   useSendEmployeeRequestMutation,
   useGetEmployeesRequestQuery,

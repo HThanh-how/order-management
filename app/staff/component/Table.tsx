@@ -38,6 +38,7 @@ import { SlOptionsVertical } from "react-icons/sl";
 import { useState } from "react";
 import { Staff } from "@/app/type";
 import { useRemoveEmployeeMutation } from "@/app/_lib/features/api/apiSlice";
+import EditDialog from "./EditDialog";
 
 interface StaffTableProps {
   staffs: Staff[];
@@ -51,6 +52,7 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
   const [selectedEmployee, setSelectedEmployee] = useState<any>({});
   const [deleteOpen, setDeleteOpen] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [staffId, setStaffId] = useState<string>("");
   const toast = useToast();
 
   const [removeEmployee, { isLoading }] = useRemoveEmployeeMutation();
@@ -88,6 +90,11 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
       duration: 3000,
       isClosable: true,
     })
+  }
+
+  const handleUpdate = async (id: any) => {
+    setStaffId(id);
+    onOpen();
   }
 
   const handleMasterCheckboxChange = () => {
@@ -216,7 +223,7 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
                     <Icon as={SlOptionsVertical} color={"gray"} />
                   </MenuButton>
                   <MenuList>
-                    {/* <MenuItem>Sửa</MenuItem> */}
+                    <MenuItem onClick={() => handleUpdate(staff.employeeId)}>Sửa</MenuItem>
                     <MenuItem onClick={() => handleDeleteOpen(staff.employeeId)}>Xoá</MenuItem>
                   </MenuList>
                 </Menu>
@@ -225,6 +232,12 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
           ))}
         </Tbody>
       </Table>
+
+      <EditDialog
+        isOpen={isOpen}
+        onClose={onClose}
+        id={staffId}
+      />
 
       <Modal onClose={() => handleDeleteClose()} isOpen={deleteOpen} isCentered size={{ base: 'sm', md: 'md' }}>
         <ModalOverlay />

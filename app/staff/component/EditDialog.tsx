@@ -21,11 +21,10 @@ import {
 
 import { ChangeEvent, useState, useEffect } from "react";
 import { useForm } from "react-hook-form"
-import { useSendEmployeeRequestMutation } from "@/app/_lib/features/api/apiSlice"
+import { useEditEmployeePermissionMutation } from "@/app/_lib/features/api/apiSlice"
 import getFromLocalStorage from "@/app/_lib/getFromLocalStorage";
 
 type FormData = {
-  employeePhone: string,
   permissions: string[],
   view: string,
   create: string,
@@ -39,8 +38,7 @@ type FormData = {
   update_receiver: string,
 }
 
-export default function AddressSelect() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+export default function EditDialog({ isOpen, onClose, id }: any) {
   const toast = useToast();
   const {
     register,
@@ -50,7 +48,7 @@ export default function AddressSelect() {
     formState: { errors, isSubmitSuccessful, isSubmitting },
   } = useForm<FormData>()
 
-  const [sendEmployeeRequest, {isLoading}] = useSendEmployeeRequestMutation();
+  const [editEmployeePermission, {isLoading}] = useEditEmployeePermissionMutation();
 
   useEffect(() => {
     if(isSubmitSuccessful) reset();
@@ -67,13 +65,13 @@ export default function AddressSelect() {
     const { view, create, update, manage, create_product, update_product, create_store, update_store, create_receiver, update_receiver, ...sendData } = data;
     let isSuccess: boolean = true;
     try {
-      await sendEmployeeRequest(sendData).unwrap();
+      await editEmployeePermission({newPermissions: sendData, id}).unwrap();
       onClose();
     } catch (err) {
       isSuccess = false;
-      console.error('Failed to send request: ', err)
+      console.error('Failed to edit permission: ', err)
       toast({
-        title: 'Số điện thoại không tồn tại hoặc đã là nhân viên cửa hàng khác',
+        title: 'Có lỗi khi thực hiện cập nhật',
         position: 'top',
         status: 'error',
         duration: 3000,
@@ -82,7 +80,7 @@ export default function AddressSelect() {
     } finally {
       if(isSuccess) {
         toast({
-          title: 'Gửi yêu cầu thành công',
+          title: 'Cập nhật quyền thành công',
           position: 'top',
           status: 'success',
           duration: 3000,
@@ -94,7 +92,7 @@ export default function AddressSelect() {
 
   return (
     <>
-      <Button m={{ base: 2, xl: 8 }}  color="white"
+      {/* <Button m={{ base: 2, xl: 8 }}  color="white"
                   backgroundImage="linear-gradient(90deg, #ff5e09, #ff0348)"
                   sx={{
                     '@media (hover: hover)': {
@@ -104,7 +102,7 @@ export default function AddressSelect() {
                     }
                   }} onClick={onOpen}>
         Thêm nhân viên
-      </Button>
+      </Button> */}
       
       <Modal
         closeOnOverlayClick={false}
@@ -115,19 +113,19 @@ export default function AddressSelect() {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Thêm nhân viên</ModalHeader>
+          <ModalHeader>Chỉnh sửa quyền</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <Box>
-              <Input my={4} placeholder={"Số điện thoại"} {...register('employeePhone', {
+             <Box>
+            {/*  <Input my={4} placeholder={"Số điện thoại"} {...register('employeePhone', {
                 required: 'Trường này không được bỏ trống',
                 pattern: {
                   value: /(03|07|08|09|01[2|6|8|9])+([0-9]{8})\b/,
                   message: 'Số điện thoại không hợp lệ'
                 }
                 
-              })}/>
-              {errors.employeePhone && <Text color="red.500" mb={2} mt={-2}>{errors.employeePhone.message}</Text>}
+              })}/> */}
+              {/* {errors.employeePhone && <Text color="red.500" mb={2} mt={-2}>{errors.employeePhone.message}</Text>} */}
               {/* <Input mt={4} placeholder={"Họ và tên"} /> */}
               {/* Dropdown chọn thành phố */}
               
@@ -201,7 +199,7 @@ export default function AddressSelect() {
                   }
                 }}
               >
-                Gửi yêu cầu
+                Cập nhật
               </Button>
             ) : (
             <Button  color="white"
@@ -213,7 +211,7 @@ export default function AddressSelect() {
                       }
                     }
                   }} onClick={handleSubmit(onSubmit)}>
-              Gửi yêu cầu
+              Cập nhật
             </Button>
             )}
           </ModalFooter>
