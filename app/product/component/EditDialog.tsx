@@ -112,7 +112,7 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
         await editProduct(data).unwrap();
       else await editProductForEmployee(data).unwrap();
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to edit product: ', err);
       if (err?.data?.message === "Access is denied")
         toast({

@@ -104,7 +104,7 @@ export default function Dialog() {
         await addProduct(data).unwrap();
       else await addProductForEmployee(data).unwrap();
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       isSuccess = false;
       console.error("Failed to save product: ", err);
       if (err?.data?.message === "Access is denied")
