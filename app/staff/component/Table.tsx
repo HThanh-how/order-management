@@ -209,34 +209,54 @@ const StaffTable: React.FC<StaffTableProps> = ({ staffs }) => {
                     .map((tag, index) => (
                       <Box key={index} position="relative" m={2}>
                         {tag === "VIEW_ONLY" && (
-                          <MdViewList size={16} color="gray" />
+                          <Tooltip label='Xem đơn'>
+                            <span><MdViewList size={16} color="gray" /></span>
+                          </Tooltip>
                         )}
                         {tag === "MANAGE_ORDER" && (
-                          <MdDelete size={16} color="gray" />
+                          <Tooltip label='Quản lý'>
+                            <span><MdDelete size={16} color="gray" /></span>
+                          </Tooltip>
                         )}
                         {tag === "UPDATE_ORDER" && (
-                          <MdEditSquare size={16} color="gray" />
+                          <Tooltip label='Cập nhật đơn'>
+                            <span><MdEditSquare size={16} color="gray" /></span>
+                          </Tooltip>
                         )}
                         {tag === "CREATE_ORDER" && (
-                          <MdAddToPhotos size={16} color="gray" />
+                          <Tooltip label='Tạo đơn'>
+                            <span><MdAddToPhotos size={16} color="gray" /></span>
+                          </Tooltip>
                         )}
                         {tag === "CREATE_PRODUCT" && (
-                          <TbShoppingBagPlus size={16} color="gray" />
+                          <Tooltip label='Thêm sản phẩm'>
+                            <span><TbShoppingBagPlus size={16} color="gray" /></span>
+                          </Tooltip>
                         )}
                         {tag === "UPDATE_PRODUCT" && (
-                          <TbShoppingBagEdit size={16} color="gray" />
+                          <Tooltip label='Chỉnh sửa sản phẩm'>
+                            <span><TbShoppingBagEdit size={16} color="gray" /></span>
+                          </Tooltip>
                         )}
                         {tag === "CREATE_RECEIVER" && (
-                          <MdPersonAddAlt1 size={16} color="gray" />
+                          <Tooltip label='Thêm khách hàng'>
+                            <span><MdPersonAddAlt1 size={16} color="gray" /></span>
+                          </Tooltip>
                         )}
                         {tag === "UPDATE_RECEIVER" && (
-                          <FaUserEdit size={16} color="gray" />
+                          <Tooltip label='Cập nhật thông tin khách hàng'>
+                            <span><FaUserEdit size={16} color="gray" /></span>
+                          </Tooltip>
                         )}
                         {tag === "CREATE_STORE" && (
-                          <TbHomePlus size={16} color="gray" />
+                          <Tooltip label='Thêm cửa hàng'>
+                            <span><TbHomePlus size={16} color="gray" /></span>
+                          </Tooltip>
                         )}
                         {tag === "UPDATE_STORE" && (
-                          <TbHomeEdit size={16} color="gray" />
+                          <Tooltip label='Chỉnh sửa thông tin cửa hàng'>
+                            <span><TbHomeEdit size={16} color="gray" /></span>
+                          </Tooltip>
                         )}
                       </Box>
                     ))}
