@@ -38,17 +38,26 @@ type FormData = {
   update_receiver: string;
 };
 import { Staff } from "@/app/type";
-export default function EditDialog({ isOpen, onClose, staff }: { isOpen: boolean, onClose: () => void, staff: Staff | undefined }) {
-  const id =  staff?.employeeId;
+export default function EditDialog({
+  isOpen,
+  onClose,
+  staff,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  staff: Staff | undefined;
+}) {
+  const id = staff?.employeeId;
   console.log(id);
   const toast = useToast();
-  
+
   const {
     register,
     setValue,
     handleSubmit,
     reset,
     watch,
+    unregister,
     formState: { errors, isSubmitSuccessful, isSubmitting },
   } = useForm<FormData>();
 
@@ -85,17 +94,19 @@ export default function EditDialog({ isOpen, onClose, staff }: { isOpen: boolean
         setValue("update", "UPDATE_ORDER");
         setValue("manage", "MANAGE_ORDER");
       } else {
-        setValue("view", "");
-        setValue("create", "");
-        setValue("update", "");
-        setValue("manage", "");
+        unregister("view");
+        unregister("create");
+        unregister("update");
+        unregister("manage");
       }
     };
 
     return (
       <Box m={4}>
         <Flex>
-          <Text fontWeight={"bold"} ml={-2}>Đơn hàng</Text>
+          <Text fontWeight={"bold"} ml={-2}>
+            Đơn hàng
+          </Text>
           <Checkbox
             ml={2}
             isChecked={selectAllOrder}
@@ -154,15 +165,17 @@ export default function EditDialog({ isOpen, onClose, staff }: { isOpen: boolean
         setValue("create_product", "CREATE_PRODUCT");
         setValue("update_product", "UPDATE_PRODUCT");
       } else {
-        setValue("create_product", "");
-        setValue("update_product", "");
+        unregister("create_product");
+        unregister("update_product");
       }
     };
 
     return (
       <Box m={4} mt={8}>
         <Flex>
-          <Text fontWeight={"bold"} ml={-2}>Sản phẩm</Text>
+          <Text fontWeight={"bold"} ml={-2}>
+            Sản phẩm
+          </Text>
           <Checkbox
             ml={2}
             isChecked={selectAllProduct}
@@ -207,15 +220,17 @@ export default function EditDialog({ isOpen, onClose, staff }: { isOpen: boolean
         setValue("create_store", "CREATE_STORE");
         setValue("update_store", "UPDATE_STORE");
       } else {
-        setValue("create_store", "");
-        setValue("update_store", "");
+        unregister("create_store");
+        unregister("update_store");
       }
     };
 
     return (
       <Box m={4} mt={8}>
         <Flex>
-          <Text fontWeight={"bold"} ml={-2}>Cửa hàng</Text>
+          <Text fontWeight={"bold"} ml={-2}>
+            Cửa hàng
+          </Text>
           <Checkbox
             ml={2}
             isChecked={selectAllStore}
@@ -263,15 +278,17 @@ export default function EditDialog({ isOpen, onClose, staff }: { isOpen: boolean
         setValue("create_receiver", "CREATE_RECEIVER");
         setValue("update_receiver", "UPDATE_RECEIVER");
       } else {
-        setValue("create_receiver", "");
-        setValue("update_receiver", "");
+        unregister("create_receiver");
+        unregister("update_receiver");
       }
     };
 
     return (
       <Box m={4} mt={8}>
         <Flex>
-          <Text fontWeight={"bold"} ml={-2}>Khách hàng</Text>
+          <Text fontWeight={"bold"} ml={-2}>
+            Khách hàng
+          </Text>
           <Checkbox
             ml={2}
             isChecked={selectAllReceiver}
@@ -351,21 +368,30 @@ export default function EditDialog({ isOpen, onClose, staff }: { isOpen: boolean
       }
     }
   };
-useEffect(() => {
-  if (isOpen && staff) {
-    const permissions = staff.permissions || [];
-    if (permissions.includes("VIEW_ONLY")) setValue("view", "VIEW_ONLY");
-    if (permissions.includes("CREATE_ORDER")) setValue("create", "CREATE_ORDER");
-    if (permissions.includes("UPDATE_ORDER")) setValue("update", "UPDATE_ORDER");
-    if (permissions.includes("MANAGE_ORDER")) setValue("manage", "MANAGE_ORDER");
-    if (permissions.includes("CREATE_PRODUCT")) setValue("create_product", "CREATE_PRODUCT");
-    if (permissions.includes("UPDATE_PRODUCT")) setValue("update_product", "UPDATE_PRODUCT");
-    if (permissions.includes("CREATE_STORE")) setValue("create_store", "CREATE_STORE");
-    if (permissions.includes("UPDATE_STORE")) setValue("update_store", "UPDATE_STORE");
-    if (permissions.includes("CREATE_RECEIVER")) setValue("create_receiver", "CREATE_RECEIVER");
-    if (permissions.includes("UPDATE_RECEIVER")) setValue("update_receiver", "UPDATE_RECEIVER");
-  }
-}, [isOpen, staff, setValue]);
+  useEffect(() => {
+    if (isOpen && staff) {
+      const permissions = staff.permissions || [];
+      if (permissions.includes("VIEW_ONLY")) setValue("view", "VIEW_ONLY");
+      if (permissions.includes("CREATE_ORDER"))
+        setValue("create", "CREATE_ORDER");
+      if (permissions.includes("UPDATE_ORDER"))
+        setValue("update", "UPDATE_ORDER");
+      if (permissions.includes("MANAGE_ORDER"))
+        setValue("manage", "MANAGE_ORDER");
+      if (permissions.includes("CREATE_PRODUCT"))
+        setValue("create_product", "CREATE_PRODUCT");
+      if (permissions.includes("UPDATE_PRODUCT"))
+        setValue("update_product", "UPDATE_PRODUCT");
+      if (permissions.includes("CREATE_STORE"))
+        setValue("create_store", "CREATE_STORE");
+      if (permissions.includes("UPDATE_STORE"))
+        setValue("update_store", "UPDATE_STORE");
+      if (permissions.includes("CREATE_RECEIVER"))
+        setValue("create_receiver", "CREATE_RECEIVER");
+      if (permissions.includes("UPDATE_RECEIVER"))
+        setValue("update_receiver", "UPDATE_RECEIVER");
+    }
+  }, [isOpen, staff, setValue]);
   return (
     <>
       {/* <Button m={{ base: 2, xl: 8 }}  color="white"
