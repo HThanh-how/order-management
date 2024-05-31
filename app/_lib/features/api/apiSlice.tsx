@@ -236,9 +236,31 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Customer"],
     }),
+    addCustomerForEmployee: builder.mutation({
+      query: (newProduct) => ({
+        url: "/recievers/owner",
+        method: "POST",
+        headers: {
+          userId: `${getFromLocalStorage("userId")}`,
+        },
+        body: newProduct,
+      }),
+      invalidatesTags: ["Customer"],
+    }),
     editCustomer: builder.mutation({
       query: (newCustomer) => ({
         url: `/receivers/${newCustomer.receiverId}`,
+        method: "PUT",
+        headers: {
+          userId: `${getFromLocalStorage("userId")}`,
+        },
+        body: newCustomer,
+      }),
+      invalidatesTags: ["Customer"],
+    }),
+    editCustomerForEmployee: builder.mutation({
+      query: (newCustomer) => ({
+        url: `/receivers/owner/${newCustomer.id}`,
         method: "PUT",
         headers: {
           userId: `${getFromLocalStorage("userId")}`,
@@ -278,16 +300,38 @@ export const apiSlice = createApi({
       providesTags: ["Store"],
     }),
     addStore: builder.mutation({
-      query: (newReceiver) => ({
+      query: (newStore) => ({
         url: "/stores/create",
         method: "POST",
-        body: newReceiver,
+        body: newStore,
+      }),
+      invalidatesTags: ["Store"],
+    }),
+    addStoreForEmployee: builder.mutation({
+      query: (newStore) => ({
+        url: "/stores/owner",
+        method: "POST",
+        headers: {
+          userId: `${getFromLocalStorage("userId")}`,
+        },
+        body: newStore,
       }),
       invalidatesTags: ["Store"],
     }),
     editStore: builder.mutation({
       query: (newStore) => ({
         url: `/stores/${newStore.storeId}`,
+        method: "PUT",
+        headers: {
+          userId: `${getFromLocalStorage("userId")}`,
+        },
+        body: newStore,
+      }),
+      invalidatesTags: ["Store"],
+    }),
+    editStoreForEmployee: builder.mutation({
+      query: (newStore) => ({
+        url: `/stores/owner/${newStore.id}`,
         method: "PUT",
         headers: {
           userId: `${getFromLocalStorage("userId")}`,
@@ -539,12 +583,16 @@ export const {
   useGetTopCustomersQuery,
   useGetCustomersForEmployeeQuery,
   useAddCustomerMutation,
+  useAddCustomerForEmployeeMutation,
   useEditCustomerMutation,
+  useEditCustomerForEmployeeMutation,
   useRemoveCustomerMutation,
   useGetStoresQuery,
   useGetStoresForEmployeeQuery,
   useAddStoreMutation,
+  useAddStoreForEmployeeMutation,
   useEditStoreMutation,
+  useEditStoreForEmployeeMutation,
   useRemoveStoreMutation,
   useGetOrdersQuery,
   useGetOrdersForEmployeeQuery,

@@ -33,7 +33,7 @@ import {
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
 import StoreList from "./Table";
-import { useGetStoresQuery, useGetStoresForEmployeeQuery } from "@/app/_lib/features/api/apiSlice"
+import { useGetStoresQuery, useGetStoresForEmployeeQuery, useGetEmployeePermissionQuery } from "@/app/_lib/features/api/apiSlice"
 import { Store } from "@/app/type";
 import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
 
@@ -57,23 +57,21 @@ export default function StoreTable() {
     error: errorE,
   } = useGetStoresForEmployeeQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
 
+  const {
+    data: permission,
+    isLoading,
+    isSuccess,
+    isError,
+  } = useGetEmployeePermissionQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
 
   const getStores = useMemo(() => {
     if (isSuccessU) return storesU.data;
     if (isSuccessE) return storesE.data;
   }, [storesU, storesE]);
 
-  // const {
-  //   data: today,
-  //   isLoading: isLoadingT,
-  //   isSuccess: isSuccessT,
-  //   isError: isErrorT,
-  //   error: errorT,
-  // } = useGetTodayStoreQuery(1)
-
-  // const getToday = useMemo(() => {
-  //   if (isSuccessT) return today.data
-  // }, [today])
+  const getPermission = useMemo(() => {
+    if (isSuccess) return permission.data;
+  }, [permission])
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
 
@@ -125,7 +123,7 @@ export default function StoreTable() {
             onChange={handleSearchInputChange}
           />
         </Flex>
-        {role === "ROLE_USER" && (
+        {role === "ROLE_USER" || getPermission && getPermission.includes("CREATE_STORE") && (
           <Dialog />
         )}
       </Flex>
@@ -181,7 +179,7 @@ export default function StoreTable() {
         </Flex>
 
       ) : (
-        <StoreList stores={filteredStores} />
+        <StoreList stores={filteredStores} permission={getPermission}/>
       )}
 
     </TableContainer>

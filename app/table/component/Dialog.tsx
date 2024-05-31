@@ -26,8 +26,9 @@ import {
 
 import { ChangeEvent, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useAddCustomerMutation } from "@/app/_lib/features/api/apiSlice";
+import { useAddCustomerMutation, useAddCustomerForEmployeeMutation } from "@/app/_lib/features/api/apiSlice";
 import { cityData } from "@/component/HeroSection/CityData";
+import { useAppSelector } from "@/app/_lib/hooks";
 
 interface Ward {
   name: string;
@@ -74,8 +75,9 @@ export default function AddressSelect() {
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedVillage, setSelectedVillage] = useState("");
   const toast = useToast();
-
-  const [addCustomer, { isLoading }] = useAddCustomerMutation();
+  const role: any = useAppSelector((state: any) => state.role.value);
+  const [addCustomer, { isLoading: isLoadingU }] = useAddCustomerMutation();
+  const [addCustomerForEmployee, { isLoading: isLoadingE }] = useAddCustomerForEmployeeMutation();
   const {
     register,
     setValue,
@@ -110,18 +112,29 @@ export default function AddressSelect() {
     const { village, district, city, ...sendData } = data;
     let isSuccess: boolean = true;
     try {
-      await addCustomer(sendData).unwrap();
+      if(role === "ROLE_USER")
+        await addCustomer(sendData).unwrap();
+      else await addCustomerForEmployee(sendData).unwrap();
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       isSuccess = false;
       console.error("Failed to save customer: ", err);
-      toast({
-        title: "Có lỗi khi thêm khách hàng mới",
-        position: "top",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      if (err?.data?.message === "Access is denied")
+        toast({
+          title: "Bạn không có quyền thêm khách hàng mới",
+          position: "top",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      else
+        toast({
+          title: "Có lỗi khi thêm khách hàng mới",
+          position: "top",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
     } finally {
       if (isSuccess) {
         toast({

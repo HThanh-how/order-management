@@ -43,9 +43,10 @@ import EditDialog from "./EditDialog";
 
 interface CustomerTableProps {
   customers: Customer[];
+  permission: any;
 }
 
-const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
+const CustomerTable: React.FC<CustomerTableProps> = ({ customers, permission }) => {
   const [checkedAll, setCheckedAll] = useState(false);
   const [customerSelections, setCustomerSelections] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -240,6 +241,18 @@ const CustomerTable: React.FC<CustomerTableProps> = ({ customers }) => {
                     <MenuList>
                       <MenuItem onClick={() => handleUpdate(customer.receiverId)}>Sửa</MenuItem>
                       <MenuItem onClick={() => handleDeleteOpen(customer.receiverId)}>Xoá</MenuItem>
+                    </MenuList>
+                  </Menu>
+                </Td>
+              )}
+              {role === "ROLE_EMPLOYEE" && permission.includes("UPDATE_RECEIVER") && (
+                <Td>
+                  <Menu>
+                    <MenuButton>
+                      <Icon as={SlOptionsVertical} color={"gray"} />
+                    </MenuButton>
+                    <MenuList>
+                      <MenuItem onClick={() => handleUpdate(customer.receiverId)}>Sửa</MenuItem>
                     </MenuList>
                   </Menu>
                 </Td>

@@ -33,7 +33,7 @@ import {
 import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
 import CustomerList from "./Table";
-import { useGetCustomersQuery, useGetCustomersForEmployeeQuery, useGetTodayReceiverQuery } from "@/app/_lib/features/api/apiSlice"
+import { useGetCustomersQuery, useGetCustomersForEmployeeQuery, useGetEmployeePermissionQuery } from "@/app/_lib/features/api/apiSlice"
 import { Customer } from "@/app/type";
 import { useAppSelector } from "@/app/_lib/hooks";
 
@@ -60,25 +60,23 @@ export default function CustomerTable() {
     error: errorE,
   } = useGetCustomersForEmployeeQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
 
+  const {
+    data: permission,
+    isLoading,
+    isSuccess,
+    isError,
+  } = useGetEmployeePermissionQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
+
   const getCustomers = useMemo(() => {
     if (isSuccessU) return customersU.data;
     if (isSuccessE) return customersE.data;
   }, [customersU, customersE]);
 
-  // const {
-  //   data: today,
-  //   isLoading: isLoadingT,
-  //   isSuccess: isSuccessT,
-  //   isError: isErrorT,
-  //   error: errorT,
-  // } = useGetTodayReceiverQuery(1)
-
-  // const getToday = useMemo(() => {
-  //   if (isSuccessT) return today.data
-  // }, [today])
+  const getPermission = useMemo(() => {
+    if (isSuccess) return permission.data;
+  }, [permission])
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
-
     const inputValue = event.target.value;
     setSearchInput(inputValue);
     if (isSuccessU || isSuccessE) {
@@ -125,7 +123,7 @@ export default function CustomerTable() {
             onChange={handleSearchInputChange}
           />
         </Flex>
-        {role === "ROLE_USER" && (
+        {role === "ROLE_USER" || getPermission && getPermission.includes("CREATE_RECEIVER") && (
           <Dialog />
         )}
 
@@ -183,7 +181,7 @@ export default function CustomerTable() {
         </Flex>
 
       ) : (
-        <CustomerList customers={filteredCustomers} />
+        <CustomerList customers={filteredCustomers} permission={getPermission}/>
       )}
 
     </TableContainer>

@@ -342,38 +342,6 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, permission }) => 
       </Modal>
 
       <Flex justify="space-between" mt={4}>
-        {/* <ButtonGroup>
-          <Button
-            onClick={() => handleProductsPerPageChange(5)}
-            colorScheme={productsPerPage === 5 ? "orange" : "gray"}
-          >
-            5
-          </Button>
-          <Button
-            onClick={() => handleProductsPerPageChange(10)}
-            colorScheme={productsPerPage === 10 ? "orange" : "gray"}
-          >
-            10
-          </Button>
-          <Button
-            onClick={() => handleProductsPerPageChange(15)}
-            colorScheme={productsPerPage === 15 ? "orange" : "gray"}
-          >
-            15
-          </Button>
-          <Button
-            onClick={() => handleProductsPerPageChange(20)}
-            colorScheme={productsPerPage === 20 ? "orange" : "gray"}
-          >
-            20
-          </Button>
-          <Button
-            onClick={() => handleProductsPerPageChange(25)}
-            colorScheme={productsPerPage === 25 ? "orange" : "gray"}
-          >
-            25
-          </Button>
-        </ButtonGroup> */}
         <Select ml={2} fontSize={{ base: 10, md: 16 }} w={{ base: '15%', md: '20%' }} onChange={(e) => handleProductsPerPageChange(Number(e.target.value))}>
           <option defaultChecked value='5' >5 sản phẩm</option>
           <option value='10' >10 sản phẩm</option>

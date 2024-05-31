@@ -27,9 +27,10 @@ import {
 
 import { useEffect, useState, ChangeEvent } from "react";
 import { useForm } from "react-hook-form"
-import { useEditStoreMutation } from "@/app/_lib/features/api/apiSlice"
+import { useEditStoreMutation, useEditStoreForEmployeeMutation } from "@/app/_lib/features/api/apiSlice"
 import getFromLocalStorage from "@/app/_lib/getFromLocalStorage";
 import { cityData } from "@/component/HeroSection/CityData";
+import { useAppSelector } from "@/app/_lib/hooks";
 
 interface Ward {
   name: string;
@@ -93,8 +94,9 @@ export default function EditDialog({ isOpen, onClose, selectedStore }: any) {
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedVillage, setSelectedVillage] = useState("");
 
-  const [editStore, { isLoading }] = useEditStoreMutation();
-
+  const role: any = useAppSelector((state: any) => state.role.value)
+  const [editStore, { isLoading: isLoadingU }] = useEditStoreMutation();
+  const [editStoreForEmployee, { isLoading: isLoadingE }] = useEditStoreForEmployeeMutation();
   const toast = useToast();
 
 
@@ -129,18 +131,29 @@ export default function EditDialog({ isOpen, onClose, selectedStore }: any) {
     console.log(sendData);
     let isSuccess: boolean = true;
     try {
-      await editStore(sendData).unwrap();
+      if(role === "ROLE_USER")
+        await editStore(sendData).unwrap();
+      else await editStoreForEmployee(sendData).unwrap();
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       isSuccess = false;
       console.error('Failed to edit store: ', err)
-      toast({
-        title: 'Có lỗi khi sửa thông tin cửa hàng',
-        position: 'top',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      })
+      if (err?.data?.message === "Access is denied")
+        toast({
+          title: "Bạn không có quyền chỉnh sửa thông tin cửa hàng",
+          position: "top",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      else
+        toast({
+          title: 'Có lỗi khi sửa thông tin cửa hàng',
+          position: 'top',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        })
     } finally {
       if (isSuccess) {
         toast({
@@ -150,7 +163,6 @@ export default function EditDialog({ isOpen, onClose, selectedStore }: any) {
           duration: 3000,
           isClosable: true,
         })
-        // setTimeout(() => window.location.reload(), 1000);
       }
     }
   }

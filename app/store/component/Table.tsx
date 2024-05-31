@@ -43,6 +43,7 @@ import EditDialog from "./EditDialog";
 
 interface StoreTableProps {
   stores: Store[];
+  permission: any;
 }
 
 import { chakra } from "@chakra-ui/react";
@@ -56,7 +57,7 @@ const GradientText = chakra("span", {
   },
 });
 
-const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
+const StoreTable: React.FC<StoreTableProps> = ({ stores, permission }) => {
   const [checkedAll, setCheckedAll] = useState(false);
   const [storeSelections, setStoreSelections] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -235,6 +236,18 @@ const StoreTable: React.FC<StoreTableProps> = ({ stores }) => {
                       <MenuItem onClick={() => handleDeleteOpen(store.storeId)}>
                         Xoá
                       </MenuItem>
+                    </MenuList>
+                  </Menu>
+                </Td>
+              )}
+              {role === "ROLE_EMPLOYEE" && permission.includes("UPDATE_STORE") && (
+                <Td>
+                  <Menu>
+                    <MenuButton>
+                      <Icon as={SlOptionsVertical} color={"gray"} />
+                    </MenuButton>
+                    <MenuList>
+                      <MenuItem onClick={() => handleUpdate(store.storeId)}>Sửa</MenuItem>
                     </MenuList>
                   </Menu>
                 </Td>

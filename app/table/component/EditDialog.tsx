@@ -26,9 +26,10 @@ import {
 import { useBreakpointValue } from "@chakra-ui/react";
 import { useEffect, useState, ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
-import { useEditCustomerMutation } from "@/app/_lib/features/api/apiSlice";
+import { useEditCustomerMutation, useEditCustomerForEmployeeMutation } from "@/app/_lib/features/api/apiSlice";
 import getFromLocalStorage from "@/app/_lib/getFromLocalStorage";
 import { cityData } from "@/component/HeroSection/CityData";
+import { useAppSelector } from "@/app/_lib/hooks";
 
 interface Ward {
   name: string;
@@ -93,11 +94,13 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
     },
   });
 
+  const role: any = useAppSelector((state: any) => state.role.value)
   const [selectedCity, setSelectedCity] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedVillage, setSelectedVillage] = useState("");
 
-  const [editCustomer, { isLoading }] = useEditCustomerMutation();
+  const [editCustomer, { isLoading: isLoadingU }] = useEditCustomerMutation();
+  const [editCustomerForEmployee, { isLoading: isLoadingE }] = useEditCustomerForEmployeeMutation();
   const toast = useToast();
 
   useEffect(() => {
@@ -131,18 +134,29 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
     const { village, district, city, ...sendData } = data;
     let isSuccess: boolean = true;
     try {
-      await editCustomer(sendData).unwrap();
+      if(role === "ROLE_USER")
+        await editCustomer(sendData).unwrap();
+      else await editCustomerForEmployee(sendData).unwrap();
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       isSuccess = false;
       console.error("Failed to edit customer: ", err);
-      toast({
-        title: "Có lỗi khi sửa thông tin người nhận",
-        position: "top",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      if (err?.data?.message === "Access is denied")
+        toast({
+          title: "Bạn không có quyền chỉnh sửa thông tin khách hàng",
+          position: "top",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      else
+        toast({
+          title: "Có lỗi khi sửa thông tin người nhận",
+          position: "top",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
     } finally {
       if (isSuccess) {
         toast({
