@@ -29,11 +29,11 @@ function Profile({ user }: ProfileProps) {
         gap={6}
       >
         <FormControl>
-          <FormLabel>Tên</FormLabel>
+          <FormLabel>Họ</FormLabel>
           <Input type="text" value={user?.firstName} readOnly/>
         </FormControl>
         <FormControl>
-          <FormLabel>Họ</FormLabel>
+          <FormLabel>Tên</FormLabel>
           <Input type="text" value={user?.lastName} readOnly/>
         </FormControl>
         <FormControl>

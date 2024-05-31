@@ -164,7 +164,7 @@ export default function UserAvatar({ user }: UserAvatarProps) {
         <VStack spacing={1}>
           <Heading as="h3" fontSize="xl" color="#243156">
             {user?.lastName && user?.firstName ? (
-              `${user.lastName} ${user.firstName}`
+              `${user.firstName} ${user.lastName} `
             ) : (
               <>
                 Cần cập nhật<span style={{ color: "red" }}>!</span>
@@ -203,7 +203,7 @@ export default function UserAvatar({ user }: UserAvatarProps) {
             <ModalCloseButton />
             <ModalBody pb={6}>
               <FormControl isRequired isInvalid={Boolean(errors.firstName)}>
-                <FormLabel>Tên</FormLabel>
+                <FormLabel>Họ</FormLabel>
                 <Input
                   type="text"
                   {...register("firstName", {
@@ -215,7 +215,7 @@ export default function UserAvatar({ user }: UserAvatarProps) {
                 </FormErrorMessage>
               </FormControl>
               <FormControl isRequired isInvalid={Boolean(errors.lastName)}>
-                <FormLabel>Họ</FormLabel>
+                <FormLabel>Tên</FormLabel>
                 <Input
                   type="text"
                   {...register("lastName", {
