@@ -28,8 +28,9 @@ import {
 import { FiFile } from "react-icons/fi";
 import { ReactNode, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useAddProductMutation } from "@/app/_lib/features/api/apiSlice";
+import { useAddProductMutation, useAddProductForEmployeeMutation } from "@/app/_lib/features/api/apiSlice";
 import getFromLocalStorage from "@/app/_lib/getFromLocalStorage";
+import { useAppSelector } from "@/app/_lib/hooks";
 
 type FormData = {
   name: string;
@@ -55,7 +56,10 @@ export default function Dialog() {
   } = useForm<FormData>();
 
   const [img, setImg] = useState<any>(null);
-  const [addProduct, { isLoading }] = useAddProductMutation();
+  const role: any = useAppSelector((state: any) => state.role.value);
+  const [addProduct, { isLoading: isLoadingU }] = useAddProductMutation();
+  const [addProductForEmployee, { isLoading: isLoadingE }] = useAddProductForEmployeeMutation();
+
 
   useEffect(() => {
     if (isSubmitSuccessful) reset();
@@ -96,18 +100,29 @@ export default function Dialog() {
 
     let isSuccess: boolean = true;
     try {
-      await addProduct(data).unwrap();
+      if(role === "ROLE_USER")
+        await addProduct(data).unwrap();
+      else await addProductForEmployee(data).unwrap();
       onClose();
     } catch (err) {
       isSuccess = false;
       console.error("Failed to save product: ", err);
-      toast({
-        title: "Có lỗi khi thêm sản phẩm mới",
-        position: "top",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      if (err?.data?.message === "Access is denied")
+        toast({
+          title: "Bạn không có quyền thêm sản phẩm mới",
+          position: "top",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      else
+        toast({
+          title: "Có lỗi khi thêm sản phẩm mới",
+          position: "top",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
     } finally {
       if (isSuccess) {
         toast({

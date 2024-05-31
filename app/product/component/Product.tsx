@@ -34,7 +34,7 @@ import { ChangeEvent, useEffect, useState, useMemo } from "react";
 import Dialog from "./Dialog";
 import ProductTable from "./Table";
 import { useAppSelector, useAppDispatch } from "@/app/_lib/hooks";
-import { useGetProductsQuery, useGetProductsForEmployeeQuery } from "@/app/_lib/features/api/apiSlice"
+import { useGetProductsQuery, useGetProductsForEmployeeQuery, useGetEmployeePermissionQuery } from "@/app/_lib/features/api/apiSlice"
 // import { Product } from "@/app/type";
 
 export default function Product() {
@@ -57,22 +57,21 @@ export default function Product() {
     error: errorE,
   } = useGetProductsForEmployeeQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
 
+  const {
+    data: permission,
+    isLoading,
+    isSuccess,
+    isError,
+  } = useGetEmployeePermissionQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
+
   const getProducts = useMemo(() => {
     if (isSuccessU) return productsU.data;
     if (isSuccessE) return productsE.data;
   }, [productsU, productsE]);
 
-  // const {
-  //   data: today,
-  //   isLoading: isLoadingT,
-  //   isSuccess: isSuccessT,
-  //   isError: isErrorT,
-  //   error: errorT,
-  // } = useGetTodayProductQuery(1)
-
-  // const getToday = useMemo(() => {
-  //   if (isSuccessT) return today.data
-  // }, [today])
+  const getPermission = useMemo(() => {
+    if (isSuccess) return permission.data;
+  }, [permission])
 
   const handleSearchInputChange = (event: { target: { value: any } }) => {
     const inputValue = event.target.value;
@@ -122,7 +121,7 @@ export default function Product() {
             onChange={handleSearchInputChange}
           />
         </Flex>
-        {role === "ROLE_USER" && (
+        {role === "ROLE_USER" || getPermission && getPermission.includes("CREATE_PRODUCT") && (
           <Dialog />
         )}
 
@@ -180,7 +179,7 @@ export default function Product() {
         </Flex>
 
       ) : (
-        <ProductTable products={filteredProducts} />
+        <ProductTable products={filteredProducts} permission={getPermission}/>
       )}
 
     </TableContainer>

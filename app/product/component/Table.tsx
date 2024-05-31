@@ -49,9 +49,10 @@ import { Product } from "@/app/type";
 
 interface ProductTableProps {
   products: Product[];
+  permission: any;
 }
 
-const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
+const ProductTable: React.FC<ProductTableProps> = ({ products, permission }) => {
   const [checkedAll, setCheckedAll] = useState(false);
   const [productSelections, setProductSelections] = useState<number[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -283,6 +284,19 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
                     <MenuList>
                       <MenuItem onClick={() => handleUpdate(product.id)}>Sửa</MenuItem>
                       <MenuItem onClick={() => handleDeleteOpen(product.id)}>Xoá</MenuItem>
+                    </MenuList>
+                  </Menu>
+                </Td>
+              )}
+              
+              {role === "ROLE_EMPLOYEE" && permission.includes("UPDATE_PRODUCT") && (
+                <Td>
+                  <Menu>
+                    <MenuButton>
+                      <Icon as={SlOptionsVertical} color={"gray"} />
+                    </MenuButton>
+                    <MenuList>
+                      <MenuItem onClick={() => handleUpdate(product.id)}>Sửa</MenuItem>
                     </MenuList>
                   </Menu>
                 </Td>

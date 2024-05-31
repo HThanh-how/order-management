@@ -29,8 +29,9 @@ import {
 
 import { useEffect, useState } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
-import { useEditProductMutation } from "@/app/_lib/features/api/apiSlice";
+import { useEditProductMutation, useEditProductForEmployeeMutation } from "@/app/_lib/features/api/apiSlice";
 import getFromLocalStorage from "@/app/_lib/getFromLocalStorage";
+import { useAppSelector } from "@/app/_lib/hooks";
 
 type FormData = {
   name: string;
@@ -65,7 +66,9 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
     },
   });
 
-  const [editProduct, { isLoading }] = useEditProductMutation();
+  const role: any = useAppSelector((state: any) => state.role.value)
+  const [editProduct, { isLoading: isLoadingU }] = useEditProductMutation();
+  const [editProductForEmployee, { isLoading: isLoadingE }] = useEditProductForEmployeeMutation();
   const [img, setImg] = useState<any>(null);
   const toast = useToast();
 
@@ -105,17 +108,28 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
       data.photoUrl = tmp.base64;
     }
     try {
-      await editProduct(data).unwrap();
+      if(role === "ROLE_USER")
+        await editProduct(data).unwrap();
+      else await editProductForEmployee(data).unwrap();
       onClose();
     } catch (err) {
       console.error('Failed to edit product: ', err);
-      toast({
-        title: 'Có lỗi khi sửa thông tin sản phẩm',
-        position: 'top',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
+      if (err?.data?.message === "Access is denied")
+        toast({
+          title: "Bạn không có quyền chỉnh sửa thông tin sản phẩm",
+          position: "top",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      else
+        toast({
+          title: 'Có lỗi khi sửa thông tin sản phẩm',
+          position: 'top',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
       return;
     }
     toast({

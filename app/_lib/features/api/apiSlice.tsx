@@ -142,9 +142,31 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Product"],
     }),
+    addProductForEmployee: builder.mutation({
+      query: (newProduct) => ({
+        url: "/products/owner",
+        method: "POST",
+        headers: {
+          userId: `${getFromLocalStorage("userId")}`,
+        },
+        body: newProduct,
+      }),
+      invalidatesTags: ["Product"],
+    }),
     editProduct: builder.mutation({
       query: (newProduct) => ({
         url: `/products/${newProduct.id}`,
+        method: "PUT",
+        headers: {
+          userId: `${getFromLocalStorage("userId")}`,
+        },
+        body: newProduct,
+      }),
+      invalidatesTags: ["Product"],
+    }),
+    editProductForEmployee: builder.mutation({
+      query: (newProduct) => ({
+        url: `/products/owner/${newProduct.id}`,
         method: "PUT",
         headers: {
           userId: `${getFromLocalStorage("userId")}`,
@@ -365,6 +387,13 @@ export const apiSlice = createApi({
       providesTags: ["Staff"],
     }),
 
+    getEmployeePermission: builder.query({
+      // The URL for the request is '/fakeApi/posts'
+      query: () => ({
+        url: "/empl-mngt/employee/permissions",
+      }),
+    }),
+
     editEmployeePermission: builder.mutation({
       query: ({newPermissions, id}) => ({
         url: `/empl-mngt/${id}`,
@@ -501,7 +530,9 @@ export const {
   useGetProductsQuery,
   useGetProductsForEmployeeQuery,
   useAddProductMutation,
+  useAddProductForEmployeeMutation,
   useEditProductMutation,
+  useEditProductForEmployeeMutation,
   useRemoveProductMutation,
   useGetCustomersQuery,
   useGetCustomerForEmployeeQuery,
@@ -526,6 +557,7 @@ export const {
   useRemoveOrderMutation,
   useGetRefreshTokenMutation,
   useGetEmployeesQuery,
+  useGetEmployeePermissionQuery,
   useEditEmployeePermissionMutation,
   useRemoveEmployeeMutation,
   useSendEmployeeRequestMutation,
