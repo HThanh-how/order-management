@@ -879,6 +879,8 @@ export default function OrderForm() {
                     placeholder={"Họ và tên"}
                     readOnly
                     variant={"outline"}
+                    fontWeight={"400"}
+                    color={selectedReceiver?.legitLevel === "VERY_LOW" ? "#E53E3E" : "inherit"}
                   />
                   <InputRightElement>
                     {selectedReceiver?.legitLevel === "VERY_HIGH" && (
@@ -891,7 +893,7 @@ export default function OrderForm() {
                       <WarningTwoIcon color="orange.500" />
                     )}
                     {selectedReceiver?.legitLevel === "VERY_LOW" && (
-                      <IoIosCloseCircle color="red.600" size={20}  />
+                     <IoIosCloseCircle color="#E53E3E" size={20}  />
                     )}
                   </InputRightElement>
                 </InputGroup>

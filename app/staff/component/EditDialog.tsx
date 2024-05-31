@@ -17,6 +17,7 @@ import {
   Textarea,
   useToast,
   Flex,
+  Tooltip,
 } from "@chakra-ui/react";
 
 import { ChangeEvent, useState, useEffect } from "react";
@@ -38,6 +39,7 @@ type FormData = {
   update_receiver: string;
 };
 import { Staff } from "@/app/type";
+
 export default function EditDialog({
   isOpen,
   onClose,
@@ -84,6 +86,16 @@ export default function EditDialog({
     );
   }, [viewOrder, createOrder, updateOrder, manageOrder]);
 
+  useEffect(() => {
+    if (
+      createOrder === "CREATE_ORDER" ||
+      updateOrder === "UPDATE_ORDER" ||
+      manageOrder === "MANAGE_ORDER"
+    ) {
+      setValue("view", "VIEW_ONLY");
+    }
+  }, [createOrder, updateOrder, manageOrder, viewOrder, setValue]);
+
   const OrderPermissions = ({ register }: { register: any }) => {
     const handleSelectAllChange = () => {
       const newSelectAllOrder = !selectAllOrder;
@@ -115,9 +127,11 @@ export default function EditDialog({
           />
         </Flex>
         <Flex justifyContent="space-between" mt={2} mb={4} ml={4}>
+          <Tooltip label="Nếu được cấp các quyền khác, quyền xem đơn sẽ luôn được chọn" aria-label="A tooltip">
           <Checkbox value="VIEW_ONLY" colorScheme="red" {...register("view")}>
             Xem đơn
           </Checkbox>
+          </Tooltip>
           <Checkbox
             value="CREATE_ORDER"
             colorScheme="red"
@@ -420,8 +434,9 @@ export default function EditDialog({
           <ModalBody pb={6}>
             <OrderPermissions register={register} />
             <ProductPermissions register={register} />
-            <StorePermissions register={register} />
             <ReceiverPermissions register={register} />
+            <StorePermissions register={register} />
+          
           </ModalBody>
 
           <ModalFooter>
