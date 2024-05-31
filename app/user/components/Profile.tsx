@@ -30,33 +30,25 @@ function Profile({ user }: ProfileProps) {
       >
         <FormControl>
           <FormLabel>Họ</FormLabel>
-          <Input type="text" value={user?.firstName} readOnly/>
+          <Input type="text" value={user?.firstName} readOnly />
         </FormControl>
         <FormControl>
           <FormLabel>Tên</FormLabel>
-          <Input type="text" value={user?.lastName} readOnly/>
+          <Input type="text" value={user?.lastName} readOnly />
         </FormControl>
         <FormControl>
           <FormLabel>Số điện thoại</FormLabel>
-          <Input
-            type="text"
-            value={user?.phoneNumber}
-            readOnly
-          />
+          <Input type="text" value={user?.phoneNumber} readOnly />
         </FormControl>
         <FormControl>
           <FormLabel>Email</FormLabel>
-          <Input
-            type="email"
-            value={user?.email}
-            readOnly
-          />
+          <Input type="email" value={user?.email} readOnly />
         </FormControl>
         <FormControl>
           <FormLabel>Ngày sinh</FormLabel>
           <Input
             type="text"
-            value={user?.dateOfBirth}
+            value={new Date(user?.dateOfBirth).toLocaleDateString("vi-VN")}
             readOnly
           />
         </FormControl>
