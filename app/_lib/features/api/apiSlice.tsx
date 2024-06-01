@@ -260,7 +260,7 @@ export const apiSlice = createApi({
     }),
     editCustomerForEmployee: builder.mutation({
       query: (newCustomer) => ({
-        url: `/receivers/owner/${newCustomer.id}`,
+        url: `/receivers/owner/${newCustomer.receiverId}`,
         method: "PUT",
         headers: {
           userId: `${getFromLocalStorage("userId")}`,
@@ -331,7 +331,7 @@ export const apiSlice = createApi({
     }),
     editStoreForEmployee: builder.mutation({
       query: (newStore) => ({
-        url: `/stores/owner/${newStore.id}`,
+        url: `/stores/owner/${newStore.storeId}`,
         method: "PUT",
         headers: {
           userId: `${getFromLocalStorage("userId")}`,
