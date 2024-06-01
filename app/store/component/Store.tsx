@@ -62,7 +62,7 @@ export default function StoreTable() {
     isLoading,
     isSuccess,
     isError,
-  } = useGetEmployeePermissionQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
+  } = useGetEmployeePermissionQuery(1);
 
   const getStores = useMemo(() => {
     if (isSuccessU) return storesU.data;

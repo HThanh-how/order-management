@@ -62,7 +62,7 @@ export default function Product() {
     isLoading,
     isSuccess,
     isError,
-  } = useGetEmployeePermissionQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
+  } = useGetEmployeePermissionQuery(1);
 
   const getProducts = useMemo(() => {
     if (isSuccessU) return productsU.data;

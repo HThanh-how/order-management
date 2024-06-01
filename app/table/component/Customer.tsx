@@ -65,7 +65,7 @@ export default function CustomerTable() {
     isLoading,
     isSuccess,
     isError,
-  } = useGetEmployeePermissionQuery(1, {skip: role !== "ROLE_EMPLOYEE"});
+  } = useGetEmployeePermissionQuery(1);
 
   const getCustomers = useMemo(() => {
     if (isSuccessU) return customersU.data;
