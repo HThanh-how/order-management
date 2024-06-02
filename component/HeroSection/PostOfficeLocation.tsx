@@ -183,7 +183,7 @@ export default function PostOfficeLocation() {
           variant="filled"
         >
           <option value="" disabled hidden>
-            Chọn quận
+            Tất cả các quận
           </option>
           {selectedCityData?.districts.map((district) => (
             <option key={district.code} value={district.codename}>
@@ -202,7 +202,7 @@ export default function PostOfficeLocation() {
           onChange={handleWardChange}
         >
           <option value="" disabled hidden>
-            Chọn phường
+            Tất cả các phường
           </option>
           {selectedDistrictData?.wards.map((ward) => (
             <option key={ward.code} value={ward.codename}>
