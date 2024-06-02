@@ -141,7 +141,7 @@ export default function EditDialog({ isOpen, onClose, selectedCustomer }: any) {
     } catch (err: any) {
       isSuccess = false;
       console.error("Failed to edit customer: ", err);
-      if (err?.data?.message === "Access is denied")
+      if (err?.data?.message === "ACCESS_DEFINED: not authorized!!")
         toast({
           title: "Bạn không có quyền chỉnh sửa thông tin khách hàng",
           position: "top",

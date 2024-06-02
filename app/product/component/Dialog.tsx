@@ -107,7 +107,7 @@ export default function Dialog() {
     } catch (err: any) {
       isSuccess = false;
       console.error("Failed to save product: ", err);
-      if (err?.data?.message === "Access is denied")
+      if (err?.data?.message === "ACCESS_DEFINED: not authorized!!")
         toast({
           title: "Bạn không có quyền thêm sản phẩm mới",
           position: "top",

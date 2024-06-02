@@ -125,7 +125,7 @@ export default function AddressSelect() {
     } catch (err: any) {
       isSuccess = false;
       console.error("Failed to save store: ", err);
-      if (err?.data?.message === "Access is denied")
+      if (err?.data?.message === "ACCESS_DEFINED: not authorized!!")
         toast({
           title: "Bạn không có quyền thêm cửa hàng mới",
           position: "top",

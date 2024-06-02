@@ -288,7 +288,7 @@ export default function OrderForm() {
     } catch (err: any) {
       isSuccess = false;
       console.error("Failed to create order: ", err);
-      if (err?.data?.message === "Access is denied")
+      if (err?.data?.message === "ACCESS_DEFINED: not authorized!!")
         toast({
           title: "Bạn không có quyền tạo đơn hàng mới",
           position: "top",

@@ -119,7 +119,7 @@ export default function AddressSelect() {
     } catch (err: any) {
       isSuccess = false;
       console.error("Failed to save customer: ", err);
-      if (err?.data?.message === "Access is denied")
+      if (err?.data?.message === "ACCESS_DEFINED: not authorized!!")
         toast({
           title: "Bạn không có quyền thêm khách hàng mới",
           position: "top",
