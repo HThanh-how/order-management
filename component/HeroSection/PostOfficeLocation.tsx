@@ -176,7 +176,7 @@ export default function PostOfficeLocation() {
 
         <Select
           m={4}
-          placeholder="Chọn quận"
+          placeholder="Tất cả các quận"
           isDisabled={selectedCity == "" ? true : false}
           value={selectedDistrict}
           onChange={handleDistrictChange}
@@ -197,7 +197,7 @@ export default function PostOfficeLocation() {
         <Select
           m={4}
           variant="filled"
-          placeholder="Chọn phường"
+          placeholder="Tất cả các phường"
           isDisabled={selectedDistrict == "" ? true : false}
           onChange={handleWardChange}
         >
