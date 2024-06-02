@@ -41,6 +41,7 @@ export default function StoreTable() {
   const [searchInput, setSearchInput] = useState("");
   const [filteredStores, setFilteredStores] = useState<Store[]>([]);
   const role = useAppSelector((state: any) => state.role.value);
+  console.log(role==="ROLE_USER");
   const {
     data: storesU,
     isLoading: isLoadingU,
@@ -123,7 +124,7 @@ export default function StoreTable() {
             onChange={handleSearchInputChange}
           />
         </Flex>
-        {role === "ROLE_USER" || getPermission && getPermission.includes("CREATE_STORE") && (
+        {(role === "ROLE_USER" || getPermission && getPermission.includes("CREATE_STORE") )&& (
           <Dialog />
         )}
       </Flex>

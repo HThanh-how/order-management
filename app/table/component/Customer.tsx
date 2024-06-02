@@ -123,7 +123,7 @@ export default function CustomerTable() {
             onChange={handleSearchInputChange}
           />
         </Flex>
-        {role === "ROLE_USER" || getPermission && getPermission.includes("CREATE_RECEIVER") && (
+        {(role === "ROLE_USER" || getPermission && getPermission.includes("CREATE_RECEIVER")) && (
           <Dialog />
         )}
 

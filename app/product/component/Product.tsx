@@ -121,7 +121,7 @@ export default function Product() {
             onChange={handleSearchInputChange}
           />
         </Flex>
-        {role === "ROLE_USER" || getPermission && getPermission.includes("CREATE_PRODUCT") && (
+        {(role === "ROLE_USER" || getPermission && getPermission.includes("CREATE_PRODUCT") )&& (
           <Dialog />
         )}
 
