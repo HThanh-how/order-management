@@ -138,7 +138,7 @@ export default function EditDialog({ isOpen, onClose, selectedStore }: any) {
     } catch (err: any) {
       isSuccess = false;
       console.error('Failed to edit store: ', err)
-      if (err?.data?.message === "Access is denied")
+      if (err?.data?.message === "ACCESS_DEFINED: not authorized!!")
         toast({
           title: "Bạn không có quyền chỉnh sửa thông tin cửa hàng",
           position: "top",

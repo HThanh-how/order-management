@@ -114,7 +114,7 @@ export default function EditDialog({ isOpen, onOpen, onClose, setProducts, selec
       onClose();
     } catch (err: any) {
       console.error('Failed to edit product: ', err);
-      if (err?.data?.message === "Access is denied")
+      if (err?.data?.message === "ACCESS_DEFINED: not authorized!!")
         toast({
           title: "Bạn không có quyền chỉnh sửa thông tin sản phẩm",
           position: "top",
