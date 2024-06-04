@@ -4,6 +4,10 @@
 
 The Order Management System (OMS) is a comprehensive web application designed to streamline and optimize the order management process for businesses. This system provides an integrated solution to monitor and manage various logistics activities, including order creation, schedule coordination, route monitoring, cost management, and reporting.
 
+## Demo
+
+You can access the live demo of the application [here](https://orlist.vercel.app).
+
 ## Features
 
 - **Product Management**: Add, edit, and delete products with detailed information such as name, images, descriptions, prices, and availability.
