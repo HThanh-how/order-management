@@ -1,34 +1,114 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Order Management System
 
-## Getting Started
+## Overview
 
-First, run the development server:
+The Order Management System (OMS) is a comprehensive web application designed to streamline and optimize the order management process for businesses. This system provides an integrated solution to monitor and manage various logistics activities, including order creation, schedule coordination, route monitoring, cost management, and reporting.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Product Management**: Add, edit, and delete products with detailed information such as name, images, descriptions, prices, and availability.
+- **Order Management**: Create, edit, and delete orders, track order status, and send notifications to customers regarding their order status.
+- **Receiver/Store Management**: Manage detailed information about stores and receivers, and generate reports.
+- **Payment Management**: Support for two payment methods: cash on delivery (COD) and advance payment, with accurate processing of both successful and failed transactions.
+- **Shipping Management**: Track shipping progress, handle order cancellations, and provide accurate delivery information to customers.
+- **Staff Management**: Manage staff accounts, assign roles and permissions, and facilitate communication among team members.
+- **Reporting Management**: Generate detailed reports on key metrics such as revenue, profit margins, top-selling products, and customer preferences.
+- **Guest Access**: Allow guests to track order status with limited information.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Technologies Used
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- **Frontend**: Next.js, Redux
+- **Backend**: Spring Framework, Spring Boot
+- **Database**: MySQL
+- **Containerization**: Docker
+- **Testing**: JUnit 5
+- **Deployment**: Microsoft Visual Studio Code Dev Tunnel, Vercel
 
-## Learn More
+## Installation
 
-To learn more about Next.js, take a look at the following resources:
+1. **Clone the Repositories**
+   ```bash
+   # Clone frontend repository
+   git clone https://github.com/HThanh-how/order-management.git
+   cd order-management
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   # Clone backend repository
+   git clone https://github.com/tuannguyenhcmuut/CP_RTTH.git
+   cd CP_RTTH
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+   # Clone Android repository
+   git clone https://github.com/HThanh-how/Expo-Delivery-App.git
+   cd Expo-Delivery-App
+   ```
 
-## Deploy on Vercel
+2. **Setup Backend**
+   - Navigate to the backend directory.
+   - Build the Spring Boot application.
+   ```bash
+   ./mvnw clean install
+   ./mvnw spring-boot:run
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3. **Setup Frontend**
+   - Navigate to the frontend directory.
+   - Install dependencies.
+   ```bash
+   npm install
+   ```
+   - Start the development server.
+   ```bash
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+4. **Run Docker Containers**
+   - Ensure Docker is installed and running.
+   - Build and run the Docker containers.
+   ```bash
+   docker-compose up --build
+   ```
+
+## Usage
+
+1. **Access the Application**
+   - Open your web browser and navigate to `http://localhost:3000` for the frontend.
+   - The backend API is available at `http://localhost:8080`.
+
+2. **Create and Manage Orders**
+   - Log in as a shop owner or staff.
+   - Navigate to the order management section to create, edit, or delete orders.
+   - Track order status and update as needed.
+
+3. **Manage Products**
+   - Navigate to the product management section.
+   - Add, edit, or delete products from the catalog.
+   - Search and sort products by various criteria.
+
+4. **Monitor Shipping**
+   - View the shipping progress of orders.
+   - Handle order cancellations and update statuses.
+
+## API Documentation
+
+The API documentation is available at `http://localhost:8080/api-docs`. This provides detailed information on all available endpoints, request parameters, and response formats.
+
+## Contributors
+
+- [**Cao Anh Huân**](https://github.com/ah2909)
+- [**Phạm Huy Thanh**](https://github.com/HThanh-how/)
+- [**Nguyễn Đức Tuấn**](https://github.com/ndtuanftd)
+
+## Acknowledgements
+
+We would like to express our sincere gratitude to PhD. Trương Tuấn Anh for his invaluable support and guidance throughout this project. We also thank Ho Chi Minh City University of Technology for providing a professional environment to conduct our research.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Release
+
+You can find the release version of the project [here](https://github.com/HThanh-how/order-management/releases).
+
+---
+
+Feel free to further customize the README based on any additional specific requirements or details unique to your project.
