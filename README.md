@@ -113,6 +113,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 You can find the release version of the project [here](https://github.com/HThanh-how/order-management/releases).
 
----
-
-Feel free to further customize the README based on any additional specific requirements or details unique to your project.
